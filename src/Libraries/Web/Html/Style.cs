@@ -665,6 +665,18 @@ namespace System.Html {
             }
         }
 
+        /// <summary>The order property specifies the order of a flexible item relative to the rest of the flexible items inside the same container.</summary>
+        [ScriptField]
+        public int Order
+        {
+            get{
+               return 0; 
+            }
+            set{
+                
+            }
+        }
+
         /// <summary>How to manage the content of the object when the content exceeds the height or width of the object.</summary>
         [ScriptField]
         public string Overflow {
