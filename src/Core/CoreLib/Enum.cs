@@ -8,6 +8,9 @@ using System.Runtime.CompilerServices;
 namespace System {
 
     [ScriptImport]
-    public abstract class Enum : ValueType {
+    public abstract class Enum : ValueType
+    {
+        [ScriptAlias("ss.getEnumValues")]
+        public static extern string[] GetNames(Type enumType);
     }
 }
