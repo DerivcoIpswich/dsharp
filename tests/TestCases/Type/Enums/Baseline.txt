@@ -82,6 +82,7 @@ define('test', ['ss'], function(ss) {
       this.run2('Group');
       this.run2('Ct');
       var s = 'Medium';
+      var names = ss.getEnumNames(Colors);
     },
     run1: function(m) {
       var s = m;

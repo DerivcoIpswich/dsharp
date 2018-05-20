@@ -10,7 +10,7 @@ namespace System {
     [ScriptImport]
     public abstract class Enum : ValueType
     {
-        [ScriptAlias("ss.getEnumValues")]
+        [ScriptAlias("ss.getEnumNames")]
         public static extern string[] GetNames(Type enumType);
     }
 }

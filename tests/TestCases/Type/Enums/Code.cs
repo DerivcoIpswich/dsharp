@@ -99,6 +99,7 @@ namespace TypeTests {
            Run2(SortMode.Count);
 
            string s = Size.Medium.ToString();
+           string names = Enum.GetNames(Colors);
         }
 
         public void Run1(HttpMethod m) {

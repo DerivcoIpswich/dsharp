@@ -11,6 +11,7 @@
 
   #include "Runtime\Misc.js"
   #include "Runtime\Collections.js"
+  #include "Runtime\Enum.js"
   #include "Runtime\Guid.js"
   #include "Runtime\String.js"
   #include "Runtime\Delegate.js"
@@ -55,6 +56,7 @@
       enumerate: enumerate,
       array: toArray,
       remove: removeItem,
+      getEnumNames: getEnumNames,
       boolean: parseBoolean,
       regexp: parseRegExp,
       number: parseNumber,
