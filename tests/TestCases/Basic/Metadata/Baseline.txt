@@ -850,6 +850,11 @@ Types:
         Generated Name: Enum
         Extension Methods: False
         Members:
+            Method: GetNames
+                AssociatedType: Array
+                Visibility: Public, Static
+                Generated Name: ss.getEnumNames
+                Abstract: False
         
     Class: EventArgs
         Application Type: False
@@ -3164,9 +3169,9 @@ Types:
         Extension Methods: False
         BaseClass: Object
         Interfaces:
-            ICollection`1
-            IEnumerable`1
             IEnumerable
+            IEnumerable`1
+            ICollection`1
         Indexer:
             Indexer: Item
                 AssociatedType: T
