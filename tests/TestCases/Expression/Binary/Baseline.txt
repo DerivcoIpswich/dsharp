@@ -85,7 +85,8 @@ define('test', ['ss'], function(ss) {
       var d = new Data();
       d.Value = d.Value + 5;
       d.Flag = (d.Flag | true) === 1;
-      var o1 = ss.value(null, {});
+      var o1 = null || {};
+      var o2 = this._sampleString() || '';
       var s2 = (10).toString();
       s2 = (100).toString();
       s2 = true.toString();
@@ -104,6 +105,9 @@ define('test', ['ss'], function(ss) {
       d.Flag = (d.Flag & true) === 1;
       d.Flag = (d.Flag | true) === 1;
       d.Flag = (d.Flag ^ true) === 1;
+    },
+    _sampleString: function() {
+      return null;
     }
   };
 
