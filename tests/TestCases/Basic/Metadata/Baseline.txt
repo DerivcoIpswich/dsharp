@@ -1629,11 +1629,6 @@ Types:
                 Visibility: Public, Static
                 Generated Name: setTimeout
                 Abstract: False
-            Method: Value
-                AssociatedType: TValue
-                Visibility: Public, Static
-                Generated Name: ss.value
-                Abstract: False
             Method: Enumerate
                 AssociatedType: Object
                 Visibility: Public, Static
@@ -3164,9 +3159,9 @@ Types:
         Extension Methods: False
         BaseClass: Object
         Interfaces:
-            ICollection`1
-            IEnumerable`1
             IEnumerable
+            IEnumerable`1
+            ICollection`1
         Indexer:
             Indexer: Item
                 AssociatedType: T
