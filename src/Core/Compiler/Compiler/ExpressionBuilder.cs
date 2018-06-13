@@ -326,7 +326,12 @@ namespace ScriptSharp.Compiler {
             }
 
             if (node.Operator == TokenType.Coalesce) {
-                return new BinaryExpression(Operator.LogicalOr, leftExpression, rightExpression);
+                TypeSymbol scriptType = _symbolSet.ResolveIntrinsicType(IntrinsicType.Script);
+                MethodSymbol isValueMethod = (MethodSymbol)scriptType.GetMember("IsValue");
+                TypeExpression scriptExpression = new TypeExpression(scriptType, SymbolFilter.Public | SymbolFilter.StaticMembers);
+                MethodExpression isValueExpression = new MethodExpression(scriptExpression, isValueMethod);
+                isValueExpression.AddParameterValue(leftExpression);
+                return new ConditionalExpression(isValueExpression, leftExpression, rightExpression);
             }
 
             TypeSymbol resultType = null;
