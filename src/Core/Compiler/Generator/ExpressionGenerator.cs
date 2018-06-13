@@ -388,6 +388,9 @@ namespace ScriptSharp.Generator {
                 case ExpressionType.NewDelegate:
                     GenerateExpression(generator, symbol, ((NewDelegateExpression)expression).TypeExpression);
                     break;
+                case ExpressionType.Comma:
+                    GenerateCommaExpression(generator, symbol, (CommaExpression)expression);
+                    break;
                 default:
                     Debug.Fail("Unexpected expression type: " + expression.Type);
                     break;
@@ -397,6 +400,14 @@ namespace ScriptSharp.Generator {
                 writer.Write(")");
             }
         }
+
+        public static void GenerateCommaExpression(ScriptGenerator generator, MemberSymbol symbol, CommaExpression expression)
+        {
+            ScriptTextWriter writer = generator.Writer;
+            writer.Write("(");
+            GenerateExpressionList(generator, symbol, expression.Expressions);
+            writer.Write(")");
+        }        
 
         public static void GenerateExpressionList(ScriptGenerator generator, MemberSymbol symbol, ICollection<Expression> expressions) {
             ScriptTextWriter writer = generator.Writer;

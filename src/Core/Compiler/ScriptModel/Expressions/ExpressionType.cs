@@ -56,5 +56,7 @@ namespace ScriptSharp.ScriptModel {
         InlineScript = 22,
 
         NewDelegate = 23,
+
+        Comma = 24
     }
 }

@@ -325,13 +325,21 @@ namespace ScriptSharp.Compiler {
                 rightExpression = TransformMemberExpression((MemberExpression)rightExpression);
             }
 
-            if (node.Operator == TokenType.Coalesce) {
+            if (node.Operator == TokenType.Coalesce) {                           
+                VariableSymbol localLeftVariable = new VariableSymbol("$V", _memberContext, _classContext);                
+                LocalExpression localLeftExpression = new LocalExpression(localLeftVariable, SymbolFilter.Locals);
+
                 TypeSymbol scriptType = _symbolSet.ResolveIntrinsicType(IntrinsicType.Script);
                 MethodSymbol isValueMethod = (MethodSymbol)scriptType.GetMember("IsValue");
                 TypeExpression scriptExpression = new TypeExpression(scriptType, SymbolFilter.Public | SymbolFilter.StaticMembers);
                 MethodExpression isValueExpression = new MethodExpression(scriptExpression, isValueMethod);
-                isValueExpression.AddParameterValue(leftExpression);
-                return new ConditionalExpression(isValueExpression, leftExpression, rightExpression);
+                isValueExpression.AddParameterValue(localLeftExpression);               
+
+                CommaExpression commaExpression = new CommaExpression(rightExpression.EvaluatedType);
+                commaExpression.AddExpression(new BinaryExpression(Operator.Equals, localLeftExpression, leftExpression));
+                commaExpression.AddExpression(new ConditionalExpression(isValueExpression, localLeftExpression, rightExpression));
+
+                return commaExpression;
             }
 
             TypeSymbol resultType = null;
