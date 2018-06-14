@@ -85,8 +85,8 @@ define('test', ['ss'], function(ss) {
       var d = new Data();
       d.Value = d.Value + 5;
       d.Flag = (d.Flag | true) === 1;
-      var o1 = ($V = null, (ss.isValue($V)) ? $V : {});
-      var o2 = ($V = this._sampleString(), (ss.isValue($V)) ? $V : '');
+      var o1 = ss.coalesce(null, {});
+      var o2 = ss.coalesce(_sampleString, '');
       var s2 = (10).toString();
       s2 = (100).toString();
       s2 = true.toString();

@@ -46,7 +46,7 @@
       version: '1.0',
 
       isValue: isValue,
-      value: value,
+      coalesce: coalesce,
       extend: extend,
       keys: keys,
       keyCount: keyCount,

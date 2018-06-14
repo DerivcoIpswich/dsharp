@@ -1599,6 +1599,11 @@ Types:
                 Visibility: Public, Static
                 Generated Name: ss.isValue
                 Abstract: False
+            Method: Coalesce
+                AssociatedType: Object
+                Visibility: Public, Static
+                Generated Name: ss.coalesce
+                Abstract: False
             Method: IsTruthy
                 AssociatedType: Boolean
                 Visibility: Public, Static

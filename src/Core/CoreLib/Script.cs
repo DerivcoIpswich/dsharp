@@ -205,6 +205,20 @@ namespace System {
         }
 
         /// <summary>
+        /// Coalesce arguments
+        /// </summary>
+        /// <param name="a">Object of function to be evaluated.</param>
+        /// <param name="b">Object of function to be evaluated.</param>
+        /// <returns> Returns the result of first argument if the argument is not null; 
+        ///  otherwise it returns the result of second argument</returns>
+        ///  <remarks>If any argument is a function, then the result of the funcion will
+        ///  be evaluated.</remarks>
+        [ScriptAlias("ss.coalesce")]
+        public static object Coalesce(object a, object b) {
+            return null;
+        }
+
+        /// <summary>
         /// Checks if the specified object has a truthy value, i.e. it is not
         /// null or undefined or empty string or false or zero.
         /// </summary>

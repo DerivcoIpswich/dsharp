@@ -15,8 +15,10 @@ function _value(args) {
   }
   return null;
 }
-function value(a, b) {
-  return isValue(a) ? a : isValue(b) ? b : _value(arguments);
+function coalesce(a, b) {
+    var l = typeof(a) == "function" ? a() : a;
+    var r = typeof(b) == "function" ? b() : b;
+  return isValue(l) ? l : r;
 }
 
 function extend(o, items) {

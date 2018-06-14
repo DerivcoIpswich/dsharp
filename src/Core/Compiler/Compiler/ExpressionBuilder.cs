@@ -325,21 +325,14 @@ namespace ScriptSharp.Compiler {
                 rightExpression = TransformMemberExpression((MemberExpression)rightExpression);
             }
 
-            if (node.Operator == TokenType.Coalesce) {                           
-                VariableSymbol localLeftVariable = new VariableSymbol("$V", _memberContext, _classContext);                
-                LocalExpression localLeftExpression = new LocalExpression(localLeftVariable, SymbolFilter.Locals);
-
+            if (node.Operator == TokenType.Coalesce) {
                 TypeSymbol scriptType = _symbolSet.ResolveIntrinsicType(IntrinsicType.Script);
-                MethodSymbol isValueMethod = (MethodSymbol)scriptType.GetMember("IsValue");
+                MethodSymbol coalesceMethod = (MethodSymbol)scriptType.GetMember("Coalesce");
                 TypeExpression scriptExpression = new TypeExpression(scriptType, SymbolFilter.Public | SymbolFilter.StaticMembers);
-                MethodExpression isValueExpression = new MethodExpression(scriptExpression, isValueMethod);
-                isValueExpression.AddParameterValue(localLeftExpression);               
-
-                CommaExpression commaExpression = new CommaExpression(rightExpression.EvaluatedType);
-                commaExpression.AddExpression(new BinaryExpression(Operator.Equals, localLeftExpression, leftExpression));
-                commaExpression.AddExpression(new ConditionalExpression(isValueExpression, localLeftExpression, rightExpression));
-
-                return commaExpression;
+                MethodExpression coalesceExpression = new MethodExpression(scriptExpression, coalesceMethod);
+                AddParameterToCoalesce(leftExpression, coalesceExpression);
+                AddParameterToCoalesce(rightExpression, coalesceExpression);
+                return coalesceExpression;
             }
 
             TypeSymbol resultType = null;
@@ -486,6 +479,18 @@ namespace ScriptSharp.Compiler {
                 }
             }
             return null;
+        }
+
+        private void AddParameterToCoalesce(Expression parameterExpression, MethodExpression coalesceExpression)
+        {
+            if (parameterExpression is MethodExpression) {
+                string generatedName = ((MethodExpression)parameterExpression).Method.GeneratedName;
+                LocalSymbol localSymbol = new VariableSymbol(generatedName, _memberContext, _classContext);
+                coalesceExpression.AddParameterValue(new LocalExpression(localSymbol));
+            }
+            else {
+                coalesceExpression.AddParameterValue(parameterExpression);
+            }
         }
 
         private Expression ProcessCastNode(CastNode node) {
