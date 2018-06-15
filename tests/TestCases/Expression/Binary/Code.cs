@@ -80,7 +80,6 @@ namespace ExpressionTests {
             object o1 = null ?? new object();
             object o2 = SampleString() ?? string.Empty;
 
-
             string s2 = 10.ToString();
             s2 = CValue.ToString();
             s2 = true.ToString();

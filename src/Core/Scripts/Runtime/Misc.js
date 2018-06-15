@@ -17,8 +17,13 @@ function _value(args) {
 }
 function coalesce(a, b) {
     var l = typeof(a) == "function" ? a() : a;
-    var r = typeof(b) == "function" ? b() : b;
-  return isValue(l) ? l : r;
+    if (isValue(l)) {
+        return l;
+    }
+    else {
+        var r = typeof (b) == "function" ? b() : b;
+        return r;
+    }
 }
 
 function extend(o, items) {

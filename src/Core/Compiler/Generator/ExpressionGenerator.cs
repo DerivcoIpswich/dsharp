@@ -396,7 +396,7 @@ namespace ScriptSharp.Generator {
             if (expression.Parenthesized) {
                 writer.Write(")");
             }
-        }      
+        }
 
         public static void GenerateExpressionList(ScriptGenerator generator, MemberSymbol symbol, ICollection<Expression> expressions) {
             ScriptTextWriter writer = generator.Writer;
