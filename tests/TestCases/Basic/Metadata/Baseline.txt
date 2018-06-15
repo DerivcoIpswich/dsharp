@@ -1600,7 +1600,7 @@ Types:
                 Generated Name: ss.isValue
                 Abstract: False
             Method: Coalesce
-                AssociatedType: Object
+                AssociatedType: TValue
                 Visibility: Public, Static
                 Generated Name: ss.coalesce
                 Abstract: False
