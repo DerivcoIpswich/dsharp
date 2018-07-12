@@ -6,7 +6,7 @@ function _commaFormatNumber(number, groups, decimal, comma) {
   if (decimalIndex > 0) {
     decimalPart = number.substr(decimalIndex);
     number = number.substr(0, decimalIndex);
-   }
+  }
 
   var negative = startsWith(number, '-');
   if (negative) {
