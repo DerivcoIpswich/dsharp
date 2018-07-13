@@ -21,6 +21,8 @@
     <IISExpressUseClassicPipelineMode />
     <RestoreNugetPackages>true</RestoreNugetPackages>
     <DisableHandlePackageFileConflicts>true</DisableHandlePackageFileConflicts>
+    <Use64BitIISExpress />
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -96,13 +98,13 @@
     <Content Include="Scripts\ssloader.min.js" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\AroundMe\AroundMe.csproj">
       <Project>{c1aff814-2c3a-4d04-88a4-5cf10d07aa56}</Project>
       <Name>AroundMe</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
