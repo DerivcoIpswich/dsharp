@@ -13,6 +13,7 @@
     <AssemblyName>TodoWeb</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <RestoreNugetPackages>true</RestoreNugetPackages>
+    <DisableHandlePackageFileConflicts>true</DisableHandlePackageFileConflicts>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />

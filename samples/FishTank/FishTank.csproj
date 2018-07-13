@@ -13,7 +13,8 @@
     <CodeAnalysisRuleSet>Properties\FxCop.ruleset</CodeAnalysisRuleSet>
     <GenerateScript>True</GenerateScript>
     <GenerateResources>True</GenerateResources>
-    <RestoreNugetPackages>True</RestoreNugetPackages>
+    <RestoreNugetPackages>true</RestoreNugetPackages>
+    <DisableHandlePackageFileConflicts>true</DisableHandlePackageFileConflicts>
     <MinimizeScript>True</MinimizeScript>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

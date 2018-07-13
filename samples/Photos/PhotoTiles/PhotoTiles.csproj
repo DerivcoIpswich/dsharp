@@ -14,6 +14,7 @@
     <GenerateScript>True</GenerateScript>
     <GenerateResources>True</GenerateResources>
     <RestoreNugetPackages>true</RestoreNugetPackages>
+    <DisableHandlePackageFileConflicts>true</DisableHandlePackageFileConflicts>
     <MinimizeScript>True</MinimizeScript>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

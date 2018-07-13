@@ -17,7 +17,8 @@
     <MinimizeScript>False</MinimizeScript>
     <CopyReferences>True</CopyReferences>
     <CopyReferencesPath>node_modules</CopyReferencesPath>
-    <RestoreNugetPackages>True</RestoreNugetPackages>
+    <RestoreNugetPackages>true</RestoreNugetPackages>
+    <DisableHandlePackageFileConflicts>true</DisableHandlePackageFileConflicts>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\Debug\</OutputPath>

@@ -18,6 +18,7 @@
     <CopyReferences>True</CopyReferences>
     <CopyReferencesPath>node_modules</CopyReferencesPath>
     <RestoreNugetPackages>true</RestoreNugetPackages>
+    <DisableHandlePackageFileConflicts>true</DisableHandlePackageFileConflicts>
     <ScriptsPath>Content\Scripts</ScriptsPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
