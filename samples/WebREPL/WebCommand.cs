@@ -3,7 +3,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Serialization;
+using System.Text;
 using NodeApi;
 using NodeApi.IO;
 using NodeApi.Network;
@@ -87,7 +87,7 @@ namespace WebREPL {
             if ((String.IsNullOrEmpty(_webRequest.UserName) == false) &&
                 (String.IsNullOrEmpty(_webRequest.Password) == false)) {
                     string creds = _webRequest.UserName + ':' + _webRequest.Password;
-                    options.Headers["Authorization"] = "Basic " + new Buffer(creds).ToString(Encoding.Base64);
+                    options.Headers["Authorization"] = "Basic " + new NodeApi.IO.Buffer(creds).ToString(NodeApi.IO.Encoding.Base64);
             }
 
             return options;
@@ -113,8 +113,8 @@ namespace WebREPL {
                         options.Headers["Content-Type"] = "application/json";
                     }
 
-                    Buffer requestBuffer = new Buffer(data);
-                    requestData = requestBuffer.ToString(Encoding.UTF8);
+                    NodeApi.IO.Buffer requestBuffer = new NodeApi.IO.Buffer(data);
+                    requestData = requestBuffer.ToString(NodeApi.IO.Encoding.UTF8);
 
                     options.Headers["Content-Length"] = requestData.Length.ToString();
                 }
@@ -138,7 +138,7 @@ namespace WebREPL {
         private void HandleResponse(HttpClientResponse response) {
             string responseData = String.Empty;
 
-            response.SetEncoding(Encoding.UTF8);
+            response.SetEncoding(NodeApi.IO.Encoding.UTF8);
             response.Data += delegate(string chunk) {
                 responseData += chunk;
             };
@@ -162,7 +162,7 @@ namespace WebREPL {
             HttpVerb verb = HttpVerb.GET;
             string uri  = null;
 
-            string altCommand = command.ToLowerCase();
+            string altCommand = command.ToLower();
             if (altCommand.StartsWith("get ")) {
                 verb = HttpVerb.GET;
                 uri = command.Substring(4);
