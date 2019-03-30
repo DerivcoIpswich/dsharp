@@ -30,6 +30,7 @@ namespace ScriptSharp.ScriptModel {
             _dictionaryEnumeration = true;
         }
 
+
         public Statement Body {
             get {
                 return _body;

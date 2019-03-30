@@ -125,6 +125,29 @@ namespace ScriptSharp.Generator {
                 writer.Indent--;
                 writer.WriteLine("}");
             }
+            else if (statement.CollectionExpression.EvaluatedType.IsArray)
+            {
+                string dataSourceVariableName = statement.LoopVariable.GeneratedName;
+                string indexVariableName = dataSourceVariableName + "_index";
+
+                // var $$ = ({CollectionExpression});
+                writer.Write("var " + dataSourceVariableName + " = (");
+                ExpressionGenerator.GenerateExpression(generator, symbol, statement.CollectionExpression);
+                writer.WriteLine(");");
+
+                // for(var items_index = 0; items_index < items.length; ++items_index) {
+                writer.WriteLine("for(var " + indexVariableName + " = 0; " + indexVariableName + " < " + dataSourceVariableName + ".length; ++" + indexVariableName + ") {");
+
+                ++writer.Indent;
+
+                // var i = items[items_index];
+                writer.WriteLine("var " + statement.ItemVariable.GeneratedName + " = " + dataSourceVariableName + "[" + indexVariableName + "];");
+
+                GenerateStatement(generator, symbol, statement.Body);
+
+                --writer.Indent;
+                writer.WriteLine("}");
+            }
             else {
                 writer.Write("var ");
                 writer.Write(statement.LoopVariable.GeneratedName);
