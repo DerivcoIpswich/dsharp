@@ -21,11 +21,9 @@ namespace TypeTests {
             Array a;
             ArrayList b;
             string[] s = new string[5];
-
             IEnumerable a1 = a.GetEnumerator();
             a1 = b.GetEnumerator();
             a1 = s.GetEnumerator();
-
             foreach (string str in s) {
                 string s1 = str;
             }
