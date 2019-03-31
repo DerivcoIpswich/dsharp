@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Text;
+using ScriptSharp.Extensions;
 
 namespace ScriptSharp.ScriptModel {
     
@@ -136,10 +137,23 @@ namespace ScriptSharp.ScriptModel {
                 return _imports;
             }
         }
-
+        
         public bool IsArray {
-            get {
-                return _isArray;
+            get
+            {
+                if (_isArray)
+                {
+                    return true;
+                }
+
+                if (this.IsCollectionType())
+                {
+                    SetArray(); // add to cache
+
+                    return true;
+                }
+
+                return false;
             }
         }
 

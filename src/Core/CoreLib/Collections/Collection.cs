@@ -8,7 +8,7 @@ namespace System.Collections.ObjectModel
     [ScriptIgnoreNamespace]
     [ScriptImport]
     [ScriptName("Array")]
-    public abstract class Collection<T> : IEnumerable, IEnumerable<T>, ICollection<T>
+    public abstract class Collection<T> : ICollection<T>
     {
         public static implicit operator Array(Collection<T> collection) { return null; }
         public static implicit operator List<T>(Collection<T> collection) { return null; }

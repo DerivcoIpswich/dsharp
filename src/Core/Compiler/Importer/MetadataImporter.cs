@@ -668,10 +668,6 @@ namespace ScriptSharp.Importer {
                     if (MetadataHelpers.IsScriptExtension(type, out extendee)) {
                         ((ClassSymbol)typeSymbol).SetExtenderClass(extendee);
                     }
-
-                    if (String.CompareOrdinal(scriptName, "Array") == 0) {
-                        typeSymbol.SetArray();
-                    }
                 }
             }
 
@@ -709,12 +705,23 @@ namespace ScriptSharp.Importer {
                 }
                 typeSymbol.SetPublic();
 
-                if (String.IsNullOrEmpty(scriptName) == false) {
+                if (!string.IsNullOrEmpty(scriptName))
+                {
                     typeSymbol.SetTransformedName(scriptName);
                 }
 
+                SetArrayTypeMetadata(type, typeSymbol, scriptName);
+
                 namespaceSymbol.AddType(typeSymbol);
                 _importedTypes.Add(typeSymbol);
+            }
+        }
+        
+        private void SetArrayTypeMetadata(TypeDefinition type, TypeSymbol symbol, string scriptName)
+        {
+            if (scriptName == "Array")
+            {
+                symbol.SetArray();
             }
         }
 

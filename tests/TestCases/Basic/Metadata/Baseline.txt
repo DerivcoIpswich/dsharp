@@ -327,6 +327,7 @@ Types:
         Extension Methods: False
         BaseClass: Object
         Interfaces:
+            ICollection
             IEnumerable
         Indexer:
             Indexer: Item
@@ -337,6 +338,10 @@ Types:
                 Abstract: False
         Members:
             Field: Length
+                AssociatedType: Int32
+                Visibility: Public
+                Generated Name: length
+            Field: Count
                 AssociatedType: Int32
                 Visibility: Public
                 Generated Name: length
@@ -2158,6 +2163,7 @@ Types:
         Extension Methods: False
         BaseClass: Object
         Interfaces:
+            ICollection
             IEnumerable
         Indexer:
             Indexer: Item

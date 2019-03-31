@@ -17,14 +17,15 @@ namespace System {
     [ScriptIgnoreNamespace]
     [ScriptImport]
     [ScriptName("Array")]
-    public sealed class Array : IEnumerable {
+    public sealed class Array : ICollection {
 
         [ScriptField]
-        public int Length {
-            get {
-                return 0;
-            }
-        }
+        [ScriptName("length")]
+        public int Length => Count;
+
+        [ScriptField]
+        [ScriptName("length")]
+        public int Count => Length;
 
         [ScriptField]
         public object this[int index] {

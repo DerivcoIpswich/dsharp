@@ -17,7 +17,7 @@ namespace System.Collections {
     [ScriptIgnoreNamespace]
     [ScriptImport]
     [ScriptName("Array")]
-    public sealed class ArrayList : IEnumerable {
+    public sealed class ArrayList : ICollection {
 
         public ArrayList() {
         }
