@@ -21,11 +21,11 @@ namespace System {
 
         [ScriptField]
         [ScriptName("length")]
-        public int Length => Count;
+        public int Length { get; }
 
         [ScriptField]
         [ScriptName("length")]
-        public int Count => Length;
+        public int Count { get; }
 
         [ScriptField]
         public object this[int index] {
