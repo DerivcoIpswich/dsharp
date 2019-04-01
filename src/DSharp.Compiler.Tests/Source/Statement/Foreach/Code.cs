@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 [assembly: ScriptAssembly("test")]
@@ -22,6 +23,20 @@ namespace StatementTests {
             int sum = 0;
 
             foreach (int i in items) {
+                sum += i;
+            }
+
+            sum = 0;
+
+            foreach (int i in (ICollection<int>)items)
+            {
+                sum += i;
+            }
+              
+            sum = 0;
+
+            foreach (int i in new List<int>(1, 2, 3))
+            {
                 sum += i;
             }
 

@@ -811,11 +811,6 @@ namespace DSharp.Compiler.Importer
                     {
                         ((ClassSymbol) typeSymbol).SetExtenderClass(extendee);
                     }
-
-                    if (string.CompareOrdinal(scriptName, nameof(Array)) == 0)
-                    {
-                        typeSymbol.SetArray();
-                    }
                 }
             }
 
@@ -867,8 +862,18 @@ namespace DSharp.Compiler.Importer
                     typeSymbol.SetTransformedName(scriptName);
                 }
 
+                SetArrayTypeMetadata(type, typeSymbol, scriptName);
+
                 namespaceSymbol.AddType(typeSymbol);
                 importedTypes.Add(typeSymbol);
+            }
+        }
+
+        private void SetArrayTypeMetadata(TypeDefinition type, TypeSymbol symbol, string scriptName)
+        {
+            if (scriptName == nameof(Array))
+            {
+                symbol.SetArray();
             }
         }
 

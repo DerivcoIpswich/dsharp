@@ -1,8 +1,6 @@
 "use strict";
 
-define('test', ['ss'], function(ss) {
-  var $global = this;
-
+var test = (function($global){
   // TypeTests.App1
 
   function App1() {
@@ -28,9 +26,9 @@ define('test', ['ss'], function(ss) {
       var a1 = ss.enumerate(a);
       a1 = ss.enumerate(b);
       a1 = ss.enumerate(s);
-      var $enum1 = ss.enumerate(s);
-      while ($enum1.moveNext()) {
-        var str = $enum1.current;
+      var $enum1 = (s);
+      for(var $enum1_index = 0; $enum1_index < $enum1.length; ++$enum1_index) {
+        var str = $enum1[$enum1_index];
         var s1 = str;
       }
       var app1;
@@ -51,4 +49,4 @@ define('test', ['ss'], function(ss) {
 
 
   return $exports;
-});
+})(self);

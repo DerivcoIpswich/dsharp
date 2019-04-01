@@ -1,4 +1,4 @@
-// TypeSymbol.cs
+﻿// TypeSymbol.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using DSharp.Compiler.Extensions;
 
 namespace DSharp.Compiler.ScriptModel.Symbols
 {
@@ -106,7 +107,27 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public ICollection<string> Imports { get; private set; }
 
-        public bool IsArray { get; private set; }
+        private bool _isArray = false;
+
+        public bool IsArray
+        {
+            get
+            {
+                if (_isArray)
+                {
+                    return true;
+                }
+
+                if (this.IsCollectionType())
+                {
+                    SetArray(); // add to cache
+
+                    return true;
+                }
+
+                return false;
+            }
+        }
 
         public bool IsApplicationType { get; private set; }
 
@@ -221,7 +242,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public void SetArray()
         {
-            IsArray = true;
+            _isArray = true;
         }
 
         public void SetImports(ICollection<string> imports)

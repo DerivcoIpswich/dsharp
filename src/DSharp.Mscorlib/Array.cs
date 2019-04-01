@@ -8,10 +8,15 @@ namespace System
     [ScriptIgnoreNamespace]
     [ScriptImport]
     [ScriptName("Array")]
-    public sealed class Array : IEnumerable
+    public sealed class Array : ICollection
     {
         [ScriptField]
+        [ScriptName("length")]
         public extern int Length { get; }
+
+        [ScriptField]
+        [ScriptName("length")]
+        public extern int Count { get; }
 
         [ScriptField]
         public extern object this[int index] { get; set; }
