@@ -14,7 +14,10 @@
     <NoStdLib>True</NoStdLib>
     <Optimize>false</Optimize>
     <AutoUnifyAssemblyReferences>false</AutoUnifyAssemblyReferences>
+  </PropertyGroup>
+  <PropertyGroup Label="OutputPaths">
     <OutputPath>bin\$(Configuration)\dsharp</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\dsharp</IntermediateOutputPath>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
   </PropertyGroup>
