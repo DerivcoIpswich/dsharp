@@ -21,9 +21,9 @@
 
     </PropertyGroup>
 
-    <XmlPoke XmlInputPath="Sdk/Sdk.props" 
+    <XmlPoke XmlInputPath="Sdk/DSharp.props" 
              Query="//ItemGroup//PackageReference[@Include='DSharp.Mscorlib']/@Version" 
              Value="$(PackageVersion)" 
-             Condition="Exists('Sdk/Sdk.props')"/>
+             Condition="Exists('Sdk/DSharp.props')"/>
   </Target>
 </Project>
