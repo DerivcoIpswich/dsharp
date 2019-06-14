@@ -47,5 +47,13 @@
     <CompileDependsOn Condition="'$(GenerateResources)' == 'True'">GenerateResourcesCode;$(CompileDependsOn)</CompileDependsOn>
   </PropertyGroup>
 
+  <Target Name="CleanScripts" AfterTargets="Clean">
+    <ItemGroup>
+      <DeleteFile Include="$(OutputPath)*.js"/>
+      <DeleteFile Include="$(OutputPath)$(AssemblyName).scripts"/>
+    </ItemGroup>
+    <Delete Files="@(DeleteFile)" />
+  </Target>
+
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk"/>
 </Project>
