@@ -4,23 +4,11 @@
   </PropertyGroup>
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
   <PropertyGroup>
-    <TargetFramework Condition="'$(TargetFramework)' == ''">netstandard2.0</TargetFramework>
-    <DisableHandlePackageFileConflicts>true</DisableHandlePackageFileConflicts>
-    <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
-    <AdditionalExplicitAssemblyReferences />
-    <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
-    <NoStdLib>True</NoStdLib>
-    <Optimize>false</Optimize>
-    <AutoUnifyAssemblyReferences>false</AutoUnifyAssemblyReferences>
+    <TargetFrameworks Condition="'$(TargetFrameworks)' == ''">net471;netstandard2.0</TargetFrameworks>
+    <IsDSharpBuild Condition=" $([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', 'net\d{2,3}'))">true</IsDSharpBuild>
     <BuildingProject>true</BuildingProject>
     <UseHostCompilerIfAvailable>false</UseHostCompilerIfAvailable>
-    <GenerateScript Condition="'$(GenerateScript)' == ''">true</GenerateScript>
-    <LangVersion Condition="'$(GenerateScript)' == 'True'">ISO-2</LangVersion>
-    <IsImportLibrary Condition="'$(IsImportLibrary)' == ''">false</IsImportLibrary>
-    <ExcludeCoreLib Condition="'$(ExcludeCoreLib)' == ''">false</ExcludeCoreLib>
-    <SkipScriptCopy Condition="'$(SkipScriptCopy)' == ''">false</SkipScriptCopy>
   </PropertyGroup>
-  <ItemGroup Condition="'$(ExcludeCoreLib)' == 'false'">
-    <PackageReference Include="DSharp.Mscorlib" Version="1.0.0-dev.0" IsImplicitlyDefined="true" PrivateAssets="All" />
-  </ItemGroup>
+  <Import Condition="$(IsDSharpBuild) == 'true'" Project="$(MSBuildThisFileDirectory)DSharp.props"/>
+  <Import Condition="'$(IsDSharpBuild)' != 'true'" Project="$(MSBuildThisFileDirectory)NetStandard.props" />
 </Project>

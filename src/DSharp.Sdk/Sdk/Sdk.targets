@@ -1,53 +1,12 @@
-<Project>
-
+<Project TreatAsLocalProperty="TaskFolder">
+  
   <PropertyGroup>
+    <TaskFolder Condition=" '$(MSBuildRuntimeType)' == 'Core' ">netstandard2.0</TaskFolder>
+    <TaskFolder Condition=" '$(MSBuildRuntimeType)' != 'Core' ">net461</TaskFolder>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <ToolsPath Condition="'$(ToolsPath)' == ''">$(MSBuildThisFileDirectory)..\tools\$(TargetFramework)\</ToolsPath>
-    <DSharpBuildAssembly Condition="'$(DSharpBuildAssembly)' == ''">$(ToolsPath)DSharp.Build.dll</DSharpBuildAssembly>
+    <ToolsPath Condition="'$(ToolsPath)' == ''">$(MSBuildThisFileDirectory)..\tools\$(TaskFolder)\</ToolsPath>
   </PropertyGroup>
 
-  <UsingTask TaskName="ScriptCompilerTask" AssemblyFile="$(DSharpBuildAssembly)" />
-  <UsingTask TaskName="ResXCodeGeneratorTask" AssemblyFile="$(DSharpBuildAssembly)" />
-
-  <Target Name="BuildScript" Returns="@(Scripts)" AfterTargets="Build" Condition="'$(IsImportLibrary)' == 'false'">
-    <ScriptCompilerTask
-      Sources="@(Compile)"
-      Resources="@(EmbeddedResource)"
-      References="@(ReferencePath);@(ReferenceDependencyPaths)"
-      AssemblyName ="$(AssemblyName)"
-      Defines="$(DefineConstants)"
-      Minimize="$(MinimizeScript)"
-      CopyReferences="$(CopyReferences)"
-      CopyReferencesPath="$(CopyReferencesPath)"
-      OutputPath="$(OutputPath)"
-      Assembly="@(IntermediateAssembly)"
-      ScriptName="$(ScriptName)"
-      ProjectPath="$(MSBuildProjectFullPath)">
-      <Output TaskParameter="Scripts" ItemName="Scripts" />
-    </ScriptCompilerTask>
-  </Target>
-
-  <Target Name="GenerateResourcesCode" Inputs="@(EmbeddedResource)" Outputs="@(GeneratedResourceCode)">
-    <ResXCodeGeneratorTask
-      Resources="@(EmbeddedResource)"
-      GeneratedCode="@(GeneratedResourceCode)"
-      Namespace="$(RootNamespace)" />
-    <ItemGroup>
-      <Compile Include="@(GeneratedResourceCode)" />
-    </ItemGroup>
-  </Target>
-
-  <Target Name="CopyScripts" AfterTargets="BuildScript" Condition="'$(SkipScriptCopy)' == 'false'">
-    <PropertyGroup>
-      <ScriptsPath>$(MSBuildThisFileDirectory)..\content\scripts\</ScriptsPath>
-    </PropertyGroup>
-    <Copy SourceFiles="$(ScriptsPath)ss.js;$(ScriptsPath)ss.min.js" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" />
-  </Target>
-
-  <PropertyGroup>
-    <BuildDependsOn Condition="'$(GenerateScript)' == 'True'">$(BuildDependsOn);BuildScript</BuildDependsOn>
-    <CompileDependsOn Condition="'$(GenerateResources)' == 'True'">GenerateResourcesCode;$(CompileDependsOn)</CompileDependsOn>
-  </PropertyGroup>
-
+  <Import Project="DSharp.targets" Condition="'$(IsDSharpBuild)' == 'true'"/>
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk"/>
 </Project>

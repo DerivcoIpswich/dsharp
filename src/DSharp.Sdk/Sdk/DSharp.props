@@ -1,0 +1,21 @@
+<Project>
+  <PropertyGroup Label="SetDefaults">
+    <GenerateScript Condition="'$(GenerateScript)' == ''">true</GenerateScript>
+    <LangVersion Condition="'$(GenerateScript)' == 'True'">ISO-2</LangVersion>
+    <IsImportLibrary Condition="'$(IsImportLibrary)' == ''">false</IsImportLibrary>
+    <ExcludeCoreLib Condition="'$(ExcludeCoreLib)' == ''">false</ExcludeCoreLib>
+    <SkipScriptCopy Condition="'$(SkipScriptCopy)' == ''">false</SkipScriptCopy>
+  </PropertyGroup>
+  <PropertyGroup Label="DisableStdLib">
+    <DisableHandlePackageFileConflicts>true</DisableHandlePackageFileConflicts>
+    <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
+    <AdditionalExplicitAssemblyReferences />
+    <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
+    <NoStdLib>True</NoStdLib>
+    <Optimize>false</Optimize>
+    <AutoUnifyAssemblyReferences>false</AutoUnifyAssemblyReferences>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(ExcludeCoreLib)' == 'false'">
+    <PackageReference Include="DSharp.Mscorlib" Version="1.0.0-dev.18" IsImplicitlyDefined="true" PrivateAssets="All" />
+  </ItemGroup>
+</Project>
