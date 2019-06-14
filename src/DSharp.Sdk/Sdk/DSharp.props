@@ -14,6 +14,9 @@
     <NoStdLib>True</NoStdLib>
     <Optimize>false</Optimize>
     <AutoUnifyAssemblyReferences>false</AutoUnifyAssemblyReferences>
+    <OutputPath>bin\$(Configuration)\dsharp</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
   </PropertyGroup>
   <ItemGroup Condition="'$(ExcludeCoreLib)' == 'false'">
     <PackageReference Include="DSharp.Mscorlib" Version="1.0.0-dev.0" IsImplicitlyDefined="true" PrivateAssets="All" />
