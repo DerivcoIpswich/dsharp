@@ -5,6 +5,7 @@
     <IsImportLibrary Condition="'$(IsImportLibrary)' == ''">false</IsImportLibrary>
     <ExcludeCoreLib Condition="'$(ExcludeCoreLib)' == ''">false</ExcludeCoreLib>
     <SkipScriptCopy Condition="'$(SkipScriptCopy)' == ''">false</SkipScriptCopy>
+    <DefineConstants>DSHARP;@(DefineConstants)</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Label="DisableStdLib">
     <DisableHandlePackageFileConflicts>true</DisableHandlePackageFileConflicts>
