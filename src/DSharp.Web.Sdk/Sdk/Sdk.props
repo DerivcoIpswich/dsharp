@@ -1,0 +1,4 @@
+<Project>
+  <Import Project="Sdk.props" Sdk="DSharp.Sdk" />
+  <Import Condition="$(IsDSharpBuild) == 'true'" Project="$(MSBuildThisFileDirectory)DSharp.props"/>
+</Project>
