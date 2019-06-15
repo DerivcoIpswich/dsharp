@@ -20,6 +20,7 @@
       OutputPath="$(OutputPath)"
       Assembly="@(IntermediateAssembly)"
       ScriptName="$(ScriptName)"
+      TemplatePath="$(ScriptTemplatePath)"
       ProjectPath="$(MSBuildProjectFullPath)">
       <Output TaskParameter="Scripts" ItemName="Scripts" />
     </ScriptCompilerTask>

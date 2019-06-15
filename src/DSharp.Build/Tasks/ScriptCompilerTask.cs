@@ -109,6 +109,8 @@ namespace DSharp.Build.Tasks
         [Required]
         public ITaskItem[] Sources { get; set; }
 
+        public string TemplatePath { get; set; }
+
         private bool Compile(IEnumerable<ITaskItem> sourceItems, IEnumerable<ITaskItem> resourceItems, string locale)
         {
             CompilerOptions options = CreateOptions(sourceItems, resourceItems, locale, false, out ITaskItem scriptTaskItem);
@@ -168,6 +170,11 @@ namespace DSharp.Build.Tasks
             options.Resources = GetResources(resourceItems, locale);
             options.IncludeResolver = this;
             options.AssemblyName = AssemblyName;
+
+            if(!string.IsNullOrEmpty(TemplatePath))
+            {
+                options.ScriptInfo.Template = GetTemplate();
+            }
 
             string scriptFilePath = GetScriptFilePath(locale, minimize);
             outputScriptItem = new TaskItem(scriptFilePath);
@@ -398,6 +405,17 @@ namespace DSharp.Build.Tasks
             }
 
             return sources;
+        }
+
+        private string GetTemplate()
+        {
+            if(!File.Exists(TemplatePath))
+            {
+                Log.LogWarning($"Unable to read from template file: {TemplatePath}. Default template will be used.");
+                return null;
+            }
+
+            return File.ReadAllText(TemplatePath);
         }
 
         private void OnScriptFileGenerated(ITaskItem scriptItem, CompilerOptions options, bool copyReferences)
