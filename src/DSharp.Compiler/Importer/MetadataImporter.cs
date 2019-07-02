@@ -428,7 +428,7 @@ namespace DSharp.Compiler.Importer
             {
                 if (method.IsSpecialName)
                 {
-                    continue;
+                    //continue;
                 }
 
                 if (method.IsPrivate || method.IsAssembly || method.IsFamilyAndAssembly)
@@ -489,6 +489,7 @@ namespace DSharp.Compiler.Importer
 
                 if (string.IsNullOrEmpty(transformedName) == false)
                 {
+                    Console.WriteLine("0: " + transformedName);
                     methodSymbol.SetTransformName(transformedName);
                 }
 
@@ -545,7 +546,7 @@ namespace DSharp.Compiler.Importer
                     continue;
                 }
 
-                PropertySymbol propertySymbol = null;
+                MemberSymbol memberSymbol = null;
 
                 if (property.Parameters.Count != 0)
                 {
@@ -557,7 +558,7 @@ namespace DSharp.Compiler.Importer
                         indexerSymbol.SetScriptIndexer();
                     }
 
-                    propertySymbol = indexerSymbol;
+                    memberSymbol = indexerSymbol;
                     // propertySymbol.SetNameCasing(preserveCase);
                 }
                 else
@@ -576,20 +577,32 @@ namespace DSharp.Compiler.Importer
 
                         if (string.IsNullOrEmpty(transformedName) == false)
                         {
-                            fieldSymbol.SetTransformName(transformedName);
+                            Console.WriteLine("1: " + transformedName);
+                            fieldSymbol.SetTransformedName(transformedName);
                         }
 
                         typeSymbol.AddMember(fieldSymbol);
                     }
                     else
                     {
-                        propertySymbol = new PropertySymbol(propertyName, typeSymbol, propertyType);
-                        ImportMemberDetails(propertySymbol, property.GetMethod, property);
-                        propertySymbol.SetNameCasing(true);
+                        memberSymbol = new PropertySymbol(propertyName, typeSymbol, propertyType);
+                        ImportMemberDetails(memberSymbol, property.GetMethod, property);
+                        memberSymbol.SetNameCasing(true);
+
+                        string transformedName = MetadataHelpers.GetTransformedName(property.GetMethod);
+
+                        if (string.IsNullOrEmpty(transformedName) == false)
+                        {
+                            Console.WriteLine("1: " + transformedName);
+
+                            memberSymbol = new FieldSymbol(propertyName, typeSymbol, propertyType);
+                            ImportMemberDetails(memberSymbol, property.GetMethod, property);
+                            memberSymbol.SetTransformedName(transformedName);
+                        }
                     }
                 }
 
-                if (propertySymbol != null)
+                if (memberSymbol is PropertySymbol propertySymbol)
                 {
                     SymbolImplementationFlags implFlags = SymbolImplementationFlags.Regular;
 
@@ -606,6 +619,11 @@ namespace DSharp.Compiler.Importer
                     propertySymbol.SetImplementationState(implFlags);
 
                     typeSymbol.AddMember(propertySymbol);
+                }
+
+                if (memberSymbol != null)
+                {
+                    typeSymbol.AddMember(memberSymbol);
                 }
             }
         }

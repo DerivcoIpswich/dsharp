@@ -215,6 +215,8 @@ Usage:
         {
             bool success = Execute(args);
 
+            Console.ReadLine();
+
             return success ? 0 : 1;
         }
 

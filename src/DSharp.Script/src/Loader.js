@@ -13,7 +13,8 @@
         StringBuilder: defineClass(StringBuilder, StringBuilder$, [], null),
         Stack: defineClass(Stack, Stack$, [], null),
         Queue: defineClass(Queue, Queue$, [], null),
-        Guid: defineClass(Guid, Guid$, [], null)
+        Guid: defineClass(Guid, Guid$, [], null),
+        DateTime: defineClass(DateTime, {}, [], null)
     }), {
             version: {{version}},
             isValue: isValue,
