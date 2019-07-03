@@ -428,7 +428,7 @@ namespace DSharp.Compiler.Importer
             {
                 if (method.IsSpecialName)
                 {
-                    //continue;
+                    continue;
                 }
 
                 if (method.IsPrivate || method.IsAssembly || method.IsFamilyAndAssembly)
@@ -489,7 +489,6 @@ namespace DSharp.Compiler.Importer
 
                 if (string.IsNullOrEmpty(transformedName) == false)
                 {
-                    Console.WriteLine("0: " + transformedName);
                     methodSymbol.SetTransformName(transformedName);
                 }
 
@@ -577,7 +576,6 @@ namespace DSharp.Compiler.Importer
 
                         if (string.IsNullOrEmpty(transformedName) == false)
                         {
-                            Console.WriteLine("1: " + transformedName);
                             fieldSymbol.SetTransformedName(transformedName);
                         }
 

@@ -82,7 +82,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             this.implementation = implementation;
         }
 
-        public new void SetTransformedName(string transformName)
+        public override void SetTransformedName(string transformName)
         {
             Debug.Assert((Visibility & MemberVisibility.Static) != 0);
 

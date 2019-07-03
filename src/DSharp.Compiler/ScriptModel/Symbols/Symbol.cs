@@ -1,4 +1,4 @@
-// Symbol.cs
+﻿// Symbol.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -76,7 +76,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public abstract bool MatchFilter(SymbolFilter filter);
 
-        public void SetTransformedName(string name)
+        public virtual void SetTransformedName(string name)
         {
             Debug.Assert(IsTransformed == false);
             Debug.Assert(IsTransformAllowed);

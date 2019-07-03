@@ -146,13 +146,13 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             return false;
         }
 
-        public void SetTransformName(string transformName)
+        public override void SetTransformedName(string transformName)
         {
             Debug.Assert(TransformName == null);
             Debug.Assert(string.IsNullOrEmpty(transformName) == false);
 
             TransformName = transformName;
-            SetTransformedName(transformName);
+            base.SetTransformedName(transformName);
         }
 
         public void SetConditions(ICollection<string> conditions)
