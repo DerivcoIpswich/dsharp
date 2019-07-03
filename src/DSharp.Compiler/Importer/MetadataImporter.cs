@@ -489,7 +489,7 @@ namespace DSharp.Compiler.Importer
 
                 if (string.IsNullOrEmpty(transformedName) == false)
                 {
-                    methodSymbol.SetTransformName(transformedName);
+                    methodSymbol.SetTransformedName(transformedName);
                 }
 
                 string selector = MetadataHelpers.GetScriptMethodSelector(method);
@@ -652,7 +652,7 @@ namespace DSharp.Compiler.Importer
 
                 MethodSymbol enumerateMethod = new MethodSymbol("Enumerate", classSymbol, objectType,
                     MemberVisibility.Public | MemberVisibility.Static);
-                enumerateMethod.SetTransformName(DSharpStringResources.ScriptExportMember("enumerate"));
+                enumerateMethod.SetTransformedName(DSharpStringResources.ScriptExportMember("enumerate"));
                 enumerateMethod.AddParameter(new ParameterSymbol("obj", enumerateMethod, objectType, ParameterMode.In));
                 classSymbol.AddMember(enumerateMethod);
 
@@ -660,7 +660,7 @@ namespace DSharp.Compiler.Importer
 
                 MethodSymbol typeNameMethod = new MethodSymbol("GetTypeName", classSymbol, stringType,
                     MemberVisibility.Public | MemberVisibility.Static);
-                typeNameMethod.SetTransformName(DSharpStringResources.ScriptExportMember("typeName"));
+                typeNameMethod.SetTransformedName(DSharpStringResources.ScriptExportMember("typeName"));
                 typeNameMethod.AddParameter(new ParameterSymbol("obj", typeNameMethod, objectType, ParameterMode.In));
                 classSymbol.AddMember(typeNameMethod);
 
@@ -668,7 +668,7 @@ namespace DSharp.Compiler.Importer
 
                 MethodSymbol compareDatesMethod = new MethodSymbol("CompareDates", classSymbol, boolType,
                     MemberVisibility.Public | MemberVisibility.Static);
-                compareDatesMethod.SetTransformName(DSharpStringResources.ScriptExportMember("compareDates"));
+                compareDatesMethod.SetTransformedName(DSharpStringResources.ScriptExportMember("compareDates"));
                 compareDatesMethod.AddParameter(new ParameterSymbol("d1", compareDatesMethod, dateType,
                     ParameterMode.In));
                 compareDatesMethod.AddParameter(new ParameterSymbol("d2", compareDatesMethod, dateType,
@@ -707,13 +707,13 @@ namespace DSharp.Compiler.Importer
                 // Define Dictionary.Keys
                 MethodSymbol getKeysMethod = new MethodSymbol("GetKeys", classSymbol,
                     symbols.CreateArrayTypeSymbol(stringType), MemberVisibility.Public | MemberVisibility.Static);
-                getKeysMethod.SetTransformName(DSharpStringResources.ScriptExportMember("keys"));
+                getKeysMethod.SetTransformedName(DSharpStringResources.ScriptExportMember("keys"));
                 classSymbol.AddMember(getKeysMethod);
 
                 // Define Dictionary.GetCount
                 MethodSymbol countMethod = new MethodSymbol("GetKeyCount", classSymbol, intType,
                     MemberVisibility.Public | MemberVisibility.Static);
-                countMethod.SetTransformName(DSharpStringResources.ScriptExportMember("keyCount"));
+                countMethod.SetTransformedName(DSharpStringResources.ScriptExportMember("keyCount"));
                 classSymbol.AddMember(countMethod);
             }
         }

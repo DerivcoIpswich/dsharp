@@ -843,7 +843,7 @@ namespace DSharp.Compiler.Compiler
 
                 if (nodeTransformName != null)
                 {
-                    method.SetTransformName(nodeTransformName);
+                    method.SetTransformedName(nodeTransformName);
                 }
             }
 

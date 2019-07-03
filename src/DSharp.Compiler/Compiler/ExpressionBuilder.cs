@@ -826,10 +826,12 @@ namespace DSharp.Compiler.Compiler
                 }
                 else if (memberSymbol.IsTransformed)
                 {
+                    // if the property getter is transformed, we wanna replace it with a proper static method call
+
                     TypeSymbol nullTypeSymbol = new NullTypeSymbol();
 
                     MethodSymbol methodSymbol = new MethodSymbol(memberSymbol.Name, nullTypeSymbol, memberSymbol.AssociatedType);
-                    methodSymbol.SetTransformName(memberSymbol.GeneratedName);
+                    methodSymbol.SetTransformedName(memberSymbol.GeneratedName);
                     methodSymbol.SetVisibility(MemberVisibility.Public | MemberVisibility.Static);
 
                     MethodExpression methodExpression =
