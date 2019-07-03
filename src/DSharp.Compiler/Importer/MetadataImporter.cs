@@ -593,10 +593,6 @@ namespace DSharp.Compiler.Importer
 
                         if (string.IsNullOrEmpty(transformedName) == false)
                         {
-                            Console.WriteLine("1: " + transformedName);
-
-                            memberSymbol = new FieldSymbol(propertyName, typeSymbol, propertyType);
-                            ImportMemberDetails(memberSymbol, property.GetMethod, property);
                             memberSymbol.SetTransformedName(transformedName);
                         }
                     }
@@ -617,8 +613,6 @@ namespace DSharp.Compiler.Importer
                     }
 
                     propertySymbol.SetImplementationState(implFlags);
-
-                    typeSymbol.AddMember(propertySymbol);
                 }
 
                 if (memberSymbol != null)
