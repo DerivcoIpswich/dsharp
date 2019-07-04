@@ -6,7 +6,7 @@
     /// only applies to static methods.
     /// </summary>
     // REVIEW: Eventually do we want to support this on properties/field and instance methods as well?
-    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Property | AttributeTargets.Constructor, Inherited = true, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Property, Inherited = true, AllowMultiple = false)]
     [ScriptIgnore]
     public sealed class ScriptAliasAttribute : Attribute
     {
