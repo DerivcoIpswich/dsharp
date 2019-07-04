@@ -843,7 +843,7 @@ namespace DSharp.Compiler.Compiler
 
                 if (nodeTransformName != null)
                 {
-                    method.SetTransformedName(nodeTransformName);
+                    method.SetTransformName(nodeTransformName);
                 }
             }
 
@@ -947,7 +947,7 @@ namespace DSharp.Compiler.Compiler
 
                 if (nodeTransformName != null)
                 {
-                    symbol.SetTransformedName(nodeTransformName);
+                    symbol.SetTransformName(nodeTransformName);
                 }
 
                 return symbol;

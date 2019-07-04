@@ -489,7 +489,7 @@ namespace DSharp.Compiler.Importer
 
                 if (string.IsNullOrEmpty(transformedName) == false)
                 {
-                    methodSymbol.SetTransformedName(transformedName);
+                    methodSymbol.SetTransformName(transformedName);
                 }
 
                 string selector = MetadataHelpers.GetScriptMethodSelector(method);
@@ -545,7 +545,7 @@ namespace DSharp.Compiler.Importer
                     continue;
                 }
 
-                MemberSymbol memberSymbol = null;
+                PropertySymbol propertySymbol = null;
 
                 if (property.Parameters.Count != 0)
                 {
@@ -557,7 +557,7 @@ namespace DSharp.Compiler.Importer
                         indexerSymbol.SetScriptIndexer();
                     }
 
-                    memberSymbol = indexerSymbol;
+                    propertySymbol = indexerSymbol;
                     // propertySymbol.SetNameCasing(preserveCase);
                 }
                 else
@@ -576,27 +576,27 @@ namespace DSharp.Compiler.Importer
 
                         if (string.IsNullOrEmpty(transformedName) == false)
                         {
-                            fieldSymbol.SetTransformedName(transformedName);
+                            fieldSymbol.SetTransformName(transformedName);
                         }
 
                         typeSymbol.AddMember(fieldSymbol);
                     }
                     else
                     {
-                        memberSymbol = new PropertySymbol(propertyName, typeSymbol, propertyType);
-                        ImportMemberDetails(memberSymbol, property.GetMethod, property);
-                        memberSymbol.SetNameCasing(true);
+                        propertySymbol = new PropertySymbol(propertyName, typeSymbol, propertyType);
+                        ImportMemberDetails(propertySymbol, property.GetMethod, property);
+                        propertySymbol.SetNameCasing(true);
 
                         string transformedName = MetadataHelpers.GetTransformedName(property.GetMethod);
 
                         if (string.IsNullOrEmpty(transformedName) == false)
                         {
-                            memberSymbol.SetTransformedName(transformedName);
+                            propertySymbol.SetTransformedName(transformedName);
                         }
                     }
                 }
 
-                if (memberSymbol is PropertySymbol propertySymbol)
+                if (propertySymbol != null)
                 {
                     SymbolImplementationFlags implFlags = SymbolImplementationFlags.Regular;
 
@@ -611,11 +611,8 @@ namespace DSharp.Compiler.Importer
                     }
 
                     propertySymbol.SetImplementationState(implFlags);
-                }
 
-                if (memberSymbol != null)
-                {
-                    typeSymbol.AddMember(memberSymbol);
+                    typeSymbol.AddMember(propertySymbol);
                 }
             }
         }
@@ -652,7 +649,7 @@ namespace DSharp.Compiler.Importer
 
                 MethodSymbol enumerateMethod = new MethodSymbol("Enumerate", classSymbol, objectType,
                     MemberVisibility.Public | MemberVisibility.Static);
-                enumerateMethod.SetTransformedName(DSharpStringResources.ScriptExportMember("enumerate"));
+                enumerateMethod.SetTransformName(DSharpStringResources.ScriptExportMember("enumerate"));
                 enumerateMethod.AddParameter(new ParameterSymbol("obj", enumerateMethod, objectType, ParameterMode.In));
                 classSymbol.AddMember(enumerateMethod);
 
@@ -660,7 +657,7 @@ namespace DSharp.Compiler.Importer
 
                 MethodSymbol typeNameMethod = new MethodSymbol("GetTypeName", classSymbol, stringType,
                     MemberVisibility.Public | MemberVisibility.Static);
-                typeNameMethod.SetTransformedName(DSharpStringResources.ScriptExportMember("typeName"));
+                typeNameMethod.SetTransformName(DSharpStringResources.ScriptExportMember("typeName"));
                 typeNameMethod.AddParameter(new ParameterSymbol("obj", typeNameMethod, objectType, ParameterMode.In));
                 classSymbol.AddMember(typeNameMethod);
 
@@ -668,7 +665,7 @@ namespace DSharp.Compiler.Importer
 
                 MethodSymbol compareDatesMethod = new MethodSymbol("CompareDates", classSymbol, boolType,
                     MemberVisibility.Public | MemberVisibility.Static);
-                compareDatesMethod.SetTransformedName(DSharpStringResources.ScriptExportMember("compareDates"));
+                compareDatesMethod.SetTransformName(DSharpStringResources.ScriptExportMember("compareDates"));
                 compareDatesMethod.AddParameter(new ParameterSymbol("d1", compareDatesMethod, dateType,
                     ParameterMode.In));
                 compareDatesMethod.AddParameter(new ParameterSymbol("d2", compareDatesMethod, dateType,
@@ -707,13 +704,13 @@ namespace DSharp.Compiler.Importer
                 // Define Dictionary.Keys
                 MethodSymbol getKeysMethod = new MethodSymbol("GetKeys", classSymbol,
                     symbols.CreateArrayTypeSymbol(stringType), MemberVisibility.Public | MemberVisibility.Static);
-                getKeysMethod.SetTransformedName(DSharpStringResources.ScriptExportMember("keys"));
+                getKeysMethod.SetTransformName(DSharpStringResources.ScriptExportMember("keys"));
                 classSymbol.AddMember(getKeysMethod);
 
                 // Define Dictionary.GetCount
                 MethodSymbol countMethod = new MethodSymbol("GetKeyCount", classSymbol, intType,
                     MemberVisibility.Public | MemberVisibility.Static);
-                countMethod.SetTransformedName(DSharpStringResources.ScriptExportMember("keyCount"));
+                countMethod.SetTransformName(DSharpStringResources.ScriptExportMember("keyCount"));
                 classSymbol.AddMember(countMethod);
             }
         }

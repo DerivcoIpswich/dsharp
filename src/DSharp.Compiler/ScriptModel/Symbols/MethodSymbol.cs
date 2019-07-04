@@ -146,13 +146,13 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             return false;
         }
 
-        public override void SetTransformedName(string transformName)
+        public void SetTransformName(string transformName)
         {
-            Debug.Assert(this.TransformName == null);
-            Debug.Assert(transformName != null);
+            Debug.Assert(TransformName == null);
+            Debug.Assert(string.IsNullOrEmpty(transformName) == false);
 
-            this.TransformName = transformName;
-            base.SetTransformedName(transformName);
+            TransformName = transformName;
+            SetTransformedName(transformName);
         }
 
         public void SetConditions(ICollection<string> conditions)
@@ -166,7 +166,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         public void SetSelector(string selector)
         {
             Debug.Assert(this.selector == null);
-            Debug.Assert(selector != null);
+            Debug.Assert(string.IsNullOrEmpty(selector) == false);
 
             this.selector = selector;
         }

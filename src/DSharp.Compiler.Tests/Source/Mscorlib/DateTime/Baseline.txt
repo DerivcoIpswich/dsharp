@@ -1,6 +1,7 @@
 ﻿"use strict";
 
-var test = (function($global){
+define('test', ['ss'], function(ss) {
+  var $global = this;
   // DateTimeTest.TestClass
 
   function TestClass() {
@@ -41,4 +42,4 @@ var test = (function($global){
 
 
   return $exports;
-})(self);
+});

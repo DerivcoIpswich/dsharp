@@ -829,7 +829,7 @@ namespace DSharp.Compiler.Compiler
                     // if the property getter is transformed, we wanna replace it with a proper static method call
 
                     MethodSymbol methodSymbol = new MethodSymbol(memberSymbol.Name, null, memberSymbol.AssociatedType);
-                    methodSymbol.SetTransformedName(memberSymbol.GeneratedName);
+                    methodSymbol.SetTransformName(memberSymbol.GeneratedName);
                     methodSymbol.SetVisibility(MemberVisibility.Public | MemberVisibility.Static);
 
                     MethodExpression methodExpression =
