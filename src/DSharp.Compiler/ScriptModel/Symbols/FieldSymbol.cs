@@ -84,10 +84,9 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public override void SetTransformedName(string transformName)
         {
-            Debug.Assert((Visibility & MemberVisibility.Static) != 0);
-
             base.SetTransformedName(transformName);
-            IsGlobalField = true;
+
+            IsGlobalField = (Visibility & MemberVisibility.Static) != 0;
         }
 
         public void SetConstant()

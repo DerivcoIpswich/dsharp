@@ -148,10 +148,10 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public override void SetTransformedName(string transformName)
         {
-            Debug.Assert(TransformName == null);
-            Debug.Assert(string.IsNullOrEmpty(transformName) == false);
+            Debug.Assert(this.TransformName == null);
+            Debug.Assert(transformName != null);
 
-            TransformName = transformName;
+            this.TransformName = transformName;
             base.SetTransformedName(transformName);
         }
 
@@ -166,7 +166,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         public void SetSelector(string selector)
         {
             Debug.Assert(this.selector == null);
-            Debug.Assert(string.IsNullOrEmpty(selector) == false);
+            Debug.Assert(selector != null);
 
             this.selector = selector;
         }
