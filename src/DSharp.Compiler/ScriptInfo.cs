@@ -6,10 +6,11 @@
         private static readonly string DefaultScriptTemplate = @"
 ""use strict"";
 
-var {name} = (function($global){
+define('{name}', [{requires}], function({dependencies}) {
+  var $global = this;
   {script}
   return $exports;
-})(self);
+});
 ";
 
         public ScriptInfo()
