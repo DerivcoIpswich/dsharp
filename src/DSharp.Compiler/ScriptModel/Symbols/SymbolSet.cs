@@ -183,7 +183,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
                 if (templateField.IsTransformed)
                 {
-                    instanceField.SetTransformedName(templateField.GeneratedName);
+                    instanceField.SetTransformName(templateField.GeneratedName);
                 }
 
                 instanceField.SetNameCasing(templateField.IsCasePreserved);
