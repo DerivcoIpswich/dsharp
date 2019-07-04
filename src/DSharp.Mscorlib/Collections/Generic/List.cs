@@ -41,7 +41,7 @@ namespace System.Collections.Generic
 
         public extern List<T> Concat(params T[] objects);
 
-        public extern bool Contains(object item);
+        public extern bool Contains(T item);
 
         public extern bool Every(ListFilterCallback<T> filterCallback);
 
