@@ -1,6 +1,7 @@
 "use strict";
 
-var test = (function($global){
+define('test', ['ss'], function(ss) {
+  var $global = this;
   // StatementTests.Set
 
   function Set() {
@@ -73,4 +74,4 @@ var test = (function($global){
 
 
   return $exports;
-})(self);
+});
