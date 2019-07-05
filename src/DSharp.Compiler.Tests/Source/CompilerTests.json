@@ -1,5 +1,15 @@
 ﻿[
   {
+    "Category": "Mscorlib",
+    "Tests": [
+      {
+        "Name": "DateTime",
+        "SourceFiles": [ "Code.cs" ],
+        "ComparisonFile": "Baseline.txt"
+      }
+    ]
+  },
+  {
     "Category": "Basic",
     "Tests": [
       {

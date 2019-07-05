@@ -586,6 +586,13 @@ namespace DSharp.Compiler.Importer
                         propertySymbol = new PropertySymbol(propertyName, typeSymbol, propertyType);
                         ImportMemberDetails(propertySymbol, property.GetMethod, property);
                         propertySymbol.SetNameCasing(true);
+
+                        string transformedName = MetadataHelpers.GetTransformedName(property.GetMethod);
+
+                        if (string.IsNullOrEmpty(transformedName) == false)
+                        {
+                            propertySymbol.SetTransformedName(transformedName);
+                        }
                     }
                 }
 

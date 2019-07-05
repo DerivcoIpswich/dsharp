@@ -68,6 +68,7 @@
     <Compile Remove="Source\Member\Overloads\Code.cs" />
     <Compile Remove="Source\Member\Properties\Code.cs" />
     <Compile Remove="Source\Member\StaticConstructors\Code.cs" />
+    <Compile Remove="Source\Mscorlib\DateTime\Code.cs" />
     <Compile Remove="Source\Statement\Exceptions\Code.cs" />
     <Compile Remove="Source\Statement\Expression\Code.cs" />
     <Compile Remove="Source\Statement\Foreach\Code.cs" />
@@ -176,6 +177,7 @@
     <None Remove="Source\Member\Overloads\Baseline.txt" />
     <None Remove="Source\Member\Properties\Baseline.txt" />
     <None Remove="Source\Member\StaticConstructors\Baseline.txt" />
+    <None Remove="Source\Mscorlib\DateTime\Baseline.txt" />
     <None Remove="Source\Statement\Exceptions\Baseline.txt" />
     <None Remove="Source\Statement\Expression\Baseline.txt" />
     <None Remove="Source\Statement\Foreach\Baseline.txt" />
@@ -555,6 +557,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Source\Member\StaticConstructors\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Source\Mscorlib\DateTime\Baseline.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Source\Mscorlib\DateTime\Code.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Source\Statement\Exceptions\Baseline.txt">
