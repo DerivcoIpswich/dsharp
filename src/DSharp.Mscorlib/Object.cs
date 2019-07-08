@@ -31,6 +31,12 @@ namespace System
         /// Converts an object to its culture-sensitive string representation.
         /// </summary>
         /// <returns>The culture-sensitive string representation of the object.</returns>
+        // This method doesn't belong to Object
         public extern virtual string ToLocaleString();
+
+        // In CLR object has 
+        // bool Equals(object o), 
+        // static bool Equals(object a, object b) and 
+        // static bool ReferenceEquals(object a, object b)
     }
 }

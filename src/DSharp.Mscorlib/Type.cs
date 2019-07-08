@@ -9,16 +9,18 @@ namespace System
     /// </summary>
     [ScriptIgnoreNamespace]
     [ScriptImport]
-    public sealed class Type
+    public sealed class Type // In CLR it inherits from MemberInfo, IReflect. I guess this is not relevant for our purpose
     {
         [ScriptName("$base")]
         [ScriptField]
         public extern Type BaseType { get; }
 
+        // It should be called FullName
         public extern string Name { get; }
 
         //TODO: Look at moving out of this class
         [ScriptField]
+        // Not part of Type
         public extern Dictionary Prototype { get; }
 
         [DSharpScriptMemberName("type")]
@@ -37,6 +39,7 @@ namespace System
         public extern bool IsInstanceOfType(object instance);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
+        // Not part of Type
         public extern static Type GetTypeFromHandle(RuntimeTypeHandle typeHandle);
     }
 }
