@@ -1,5 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
-
+// System.Collections.Dictionary doesn't exist in CLR. It does exist:
+// System.Collections.IDictionary
+// System.Collections.DictionaryBase
 namespace System.Collections
 {
     [ScriptIgnoreNamespace]
