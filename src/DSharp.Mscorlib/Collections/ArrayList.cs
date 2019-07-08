@@ -6,6 +6,7 @@ namespace System.Collections
     [ScriptIgnoreNamespace]
     [ScriptImport]
     [ScriptName("Array")]
+    // CLR reference https://source.dot.net/#System.Private.CoreLib/shared/System/Collections/ArrayList.cs,3e3f6715773d6643
     public sealed class ArrayList : ICollection // In CLR it inherits from IList, ICloneable
     { 
         public ArrayList() { }

@@ -8,6 +8,7 @@ namespace System
     [ScriptIgnoreNamespace]
     [ScriptImport]
     [ScriptName("Array")]
+    // CLR reference: https://source.dot.net/#System.Private.CoreLib/shared/System/Array.cs,156e066ecc4ccedf
     public sealed class Array : ICollection // Array implents  ICloneable, IList, IStructuralComparable, IStructuralEquatable on CLR
     {
         [ScriptField]

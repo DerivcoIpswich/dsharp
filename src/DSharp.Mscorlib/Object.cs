@@ -5,6 +5,7 @@ namespace System
     /// <summary>
     /// Equivalent to the Object type in Javascript.
     /// </summary>
+    // CLR reference https://source.dot.net/#System.Private.CoreLib/shared/System/Object.cs,d9262ceecc1719ab
     [ScriptIgnoreNamespace]
     [ScriptImport]
     public class Object

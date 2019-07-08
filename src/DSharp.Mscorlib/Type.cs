@@ -7,6 +7,7 @@ namespace System
     /// <summary>
     /// The Type data type which is mapped to the Function type in Javascript.
     /// </summary>
+    // CLR reference https://source.dot.net/#System.Private.CoreLib/shared/System/Type.cs,3d00eeab9feb80f3
     [ScriptIgnoreNamespace]
     [ScriptImport]
     public sealed class Type // In CLR it inherits from MemberInfo, IReflect. I guess this is not relevant for our purpose

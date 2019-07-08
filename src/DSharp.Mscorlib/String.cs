@@ -7,6 +7,7 @@ namespace System
     /// <summary>
     /// Equivalent to the String type in Javascript.
     /// </summary>
+    // CLR reference https://source.dot.net/#System.Private.CoreLib/shared/System/String.cs,8281103e6f23cb5c
     [ScriptIgnoreNamespace]
     [ScriptImport]
     // CLR reference: https://source.dot.net/#q=String
