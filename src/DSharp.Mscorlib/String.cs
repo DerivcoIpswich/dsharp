@@ -9,7 +9,13 @@ namespace System
     /// </summary>
     [ScriptIgnoreNamespace]
     [ScriptImport]
-    public sealed class String
+    // CLR reference: https://source.dot.net/#q=String
+    public sealed class String 
+        /* String implements these interfaces: IComparable, IEnumerable, IConvertible, IEnumerable<char>, IComparable<string?>
+#nullable disable
+        IEquatable<string>,
+#nullable restore
+        ICloneable */
     {
         /// <summary>
         /// An empty zero-length string.
@@ -35,14 +41,14 @@ namespace System
         /// </summary>
         /// <param name="index">The specified 0-based position.</param>
         /// <returns>The character within the string.</returns>
-        public extern char CharAt(int index);
+        public extern char CharAt(int index);  //This is not part of the CLR
 
         /// <summary>
         /// Retrieves the character code of the character at the specified position.
         /// </summary>
         /// <param name="index">The specified 0-based position.</param>
         /// <returns>The character code of the character within the string.</returns>
-        public extern int CharCodeAt(int index);
+        public extern int CharCodeAt(int index);  //This is not part of the CLR
 
         [DSharpScriptMemberName("compareStrings")]
         public extern static int Compare(string s1, string s2);
@@ -88,6 +94,7 @@ namespace System
         /// </summary>
         /// <returns>The unencoded string.</returns>
         [ScriptAlias("decodeURI")]
+        // this is not part of CLR. Should this go into an abstraction?
         public extern string DecodeUri();
 
         /// <summary>
@@ -95,6 +102,7 @@ namespace System
         /// </summary>
         /// <returns>The unencoded string.</returns>
         [ScriptAlias("decodeURIComponent")]
+        // this is not part of CLR. Should this go into an abstraction?
         public extern string DecodeUriComponent();
 
         /// <summary>
@@ -102,6 +110,7 @@ namespace System
         /// </summary>
         /// <returns>The encoded string.</returns>
         [ScriptAlias("encodeURI")]
+        // this is not part of CLR. Should this go into an abstraction?
         public extern string EncodeUri();
 
         /// <summary>
@@ -109,6 +118,7 @@ namespace System
         /// </summary>
         /// <returns>The encoded string.</returns>
         [ScriptAlias("encodeURIComponent")]
+        // this is not part of CLR. Should this go into an abstraction?
         public extern string EncodeUriComponent();
 
         /// <summary>
@@ -132,25 +142,32 @@ namespace System
         /// </summary>
         /// <returns>The escaped string.</returns>
         [ScriptAlias("escape")]
+        // this is not part of CLR. Should this go into an abstraction?
         public extern string Escape();
 
         [DSharpScriptMemberName("format")]
         public extern static string Format(string format, params object[] values);
 
         [DSharpScriptMemberName("format")]
+        // The CLR signature most similar to this is:  Format(IFormatProvider? provider, string format, params object?[] args)
         public extern static string Format(CultureInfo culture, string format, params object[] values);
 
         [DSharpScriptMemberName("string")]
+        // this is not part of CLR. Should this go into an abstraction?
         public extern static string FromChar(char ch, int count);
 
+        // this is not part of CLR. Should this go into an abstraction?
         public extern static string FromCharCode(int charCode);
 
+        // this is not part of CLR. Should this go into an abstraction?
         public extern static string FromCharCode(params int[] charCodes);
 
+        // This doesn't exist in CLR
         public extern int IndexOf(char ch);
 
         public extern int IndexOf(string subString);
 
+        // This doesn't exist in CLR
         public extern int IndexOf(char ch, int startIndex);
 
         public extern int IndexOf(string subString, int startIndex);
@@ -158,20 +175,25 @@ namespace System
         [DSharpScriptMemberName("insertString")]
         public extern string Insert(int index, string value);
 
+        // this is not part of CLR. Should this go into an abstraction?
         [DSharpScriptMemberName("emptyString")]
         public extern static bool IsNullOrEmpty(string s);
 
         [DSharpScriptMemberName("whitespace")]
+        // this is not part of CLR. Should this go into an abstraction?
         public extern static bool IsNullOrWhiteSpace(string s);
 
         public extern int LastIndexOf(Char ch);
-
+        
+        // This doesn't exist in CLR
         public extern int LastIndexOf(string subString);
 
         public extern int LastIndexOf(char ch, int startIndex);
-
+        
+        // This doesn't exist in CLR
         public extern int LastIndexOf(string subString, int startIndex);
 
+        // this is not part of CLR. Should this go into an abstraction?
         public extern string[] Match(RegExp regex);
 
         [DSharpScriptMemberName("padLeft")]
@@ -196,26 +218,36 @@ namespace System
         public extern string Replace(string oldText, string replaceText);
 
         [ScriptName("replace")]
+        // This doesn't exist in CLR
         public extern string ReplaceFirst(string oldText, string replaceText);
 
         [ScriptName("replace")]
+        // this is not part of CLR. Should this go into an abstraction?
         public extern string ReplaceRegex(RegExp regex, string replaceText);
 
         [ScriptName("replace")]
+        // this is not part of CLR. Should this go into an abstraction?
         public extern string ReplaceRegex(RegExp regex, StringReplaceCallback callback);
-
+        
+        // this is not part of CLR. Should this go into an abstraction?
         public extern int Search(RegExp regex);
 
+        // I guess this methoud is totally equivalent to this one on the CLR: string[] Split(char separator, StringSplitOptions options = StringSplitOptions.None)
         public extern string[] Split(char ch);
 
+        // I guess this methoud is totally equivalent to this one on the CLR: string[] Split(string? separator, StringSplitOptions options = StringSplitOptions.None)
         public extern string[] Split(string separator);
 
+        // I guess this methoud is totally equivalent to this one on the CLR: string[] Split(char separator, int count, StringSplitOptions options = StringSplitOptions.None)
         public extern string[] Split(char ch, int limit);
 
+        // I guess this methoud is totally equivalent to this one on the CLR: string[] Split(string? separator, int count, StringSplitOptions options = StringSplitOptions.None)
         public extern string[] Split(string separator, int limit);
 
+        // this is not part of CLR. Should this go into an abstraction?
         public extern string[] Split(RegExp regex);
 
+        // this is not part of CLR. Should this go into an abstraction?
         public extern string[] Split(RegExp regex, int limit);
 
         [DSharpScriptMemberName("startsWith")]
@@ -224,18 +256,23 @@ namespace System
         [DSharpScriptMemberName("startsWith")]
         public extern bool StartsWith(string prefix);
 
+        // this is not part of CLR. Should this go into an abstraction?
         public extern string Substr(int startIndex);
 
+        // this is not part of CLR. Should this go into an abstraction?
         public extern string Substr(int startIndex, int length);
 
         public extern string Substring(int startIndex);
 
         public extern string Substring(int startIndex, int endIndex);
 
+        // This method is called ToLowerInvariant() on CLR
         public extern string ToLocaleLowerCase();
 
+        // This method is called ToUpperInvariant() on CLR
         public extern string ToLocaleUpperCase();
 
+        // The remaining ToLower/ToUpper methods are not in CLR. Should these go into an abstraction?
         [Obsolete("ToLowerCase() should not be used, switch to ToLower()")]
         public extern string ToLowerCase();
 
@@ -252,17 +289,20 @@ namespace System
         public extern string Trim();
 
         [DSharpScriptMemberName("trim")]
+        // the signature for this is Trim(params char[]? trimChars) in CLR
         public extern string Trim(char[] trimCharacters);
 
         [DSharpScriptMemberName("trimEnd")]
         public extern string TrimEnd();
-
+        
+        // the signature for this is TrimEnd(params char[]? trimChars) in CLR
         [DSharpScriptMemberName("trimEnd")]
         public extern string TrimEnd(char[] trimCharacters);
 
         [DSharpScriptMemberName("trimStart")]
         public extern string TrimStart();
 
+        // the signature for this is TrimStart(params char[]? trimChars) in CLR
         [DSharpScriptMemberName("trimStart")]
         public extern string TrimStart(char[] trimCharacters);
 
@@ -270,13 +310,16 @@ namespace System
         /// Decodes a string by replacing escaped parts with their equivalent textual representation.
         /// </summary>
         /// <returns>The unescaped string.</returns>
+        // This is not in CLR
         [ScriptAlias("unescape")]
         public extern string Unescape();
 
         /// <internalonly />
+        // This is not in CLR
         public extern static bool operator ==(string s1, string s2);
 
         /// <internalonly />
+        // This is not in CLR
         public extern static bool operator !=(string s1, string s2);
     }
 }
