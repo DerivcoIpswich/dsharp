@@ -10,7 +10,7 @@ You can even use DSharp to work against other existing frameworks and APIs such 
 
 ## Compatibility ##
 
-The current solution `DSharp.sln` is only compatible with .NET 4.6.1 and Visual Studio 2017 for Windows.
+The current solution `DSharp.sln` is compatible with .NET 4.0 and Visual Studio 2017 for Windows.
 
 ## Compiler Implementation ##
 
