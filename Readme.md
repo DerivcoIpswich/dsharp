@@ -26,7 +26,7 @@ The current solution `DSharp.sln` is only compatible with .NET 4.6.1 and Visual 
 
       - Validator: Compile-time conditions for the parser
 
-      - Importer: Extracts the `TypeSymbols` from the assemblies and generates `Metadata` for them
+      - Importer: Extracts the `TypeSymbols` from the assemblies (using Mono.Cecil) and generates `Metadata` for them
         > f.e: create all MethodSymbols for a declared `ClassSymbol`
 
       - Builder: Transforms `ParseNodes` into `Metadata`
@@ -102,7 +102,8 @@ In order to debug the shell you need to:
   Being compliant with latest implementations of `mscorlib` is extremely important for cross-compiling. These can be checked in the following links:
 
   - [Source Dot Net](https://source.dot.net): Source reference with nice search and navigation
-  - [GitHub Project](https://github.com/dotnet/coreclr/tree/master/src/System.Private.CoreLib): Latests previews
+  - [GitHub Project](https://github.com/dotnet/coreclr/tree/master/src/System.Private.CoreLib): Latests previews for NET Core
+  - [Net Standard GitHub](https://github.com/dotnet/standard)
 
 ### Credits ###
 
