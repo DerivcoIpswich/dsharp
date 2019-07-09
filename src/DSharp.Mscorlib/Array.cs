@@ -17,28 +17,31 @@ namespace System
 
         [ScriptField]
         [ScriptName("length")]
-        // This is not on CLR
+        [Obsolete("Not compliant with .NET standard", /* error */ true)]
         public extern int Count { get; }
 
         [ScriptField]
         public extern object this[int index] { get; set; }
 
-        // This is not on CLR
+        [Obsolete("Not compliant with .NET standard", /* error */ true)]
         public extern Array Concat(params object[] objects);
 
-        // This is not on CLR
+        [Obsolete("Not compliant with .NET standard", /* error */ true)]
         public extern bool Contains(object item);
 
-        // Every and Filter are not part of CLR. We might want to have them into an abstraction class.
+        [Obsolete("Not compliant with .NET standard", /* error */ true)]
         public extern bool Every(ArrayFilterCallback filterCallback);
 
+        [Obsolete("Not compliant with .NET standard", /* error */ true)]
         public extern bool Every(ArrayItemFilterCallback itemFilterCallback);
 
+        [Obsolete("Not compliant with .NET standard", /* error */ true)]
         public extern Array Filter(ArrayFilterCallback filterCallback);
 
+        [Obsolete("Not compliant with .NET standard", /* error */ true)]
         public extern Array Filter(ArrayItemFilterCallback itemFilterCallback);
 
-        // I guess these two fro each methods are just js forEach.
+        // I guess these two for each methods are just js forEach.
         // ForEach in CLR looks like this -> static void ForEach<T>(T[] array, Action<T> action)
         public extern void ForEach(ArrayCallback callback);
 
@@ -46,9 +49,10 @@ namespace System
 
         public extern IEnumerator GetEnumerator();
 
-        // No GetRange methods in CLR
+        [Obsolete("Not compliant with .NET standard", /* error */ true)]
         public extern Array GetRange(int index);
 
+        [Obsolete("Not compliant with .NET standard", /* error */ true)]
         public extern Array GetRange(int index, int count);
 
         // IndexOf is always static in CLR
@@ -58,9 +62,10 @@ namespace System
         // The most similar in CLR is -> static int IndexOf(Array array, object? value, int startIndex)
         public extern int IndexOf(object item, int startIndex);
 
-        // These Join methods should be implemented as part of Linq. There's no Join methods on Array in CLR
+        [Obsolete("Not compliant with .NET standard", /* error */ true)]
         public extern string Join();
 
+        [Obsolete("Not compliant with .NET standard", /* error */ true)]
         public extern string Join(string delimiter);
 
         // LastIndexOf is always static in CLR
@@ -70,46 +75,56 @@ namespace System
         // The most similar in CLR is -> static int LastIndexOf(Array array, object? value, int startIndex)
         public extern int LastIndexOf(object item, int fromIndex);
 
-        // These Map methods should be implemented as part of Linq. There's no Map methods on Array in CLR
+        [Obsolete("Not compliant with .NET standard", /* error */ true)]
         public extern Array Map(ArrayMapCallback mapCallback);
 
+        [Obsolete("Not compliant with .NET standard", /* error */ true)]
         public extern Array Map(ArrayItemMapCallback mapItemCallback);
 
         [DSharpScriptMemberName("array")]
-        // Parse method is not part of CLR. We might want to have it into an abstraction class.
+        [Obsolete("Not compliant with .NET standard", /* error */ true)]
         public extern static Array Parse(string s);
 
-        // These Reduce and ReduceRight methods should be implemented as part of Linq. There's no Reduce and ReduceRight methods on Array in CLR
+        [Obsolete("Not compliant with .NET standard", /* error */ true)]
         public extern object Reduce(ArrayReduceCallback callback);
 
+        [Obsolete("Not compliant with .NET standard", /* error */ true)]
         public extern object Reduce(ArrayReduceCallback callback, object initialValue);
 
+        [Obsolete("Not compliant with .NET standard", /* error */ true)]
         public extern object Reduce(ArrayItemReduceCallback callback);
 
+        [Obsolete("Not compliant with .NET standard", /* error */ true)]
         public extern object Reduce(ArrayItemReduceCallback callback, object initialValue);
 
+        [Obsolete("Not compliant with .NET standard", /* error */ true)]
         public extern object ReduceRight(ArrayReduceCallback callback);
 
+        [Obsolete("Not compliant with .NET standard", /* error */ true)]
         public extern object ReduceRight(ArrayReduceCallback callback, object initialValue);
 
+        [Obsolete("Not compliant with .NET standard", /* error */ true)]
         public extern object ReduceRight(ArrayItemReduceCallback callback);
 
+        [Obsolete("Not compliant with .NET standard", /* error */ true)]
         public extern object ReduceRight(ArrayItemReduceCallback callback, object initialValue);
 
         // This method is static in the CLR -> void Reverse(Array array)
         public extern void Reverse();
 
-        // Shift method is not part of CLR. We might want to have it into an abstraction class.
+        [Obsolete("Not compliant with .NET standard", /* error */ true)]
         public extern object Shift();
 
-        // Slice methods are not part of CLR. We might want to have them into an abstraction class.
+        [Obsolete("Not compliant with .NET standard", /* error */ true)]
         public extern Array Slice(int start);
 
+        [Obsolete("Not compliant with .NET standard", /* error */ true)]
         public extern Array Slice(int start, int end);
 
-        // This some methods are not part of CLR. As far as I know, they're not even in Linq as Linq implements something different (Any ?)
+        [Obsolete("Not compliant with .NET standard", /* error */ true)]
         public extern bool Some(ArrayFilterCallback filterCallback);
 
+        [Obsolete("Not compliant with .NET standard", /* error */ true)]
         public extern bool Some(ArrayItemFilterCallback itemFilterCallback);
 
         // All of the Sort methods in CLR are static.
@@ -119,19 +134,23 @@ namespace System
         // This should be -> static void Sort(Array array, IComparer? comparer)
         public extern void Sort(CompareCallback compareCallback);
 
-        // Splice methods are not part of CLR. We might want to have them into an abstraction class.
+        [Obsolete("Not compliant with .NET standard", /* error */ true)]
         public extern void Splice(int start, int deleteCount);
 
+        [Obsolete("Not compliant with .NET standard", /* error */ true)]
         public extern void Splice(int start, int deleteCount, params object[] itemsToInsert);
 
-        // None of the following methods exist in CLR Array
         [DSharpScriptMemberName("array")]
+        [Obsolete("Not compliant with .NET standard", /* error */ true)]
         public extern static Array ToArray(object o);
 
+        [Obsolete("Not compliant with .NET standard", /* error */ true)]
         public extern void Unshift(params object[] items);
 
+        [Obsolete("Not compliant with .NET standard", /* error */ true)]
         public extern static explicit operator ArrayList(Array array);
 
+        [Obsolete("Not compliant with .NET standard", /* error */ true)]
         public extern static explicit operator List<object>(Array array);
     }
 }
