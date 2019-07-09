@@ -8,11 +8,9 @@ Specifically, DSharp lets you leverage the experience of C# (intellisense, build
 
 You can even use DSharp to work against other existing frameworks and APIs such as jQuery, jQuery plugins and Knockout, and can be extended to work against other existing script.
 
-DSharp requires .NET 4.0 and Visual Studio 2012.
-
 ## Compatibility ##
 
-The current solution `DSharp.sln` is only compatible with Visual Studio 2017 for Windows.
+The current solution `DSharp.sln` is only compatible with .NET 4.6.1 and Visual Studio 2017 for Windows.
 
 ## Compiler Implementation ##
 
