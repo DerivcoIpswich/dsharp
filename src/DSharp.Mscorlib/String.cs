@@ -314,22 +314,22 @@ namespace System
         public extern string Trim();
 
         [DSharpScriptMemberName("trim")]
-        // the signature for this is Trim(params char[]? trimChars) in CLR
-        public extern string Trim(char[] trimCharacters);
+        // the signature for this is has been changed. Test the implementation pls
+        public extern string Trim(params char[] trimChars);
 
         [DSharpScriptMemberName("trimEnd")]
         public extern string TrimEnd();
-        
-        // the signature for this is TrimEnd(params char[]? trimChars) in CLR
+
+        // the signature for this is has been changed. Test the implementation pls
         [DSharpScriptMemberName("trimEnd")]
-        public extern string TrimEnd(char[] trimCharacters);
+        public extern string TrimEnd(params char[] trimChars);
 
         [DSharpScriptMemberName("trimStart")]
         public extern string TrimStart();
 
-        // the signature for this is TrimStart(params char[]? trimChars) in CLR
+        // the signature for this is has been changed. Test the implementation pls
         [DSharpScriptMemberName("trimStart")]
-        public extern string TrimStart(char[] trimCharacters);
+        public extern string TrimStart(params char[] trimChars);
 
         /// <summary>
         /// Decodes a string by replacing escaped parts with their equivalent textual representation.
