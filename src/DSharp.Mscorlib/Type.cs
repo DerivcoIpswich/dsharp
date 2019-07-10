@@ -16,12 +16,13 @@ namespace System
         [ScriptField]
         public extern Type BaseType { get; }
 
-        // It should be called FullName
-        public extern string Name { get; }
+        // This has been changed from Name to FullName, we need to adjust the usage
+        public extern string FullName { get; }
 
         //TODO: Look at moving out of this class
         [ScriptField]
         // Not part of Type
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern Dictionary Prototype { get; }
 
         [DSharpScriptMemberName("type")]
@@ -40,7 +41,6 @@ namespace System
         public extern bool IsInstanceOfType(object instance);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        // Not part of Type
         public extern static Type GetTypeFromHandle(RuntimeTypeHandle typeHandle);
     }
 }

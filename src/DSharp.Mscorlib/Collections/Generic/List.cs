@@ -41,20 +41,25 @@ namespace System.Collections.Generic
         public extern void Clear();
 
         //This method does not exist in CLR List
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern List<T> Concat(params T[] objects);
 
         public extern bool Contains(T item);
-        
+
         //This method does not exist in CLR List
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern bool Every(ListFilterCallback<T> filterCallback);
-        
+
         //This method does not exist in CLR List
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern bool Every(ListItemFilterCallback<T> itemFilterCallback);
 
         //This method does not exist in CLR List
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern List<T> Filter(ListFilterCallback<T> filterCallback);
 
         //This method does not exist in CLR List
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern List<T> Filter(ListItemFilterCallback<T> itemFilterCallback);
 
         //In CLR we just have a single ForEach method that takes Action<T> as parameter
@@ -76,6 +81,7 @@ namespace System.Collections.Generic
         extern IEnumerator IEnumerable.GetEnumerator();
 
         //This method doesn't exist in the CLR
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern List<T> GetRange(int index);
 
         public extern List<T> GetRange(int index, int count);
@@ -92,9 +98,11 @@ namespace System.Collections.Generic
         public extern void InsertRange(int index, params T[] items);
 
         //This doesn't exist in CLR
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern string Join();
 
         //This doesn't exist in CLR
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern string Join(string delimiter);
 
         // arg should be -> T item
@@ -106,28 +114,39 @@ namespace System.Collections.Generic
         // In CLR we have an additional LastIndexOf method -> public int LastIndexOf(T item, int index, int count)
 
         // There's no Map method in CLR
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern List<TTarget> Map<TTarget>(ListMapCallback<T, TTarget> mapCallback);
 
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern List<TTarget> Map<TTarget>(ListItemMapCallback<T, TTarget> mapItemCallback);
 
         // There's not Parse in CLR
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern static List<T> Parse(string s);
 
         // There's no Reduce methods in CLR
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern TReduced Reduce<TReduced>(ListReduceCallback<TReduced, T> callback);
 
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern TReduced Reduce<TReduced>(ListReduceCallback<TReduced, T> callback, TReduced initialValue);
 
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern TReduced Reduce<TReduced>(ListItemReduceCallback<TReduced, T> callback);
 
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern TReduced Reduce<TReduced>(ListItemReduceCallback<TReduced, T> callback, TReduced initialValue);
 
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern TReduced ReduceRight<TReduced>(ListReduceCallback<TReduced, T> callback);
 
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern TReduced ReduceRight<TReduced>(ListReduceCallback<TReduced, T> callback, TReduced initialValue);
 
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern TReduced ReduceRight<TReduced>(ListItemReduceCallback<TReduced, T> callback);
 
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern TReduced ReduceRight<TReduced>(ListItemReduceCallback<TReduced, T> callback, TReduced initialValue);
 
         [DSharpScriptMemberName("remove")]
@@ -135,37 +154,43 @@ namespace System.Collections.Generic
 
         public extern void RemoveAt(int index);
 
-        // RemoveRange, in CLR, returns void
-        public extern List<T> RemoveRange(int index, int count);
+        // Modified to return void. Check implementation
+        public extern void RemoveRange(int index, int count);
 
         public extern void Reverse();
 
         // There's an additional Reverse method in CLR -> public void Reverse(int index, int count)
 
         // There's no Slice methods in CLR
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern List<T> Slice(int start);
 
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern List<T> Slice(int start, int end);
 
         // There's no Some methods in CLR
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern bool Some(ListFilterCallback<T> filterCallback);
 
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern bool Some(ListItemFilterCallback<T> itemFilterCallback);
 
         public extern void Sort();
 
         // The compare callback should be instead -> IComparer<T>? comparer
         public extern void Sort(CompareCallback<T> compareCallback);
-        
+
         // There are additional Sort methods in CLR
 
         // There's no Splice methods in CLR
-
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern void Splice(int start, int deleteCount);
 
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern void Splice(int start, int deleteCount, params T[] itemsToInsert);
 
         // There's no Unshift methods in CLR
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern void Unshift(params T[] items);
 
         [ScriptSkip]
@@ -182,6 +207,6 @@ namespace System.Collections.Generic
         public extern static explicit operator List<T>(T[] array);
 
         // NOTE: considering the amount of not-CLR methods we have in this class, is it worth to have a different class, 
-        // inheriting from this, to support and isolate all of the not-CLR functionalities ?
+        // inheriting from this, to support and isolate all of the not-CLR functionalities ? ListUtils?
     }
 }

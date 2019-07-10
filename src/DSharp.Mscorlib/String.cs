@@ -7,7 +7,6 @@ namespace System
     /// <summary>
     /// Equivalent to the String type in Javascript.
     /// </summary>
-    // CLR reference https://source.dot.net/#System.Private.CoreLib/shared/System/String.cs,8281103e6f23cb5c
     [ScriptIgnoreNamespace]
     [ScriptImport]
     // CLR reference: https://source.dot.net/#q=String
@@ -42,6 +41,7 @@ namespace System
         /// </summary>
         /// <param name="index">The specified 0-based position.</param>
         /// <returns>The character within the string.</returns>
+        [Obsolete("Not compliant with .NET standard",  error: false)]
         public extern char CharAt(int index);  //This is not part of the CLR
 
         /// <summary>
@@ -49,6 +49,7 @@ namespace System
         /// </summary>
         /// <param name="index">The specified 0-based position.</param>
         /// <returns>The character code of the character within the string.</returns>
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern int CharCodeAt(int index);  //This is not part of the CLR
 
         [DSharpScriptMemberName("compareStrings")]
@@ -96,6 +97,7 @@ namespace System
         /// <returns>The unencoded string.</returns>
         [ScriptAlias("decodeURI")]
         // this is not part of CLR. Should this go into an abstraction?
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern string DecodeUri();
 
         /// <summary>
@@ -103,7 +105,8 @@ namespace System
         /// </summary>
         /// <returns>The unencoded string.</returns>
         [ScriptAlias("decodeURIComponent")]
-        // this is not part of CLR. Should this go into an abstraction?
+        // this is not part of CLR. Should this go into an abstraction? StringUtils?
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern string DecodeUriComponent();
 
         /// <summary>
@@ -112,6 +115,7 @@ namespace System
         /// <returns>The encoded string.</returns>
         [ScriptAlias("encodeURI")]
         // this is not part of CLR. Should this go into an abstraction?
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern string EncodeUri();
 
         /// <summary>
@@ -120,6 +124,7 @@ namespace System
         /// <returns>The encoded string.</returns>
         [ScriptAlias("encodeURIComponent")]
         // this is not part of CLR. Should this go into an abstraction?
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern string EncodeUriComponent();
 
         /// <summary>
@@ -144,6 +149,7 @@ namespace System
         /// <returns>The escaped string.</returns>
         [ScriptAlias("escape")]
         // this is not part of CLR. Should this go into an abstraction?
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern string Escape();
 
         [DSharpScriptMemberName("format")]
@@ -155,20 +161,25 @@ namespace System
 
         [DSharpScriptMemberName("string")]
         // this is not part of CLR. Should this go into an abstraction?
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern static string FromChar(char ch, int count);
 
         // this is not part of CLR. Should this go into an abstraction?
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern static string FromCharCode(int charCode);
 
         // this is not part of CLR. Should this go into an abstraction?
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern static string FromCharCode(params int[] charCodes);
 
         // This doesn't exist in CLR
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern int IndexOf(char ch);
 
         public extern int IndexOf(string subString);
 
         // This doesn't exist in CLR
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern int IndexOf(char ch, int startIndex);
 
         public extern int IndexOf(string subString, int startIndex);
@@ -177,24 +188,29 @@ namespace System
         public extern string Insert(int index, string value);
 
         // this is not part of CLR. Should this go into an abstraction?
+        [Obsolete("Not compliant with .NET standard", error: false)]
         [DSharpScriptMemberName("emptyString")]
         public extern static bool IsNullOrEmpty(string s);
 
         [DSharpScriptMemberName("whitespace")]
         // this is not part of CLR. Should this go into an abstraction?
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern static bool IsNullOrWhiteSpace(string s);
 
         public extern int LastIndexOf(Char ch);
-        
+
         // This doesn't exist in CLR
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern int LastIndexOf(string subString);
 
         public extern int LastIndexOf(char ch, int startIndex);
-        
+
         // This doesn't exist in CLR
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern int LastIndexOf(string subString, int startIndex);
 
         // this is not part of CLR. Should this go into an abstraction?
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern string[] Match(RegExp regex);
 
         [DSharpScriptMemberName("padLeft")]
@@ -220,17 +236,21 @@ namespace System
 
         [ScriptName("replace")]
         // This doesn't exist in CLR
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern string ReplaceFirst(string oldText, string replaceText);
 
         [ScriptName("replace")]
         // this is not part of CLR. Should this go into an abstraction?
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern string ReplaceRegex(RegExp regex, string replaceText);
 
         [ScriptName("replace")]
         // this is not part of CLR. Should this go into an abstraction?
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern string ReplaceRegex(RegExp regex, StringReplaceCallback callback);
-        
+
         // this is not part of CLR. Should this go into an abstraction?
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern int Search(RegExp regex);
 
         // I guess this methoud is totally equivalent to this one on the CLR: string[] Split(char separator, StringSplitOptions options = StringSplitOptions.None)
@@ -246,9 +266,11 @@ namespace System
         public extern string[] Split(string separator, int limit);
 
         // this is not part of CLR. Should this go into an abstraction?
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern string[] Split(RegExp regex);
 
         // this is not part of CLR. Should this go into an abstraction?
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern string[] Split(RegExp regex, int limit);
 
         [DSharpScriptMemberName("startsWith")]
@@ -258,9 +280,11 @@ namespace System
         public extern bool StartsWith(string prefix);
 
         // this is not part of CLR. Should this go into an abstraction?
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern string Substr(int startIndex);
 
         // this is not part of CLR. Should this go into an abstraction?
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern string Substr(int startIndex, int length);
 
         public extern string Substring(int startIndex);
@@ -274,6 +298,7 @@ namespace System
         public extern string ToLocaleUpperCase();
 
         // The remaining ToLower/ToUpper methods are not in CLR. Should these go into an abstraction?
+        [Obsolete("Not compliant with .NET standard", error: false)]
         [Obsolete("ToLowerCase() should not be used, switch to ToLower()")]
         public extern string ToLowerCase();
 
@@ -312,15 +337,18 @@ namespace System
         /// </summary>
         /// <returns>The unescaped string.</returns>
         // This is not in CLR
+        [Obsolete("Not compliant with .NET standard", error: false)]
         [ScriptAlias("unescape")]
         public extern string Unescape();
 
         /// <internalonly />
         // This is not in CLR
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern static bool operator ==(string s1, string s2);
 
         /// <internalonly />
         // This is not in CLR
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern static bool operator !=(string s1, string s2);
     }
 }

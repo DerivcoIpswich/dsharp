@@ -15,6 +15,7 @@ namespace System.Collections
 
         public Dictionary(params object[] nameValuePairs) { }
 
+        [Obsolete("Not compliant with .NET standard", error: false)]
         public extern int Count { get; } // There's no Count property in the CLR
 
         public extern string[] Keys { get; } // Instead of string[] it should be ICollection
