@@ -88,7 +88,7 @@ In order to debug the shell you need to:
 1. Rebuild All
 2. In the `Core/DSharp.Shell` project, `Right Click` -> `Properties` -> `Debug` -> `Application arguments` and set the following:
 
-    ```
+    ```console
     /ref:C:\Working\dsharp\src\DSharp.Mscorlib\bin\Debug\net461\DSharp.Mscorlib.dll
     /out:out.js
     C:\Working\dsharp\src\DSharp.Compiler.Tests\Source\Mscorlib\DateTime\Code.cs
@@ -101,9 +101,10 @@ In order to debug the shell you need to:
 - ### mscorlib
   Being compliant with latest implementations of `mscorlib` is extremely important for cross-compiling. These can be checked in the following links:
 
-  - [Source Dot Net](https://source.dot.net): Source reference with nice search and navigation
-  - [GitHub Project](https://github.com/dotnet/coreclr/tree/master/src/System.Private.CoreLib): Latests previews for NET Core
-  - [Net Standard GitHub](https://github.com/dotnet/standard)
+  - [Reference Source](https://referencesource.microsoft.com/): Official source reference from Microsoft with nice search and navigation
+  - [Source Dot Net](https://source.dot.net): Unofficial source reference for .NET Core
+  - [.NET Core GitHub](https://github.com/dotnet/coreclr/tree/master/src/System.Private.CoreLib): Latests previews for .NET Core
+  - [.NET Standard GitHub](https://github.com/dotnet/standard)
 
 ### Credits ###
 
