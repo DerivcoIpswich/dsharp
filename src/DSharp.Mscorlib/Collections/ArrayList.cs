@@ -55,7 +55,6 @@ namespace System.Collections
         // ForEach does not belong to ArrayList
         [Obsolete("Not compliant with .NET standard", error: false)]
         public extern void ForEach(ArrayCallback callback);
-        [Obsolete("Not compliant with .NET standard",  error: false)]
 
         [Obsolete("Not compliant with .NET standard", error: false)]
         public extern void ForEach(ArrayItemCallback itemCallback);

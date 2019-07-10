@@ -299,7 +299,6 @@ namespace System
 
         // The remaining ToLower/ToUpper methods are not in CLR. Should these go into an abstraction?
         [Obsolete("Not compliant with .NET standard", error: false)]
-        [Obsolete("ToLowerCase() should not be used, switch to ToLower()")]
         public extern string ToLowerCase();
 
         [ScriptName("toLowerCase")]
