@@ -40,14 +40,14 @@ namespace DSharp.Compiler.Compiler
                     switch (type.Type)
                     {
                         case SymbolType.Class:
-                            BuildCode((ClassSymbol) type);
+                            BuildCode((ClassSymbol)type);
 
                             break;
                         case SymbolType.Record:
 
-                            if (((RecordSymbol) type).Constructor != null)
+                            if (((RecordSymbol)type).Constructor != null)
                             {
-                                BuildCode(((RecordSymbol) type).Constructor);
+                                BuildCode(((RecordSymbol)type).Constructor);
                             }
 
                             break;
@@ -62,6 +62,7 @@ namespace DSharp.Compiler.Compiler
         {
             if (classSymbol.Constructor != null)
             {
+                //Need to add readonly properties in here. 
                 BuildCode(classSymbol.Constructor);
             }
 
@@ -79,19 +80,19 @@ namespace DSharp.Compiler.Compiler
                 switch (memberSymbol.Type)
                 {
                     case SymbolType.Event:
-                        BuildCode((EventSymbol) memberSymbol);
+                        BuildCode((EventSymbol)memberSymbol);
 
                         break;
                     case SymbolType.Field:
-                        BuildCode((FieldSymbol) memberSymbol);
+                        BuildCode((FieldSymbol)memberSymbol);
 
                         break;
                     case SymbolType.Method:
-                        BuildCode((MethodSymbol) memberSymbol);
+                        BuildCode((MethodSymbol)memberSymbol);
 
                         break;
                     case SymbolType.Property:
-                        BuildCode((PropertySymbol) memberSymbol);
+                        BuildCode((PropertySymbol)memberSymbol);
 
                         break;
                 }
@@ -149,7 +150,8 @@ namespace DSharp.Compiler.Compiler
 
             if (indexerSymbol.IsReadOnly == false)
             {
-                indexerSymbol.AddImplementation(implBuilder.BuildPropertySetter(indexerSymbol), /* getter */ false);
+                implBuilder.TryBuildPropertySetter(indexerSymbol, out var implementation);
+                indexerSymbol.AddImplementation(implementation, /* getter */ false);
                 implementations.Add(indexerSymbol.SetterImplementation);
             }
 
@@ -189,24 +191,20 @@ namespace DSharp.Compiler.Compiler
 
         private void BuildCode(PropertySymbol propertySymbol)
         {
-            if (propertySymbol.IsAbstract)
+            if (propertySymbol.IsAbstract || propertySymbol.IsReadOnly || propertySymbol.IsAutoProperty())
             {
                 return;
             }
 
             ImplementationBuilder implBuilder = new ImplementationBuilder(options, errorHandler);
 
-            SymbolImplementation getter = implBuilder.BuildPropertyGetter(propertySymbol);
-
-            if (getter != null)
+            if (implBuilder.TryBuildPropertyGetter(propertySymbol, out SymbolImplementation getter))
             {
                 propertySymbol.AddImplementation(getter, /* getter */ true);
                 implementations.Add(getter);
             }
 
-            SymbolImplementation setter = implBuilder.BuildPropertySetter(propertySymbol);
-
-            if (setter != null)
+            if (implBuilder.TryBuildPropertySetter(propertySymbol, out SymbolImplementation setter))
             {
                 propertySymbol.AddImplementation(setter, /* getter */ false);
                 implementations.Add(setter);

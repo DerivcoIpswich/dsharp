@@ -3,12 +3,16 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using DSharp.Compiler.CodeModel.Expressions;
 using DSharp.Compiler.CodeModel.Members;
+using DSharp.Compiler.CodeModel.Names;
 using DSharp.Compiler.CodeModel.Statements;
+using DSharp.Compiler.CodeModel.Tokens;
 using DSharp.Compiler.Errors;
 using DSharp.Compiler.ScriptModel.Expressions;
 using DSharp.Compiler.ScriptModel.Statements;
@@ -93,6 +97,10 @@ namespace DSharp.Compiler.Compiler
                 if (statement != null)
                 {
                     statements.Add(statement);
+                    if(statementNode is VariableDeclarationNode variableDeclarationNode && IsObjectInitializerStatement(variableDeclarationNode))
+                    {
+                        statements.AddRange(ExpandInitializerStatements(statementBuilder, variableDeclarationNode));
+                    }
                 }
             }
 
@@ -104,6 +112,42 @@ namespace DSharp.Compiler.Compiler
             }
 
             return new SymbolImplementation(statements, rootScope, thisIdentifier);
+        }
+
+        private bool IsObjectInitializerStatement(VariableDeclarationNode variableDeclarationNode)
+        {
+            if(variableDeclarationNode == null || !variableDeclarationNode.Initializers.Any())
+            {
+                return false;
+            }
+
+            var initializer = variableDeclarationNode.Initializers.First().As<VariableInitializerNode>();
+            return initializer.Value is ObjectInitializerNode;
+        }
+
+        private IEnumerable<Statement> ExpandInitializerStatements(StatementBuilder statementBuilder, VariableDeclarationNode variableDeclarationNode)
+        {
+            var variableInitializer = variableDeclarationNode.Initializers.First()
+                .As<VariableInitializerNode>();
+
+            var objectInitializer = variableInitializer.Value
+                .As<ObjectInitializerNode>();
+
+            List<Statement> statements = new List<Statement>();
+
+            foreach (var initializerStatement in objectInitializer.ObjectAssignmentExpressions)
+            {
+                var originalStatement = initializerStatement;
+                if (originalStatement is BinaryExpressionNode binaryExpressionNode && binaryExpressionNode.LeftChild is NameNode)
+                {
+                    var objectInitializerAccess = new BinaryExpressionNode(variableInitializer.Name, TokenType.Dot, binaryExpressionNode.LeftChild);
+                    var assignmentExpression = new BinaryExpressionNode(objectInitializerAccess, binaryExpressionNode.Operator, binaryExpressionNode.RightChild);
+                    var fullObjectInitializerExpression = new ExpressionStatementNode(assignmentExpression);
+                    statements.Add(statementBuilder.BuildStatement(fullObjectInitializerExpression));
+                }
+            }
+
+            return statements;
         }
 
         public SymbolImplementation BuildEventAdd(EventSymbol eventSymbol)
@@ -239,34 +283,39 @@ namespace DSharp.Compiler.Compiler
                 indexerSymbol, accessorBody, /* addAllParameters */ true);
         }
 
-        public SymbolImplementation BuildPropertyGetter(PropertySymbol propertySymbol)
+        public bool TryBuildPropertyGetter(PropertySymbol propertySymbol, out SymbolImplementation symbolImplementation)
         {
-            AccessorNode getterNode = ((PropertyDeclarationNode) propertySymbol.ParseContext).GetAccessor;
+            AccessorNode getterNode = propertySymbol.GetPropertyNode().GetAccessor;
 
-            if (getterNode == null)
+            if (getterNode == null || getterNode.IsAutoProperty)
             {
-                return null;
+                symbolImplementation = null;
+                return false;
             }
 
             BlockStatementNode accessorBody = getterNode.Implementation;
 
-            return BuildImplementation((ISymbolTable) propertySymbol.Parent,
-                propertySymbol, accessorBody, /* addAllParameters */ false);
+            symbolImplementation = BuildImplementation((ISymbolTable) propertySymbol.Parent,
+                propertySymbol, accessorBody, addAllParameters: false);
+            return symbolImplementation != null;
         }
 
-        public SymbolImplementation BuildPropertySetter(PropertySymbol propertySymbol)
+        public bool TryBuildPropertySetter(PropertySymbol propertySymbol, out SymbolImplementation symbolImplementation)
         {
-            AccessorNode setterNode = ((PropertyDeclarationNode) propertySymbol.ParseContext).SetAccessor;
+            AccessorNode setterNode = propertySymbol.GetPropertyNode().SetAccessor;
 
-            if (setterNode == null)
+            if (setterNode == null || setterNode.IsAutoProperty)
             {
-                return null;
+                symbolImplementation = null;
+                return false;
             }
 
             BlockStatementNode accessorBody = setterNode.Implementation;
 
-            return BuildImplementation((ISymbolTable) propertySymbol.Parent,
-                propertySymbol, accessorBody, /* addAllParameters */ true);
+            symbolImplementation = BuildImplementation((ISymbolTable) propertySymbol.Parent,
+                propertySymbol, accessorBody, addAllParameters: true);
+            return symbolImplementation != null;
+
         }
 
         #region ISymbolTable Members

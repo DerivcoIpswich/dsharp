@@ -1691,7 +1691,8 @@ namespace DSharp.Compiler.Parser
         private ParseNodeList ParseFieldInitializersStatement(bool isFixed)
         {
             ParseNodeList returnValue = ParseFieldInitializers(isFixed);
-            Eat(TokenType.Semicolon);
+            if(PeekType() == TokenType.Semicolon)
+                Eat(TokenType.Semicolon);
 
             return returnValue;
         }
@@ -3317,10 +3318,27 @@ namespace DSharp.Compiler.Parser
                 return new ArrayNewNode(token, type, exprList, initExpr);
             }
 
-            return new NewNode(
-                token,
-                type,
-                ParseParenArgumentList());
+            var typeInitialiser = new NewNode(token, type, ParseParenArgumentList());
+            if(PeekType() == TokenType.OpenCurly) //Does our assignment have an object initialiser
+            {
+                NextToken();
+
+                ParseNodeList objectAssignmentExpressions = new ParseNodeList();
+                while (PeekType() != TokenType.CloseCurly && PeekType() != TokenType.Eof)
+                {
+                    objectAssignmentExpressions.Append(ParseExpression());
+
+                    if (null == EatOpt(TokenType.Comma))
+                    {
+                        break;
+                    }
+                }
+
+                Eat(TokenType.CloseCurly);
+                return new ObjectInitializerNode(token, typeInitialiser, objectAssignmentExpressions);
+            }
+
+            return typeInitialiser;
         }
 
         private ArrayInitializerNode ParseArrayInitializer()

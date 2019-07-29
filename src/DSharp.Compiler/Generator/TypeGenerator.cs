@@ -44,6 +44,8 @@ namespace DSharp.Compiler.Generator
                 DocCommentGenerator.GenerateComment(generator, classSymbol);
             }
 
+            //Create Readonly Properties here
+
             foreach (MemberSymbol memberSymbol in classSymbol.Members)
                 if (memberSymbol.Type == SymbolType.Field &&
                     (memberSymbol.Visibility & MemberVisibility.Static) == 0)

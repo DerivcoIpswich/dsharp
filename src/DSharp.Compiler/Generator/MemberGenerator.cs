@@ -392,6 +392,8 @@ namespace DSharp.Compiler.Generator
                 instanceMember = false;
             }
 
+            //Generate Auto Props here
+
             if (propertySymbol.HasGetter)
             {
                 GeneratePropertyGetter(generator, typeName, propertySymbol, writer, instanceMember);
