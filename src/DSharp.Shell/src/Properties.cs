@@ -17,11 +17,19 @@
 
     public class Properties
     {
+        private string readWriteWithBacking;
+
         public string Normal { get; set; }
 
         public string ReadLocalWrite { get; private set; }
 
         public string ReadonlyValue { get; }
+
+        public string ReadWriteWithBacking
+        {
+            get { return readWriteWithBacking; }
+            set { readWriteWithBacking = value; }
+        }
 
         public Properties(string readonlyVal)
         {
