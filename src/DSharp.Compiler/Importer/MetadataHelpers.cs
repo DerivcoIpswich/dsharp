@@ -205,25 +205,6 @@ namespace DSharp.Compiler.Importer
             return string.CompareOrdinal(type.BaseType.FullName, "System.Enum") == 0;
         }
 
-        public static bool IsScriptExtension(TypeDefinition type, out string extendee)
-        {
-            extendee = null;
-
-            CustomAttribute extensionAttribute = GetAttribute(type, "System.ScriptExtensionAttribute");
-
-            if (extensionAttribute != null)
-            {
-                extendee = GetAttributeArgument(extensionAttribute);
-
-                if (string.IsNullOrEmpty(extendee) == false)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
         public static bool ShouldIgnoreNamespace(TypeDefinition type)
         {
             return GetAttribute(type, "System.Runtime.CompilerServices.ScriptIgnoreNamespaceAttribute") != null;

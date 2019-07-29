@@ -862,11 +862,6 @@ namespace DSharp.Compiler.Importer
                 else
                 {
                     typeSymbol = new ClassSymbol(name, namespaceSymbol);
-
-                    if (MetadataHelpers.IsScriptExtension(type, out string extendee))
-                    {
-                        ((ClassSymbol)typeSymbol).SetExtenderClass(extendee);
-                    }
                 }
             }
 

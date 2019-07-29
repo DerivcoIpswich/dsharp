@@ -137,7 +137,7 @@ namespace DSharp.Compiler.Generator
             {
                 CodeGenerator.GenerateScript(generator, classSymbol.Constructor);
             }
-            else if (classSymbol.BaseClass != null && classSymbol.IsTestClass == false)
+            else if (classSymbol.BaseClass != null)
             {
                 writer.Write(classSymbol.BaseClass.FullGeneratedName);
                 writer.Write(".call(this);");
@@ -252,17 +252,6 @@ namespace DSharp.Compiler.Generator
             }
         }
 
-        private static void GenerateExtensionMethods(ScriptGenerator generator, ClassSymbol classSymbol)
-        {
-            foreach (MemberSymbol memberSymbol in classSymbol.Members)
-            {
-                Debug.Assert(memberSymbol.Type == SymbolType.Method);
-                Debug.Assert((memberSymbol.Visibility & MemberVisibility.Static) != 0);
-
-                MemberGenerator.GenerateScript(generator, memberSymbol);
-            }
-        }
-
         private static void GenerateRecord(ScriptGenerator generator, RecordSymbol recordSymbol)
         {
             ScriptTextWriter writer = generator.Writer;
@@ -315,7 +304,7 @@ namespace DSharp.Compiler.Generator
         {
             ClassSymbol classSymbol = typeSymbol as ClassSymbol;
 
-            if (classSymbol != null && classSymbol.IsExtenderClass)
+            if (classSymbol != null)
             {
                 return;
             }
@@ -387,7 +376,7 @@ namespace DSharp.Compiler.Generator
             writer.Write("], ");
 
             //base class
-            if (classSymbol.BaseClass == null || classSymbol.IsTestClass)
+            if (classSymbol.BaseClass == null)
             {
                 // TODO: We need to introduce the notion of a base class that only exists in the metadata
                 //       and not at runtime. At that point this check of IsTestClass can be generalized.
@@ -544,13 +533,6 @@ namespace DSharp.Compiler.Generator
                 return;
             }
 
-            if (typeSymbol.Type == SymbolType.Class &&
-                ((ClassSymbol)typeSymbol).IsModuleClass)
-            {
-                // No members on script modules, which only contain startup code
-                return;
-            }
-
             ScriptTextWriter writer = generator.Writer;
 
             writer.WriteLine("// " + typeSymbol.FullName);
@@ -559,32 +541,19 @@ namespace DSharp.Compiler.Generator
             switch (typeSymbol.Type)
             {
                 case SymbolType.Class:
-
-                    if (((ClassSymbol)typeSymbol).IsExtenderClass)
-                    {
-                        GenerateExtensionMethods(generator, (ClassSymbol)typeSymbol);
-                    }
-                    else
-                    {
-                        GenerateClass(generator, (ClassSymbol)typeSymbol);
-                    }
-
+                    GenerateClass(generator, (ClassSymbol)typeSymbol);
                     break;
                 case SymbolType.Interface:
                     GenerateInterface(generator, (InterfaceSymbol)typeSymbol);
-
                     break;
                 case SymbolType.Enumeration:
                     GenerateEnumeration(generator, (EnumerationSymbol)typeSymbol);
-
                     break;
                 case SymbolType.Record:
                     GenerateRecord(generator, (RecordSymbol)typeSymbol);
-
                     break;
                 case SymbolType.Resources:
                     GenerateResources(generator, (ResourcesSymbol)typeSymbol);
-
                     break;
             }
 

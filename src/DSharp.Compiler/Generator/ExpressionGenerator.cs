@@ -22,7 +22,7 @@ namespace DSharp.Compiler.Generator
 
             Debug.Assert(symbol.Parent is ClassSymbol);
 
-            ClassSymbol baseClass = ((ClassSymbol) symbol.Parent).BaseClass;
+            ClassSymbol baseClass = ((ClassSymbol)symbol.Parent).BaseClass;
             Debug.Assert(baseClass != null);
 
             writer.Write(baseClass.FullGeneratedName);
@@ -50,7 +50,7 @@ namespace DSharp.Compiler.Generator
 
                     if (propExpression.ObjectReference is BaseExpression)
                     {
-                        ClassSymbol classSymbol = (ClassSymbol) symbol.Parent;
+                        ClassSymbol classSymbol = (ClassSymbol)symbol.Parent;
                         writer.Write($"{DSharpStringResources.ScriptExportMember("baseProperty")}(");
                         writer.Write(classSymbol.FullGeneratedName);
                         writer.Write(", '");
@@ -80,7 +80,7 @@ namespace DSharp.Compiler.Generator
 
                     if (indexExpression.ObjectReference is BaseExpression)
                     {
-                        writer.Write(((BaseExpression) indexExpression.ObjectReference)
+                        writer.Write(((BaseExpression)indexExpression.ObjectReference)
                                      .EvaluatedType.FullGeneratedName);
                         writer.Write(".prototype.set_");
                         writer.Write(indexExpression.Indexer.GeneratedName);
@@ -288,23 +288,9 @@ namespace DSharp.Compiler.Generator
             }
             else if ((expression.Method.Visibility & MemberVisibility.Static) != 0)
             {
-                if (expression.Method.IsExtension)
-                {
-                    Debug.Assert(expression.Method.Parent.Type == SymbolType.Class);
-
-                    ClassSymbol classSymbol = (ClassSymbol) expression.Method.Parent;
-                    Debug.Assert(classSymbol.IsExtenderClass);
-
-                    writer.Write(classSymbol.Extendee);
-                    writer.Write(".");
-                    writer.Write(expression.Method.GeneratedName);
-                }
-                else
-                {
-                    GenerateExpression(generator, symbol, expression.ObjectReference);
-                    writer.Write(".");
-                    writer.Write(expression.Method.GeneratedName);
-                }
+                GenerateExpression(generator, symbol, expression.ObjectReference);
+                writer.Write(".");
+                writer.Write(expression.Method.GeneratedName);
             }
             else
             {
@@ -384,11 +370,11 @@ namespace DSharp.Compiler.Generator
             switch (expression.Type)
             {
                 case ExpressionType.Literal:
-                    GenerateLiteralExpression(generator, symbol, (LiteralExpression) expression);
+                    GenerateLiteralExpression(generator, symbol, (LiteralExpression)expression);
 
                     break;
                 case ExpressionType.Local:
-                    GenerateLocalExpression(generator, symbol, (LocalExpression) expression);
+                    GenerateLocalExpression(generator, symbol, (LocalExpression)expression);
 
                     break;
                 case ExpressionType.Member:
@@ -396,15 +382,15 @@ namespace DSharp.Compiler.Generator
 
                     break;
                 case ExpressionType.Field:
-                    GenerateFieldExpression(generator, symbol, (FieldExpression) expression);
+                    GenerateFieldExpression(generator, symbol, (FieldExpression)expression);
 
                     break;
                 case ExpressionType.EnumerationField:
-                    GenerateEnumerationFieldExpression(generator, symbol, (EnumerationFieldExpression) expression);
+                    GenerateEnumerationFieldExpression(generator, symbol, (EnumerationFieldExpression)expression);
 
                     break;
                 case ExpressionType.PropertyGet:
-                    GeneratePropertyExpression(generator, symbol, (PropertyExpression) expression);
+                    GeneratePropertyExpression(generator, symbol, (PropertyExpression)expression);
 
                     break;
                 case ExpressionType.PropertySet:
@@ -413,24 +399,24 @@ namespace DSharp.Compiler.Generator
                     break;
                 case ExpressionType.MethodInvoke:
                 case ExpressionType.DelegateInvoke:
-                    GenerateMethodExpression(generator, symbol, (MethodExpression) expression);
+                    GenerateMethodExpression(generator, symbol, (MethodExpression)expression);
 
                     break;
                 case ExpressionType.BaseInitializer:
-                    GenerateBaseInitializerExpression(generator, symbol, (BaseInitializerExpression) expression);
+                    GenerateBaseInitializerExpression(generator, symbol, (BaseInitializerExpression)expression);
 
                     break;
                 case ExpressionType.EventAdd:
                 case ExpressionType.EventRemove:
-                    GenerateEventExpression(generator, symbol, (EventExpression) expression);
+                    GenerateEventExpression(generator, symbol, (EventExpression)expression);
 
                     break;
                 case ExpressionType.Indexer:
-                    GenerateIndexerExpression(generator, symbol, (IndexerExpression) expression);
+                    GenerateIndexerExpression(generator, symbol, (IndexerExpression)expression);
 
                     break;
                 case ExpressionType.This:
-                    GenerateThisExpression(generator, symbol, (ThisExpression) expression);
+                    GenerateThisExpression(generator, symbol, (ThisExpression)expression);
 
                     break;
                 case ExpressionType.Base:
@@ -438,39 +424,39 @@ namespace DSharp.Compiler.Generator
 
                     break;
                 case ExpressionType.New:
-                    GenerateNewExpression(generator, symbol, (NewExpression) expression);
+                    GenerateNewExpression(generator, symbol, (NewExpression)expression);
 
                     break;
                 case ExpressionType.Unary:
-                    GenerateUnaryExpression(generator, symbol, (UnaryExpression) expression);
+                    GenerateUnaryExpression(generator, symbol, (UnaryExpression)expression);
 
                     break;
                 case ExpressionType.Binary:
-                    GenerateBinaryExpression(generator, symbol, (BinaryExpression) expression);
+                    GenerateBinaryExpression(generator, symbol, (BinaryExpression)expression);
 
                     break;
                 case ExpressionType.Conditional:
-                    GenerateConditionalExpression(generator, symbol, (ConditionalExpression) expression);
+                    GenerateConditionalExpression(generator, symbol, (ConditionalExpression)expression);
 
                     break;
                 case ExpressionType.Type:
-                    GenerateTypeExpression(generator, symbol, (TypeExpression) expression);
+                    GenerateTypeExpression(generator, symbol, (TypeExpression)expression);
 
                     break;
                 case ExpressionType.Delegate:
-                    GenerateDelegateExpression(generator, symbol, (DelegateExpression) expression);
+                    GenerateDelegateExpression(generator, symbol, (DelegateExpression)expression);
 
                     break;
                 case ExpressionType.LateBound:
-                    GenerateLateBoundExpression(generator, symbol, (LateBoundExpression) expression);
+                    GenerateLateBoundExpression(generator, symbol, (LateBoundExpression)expression);
 
                     break;
                 case ExpressionType.InlineScript:
-                    GenerateInlineScriptExpression(generator, symbol, (InlineScriptExpression) expression);
+                    GenerateInlineScriptExpression(generator, symbol, (InlineScriptExpression)expression);
 
                     break;
                 case ExpressionType.NewDelegate:
-                    GenerateExpression(generator, symbol, ((NewDelegateExpression) expression).TypeExpression);
+                    GenerateExpression(generator, symbol, ((NewDelegateExpression)expression).TypeExpression);
 
                     break;
                 default:
@@ -531,9 +517,9 @@ namespace DSharp.Compiler.Generator
                 else
                 {
                     Debug.Assert(expression.Type == ExpressionType.Literal);
-                    Debug.Assert(((LiteralExpression) expression).Value is string);
+                    Debug.Assert(((LiteralExpression)expression).Value is string);
 
-                    string name = (string) ((LiteralExpression) expression).Value;
+                    string name = (string)((LiteralExpression)expression).Value;
 
                     if (Utility.IsValidIdentifier(name))
                     {
@@ -871,8 +857,6 @@ namespace DSharp.Compiler.Generator
 
             if (expression.ObjectReference is BaseExpression baseExpression)
             {
-                Debug.Assert(expression.Method.IsExtension == false);
-
                 writer.Write(baseExpression.EvaluatedType.FullGeneratedName);
                 writer.Write(".prototype.");
                 writer.Write(expression.Method.GeneratedName);
@@ -913,24 +897,11 @@ namespace DSharp.Compiler.Generator
                 }
                 else
                 {
-                    if (expression.Method.IsExtension)
+                    GenerateExpression(generator, symbol, expression.ObjectReference);
+
+                    if (expression.Method.GeneratedName.Length != 0)
                     {
-                        Debug.Assert(expression.Method.Parent.Type == SymbolType.Class);
-
-                        string extendee = ((ClassSymbol) expression.Method.Parent).Extendee;
-                        Debug.Assert(string.IsNullOrEmpty(extendee) == false);
-
-                        writer.Write(extendee);
                         writer.Write(".");
-                    }
-                    else
-                    {
-                        GenerateExpression(generator, symbol, expression.ObjectReference);
-
-                        if (expression.Method.GeneratedName.Length != 0)
-                        {
-                            writer.Write(".");
-                        }
                     }
 
                     if (expression.Method.GeneratedName.Length != 0)
@@ -1031,7 +1002,7 @@ namespace DSharp.Compiler.Generator
                 if (expression.AssociatedType.Type == SymbolType.Record)
                 {
                     if (expression.AssociatedType.IsApplicationType &&
-                        ((RecordSymbol) expression.AssociatedType).Constructor == null)
+                        ((RecordSymbol)expression.AssociatedType).Constructor == null)
                     {
                         writer.Write("{ }");
 
@@ -1083,7 +1054,7 @@ namespace DSharp.Compiler.Generator
             {
                 Debug.Assert(symbol.Parent is ClassSymbol);
 
-                ClassSymbol classSymbol = (ClassSymbol) symbol.Parent;
+                ClassSymbol classSymbol = (ClassSymbol)symbol.Parent;
                 Debug.Assert(classSymbol.BaseClass != null);
                 writer.Write($"{DSharpStringResources.ScriptExportMember("baseProperty")}(");
                 writer.Write(classSymbol.FullGeneratedName);

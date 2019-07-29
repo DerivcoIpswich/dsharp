@@ -1229,26 +1229,6 @@ namespace DSharp.Compiler.Compiler
 
             if (typeNode.Type == TokenType.Class || typeNode.Type == TokenType.Struct)
             {
-                AttributeNode extensionAttribute = AttributeNode.FindAttribute(attributes, "ScriptExtension");
-
-                if (extensionAttribute != null)
-                {
-                    Debug.Assert(extensionAttribute.Arguments[0] is LiteralNode);
-                    Debug.Assert(((LiteralNode)extensionAttribute.Arguments[0]).Value is string);
-
-                    string extendee = (string)((LiteralNode)extensionAttribute.Arguments[0]).Value;
-                    Debug.Assert(string.IsNullOrEmpty(extendee) == false);
-
-                    ((ClassSymbol)typeSymbol).SetExtenderClass(extendee);
-                }
-
-                AttributeNode moduleAttribute = AttributeNode.FindAttribute(attributes, "ScriptModule");
-
-                if (moduleAttribute != null)
-                {
-                    ((ClassSymbol)typeSymbol).SetModuleClass();
-                }
-
                 if ((typeNode.Modifiers & Modifiers.Static) != 0)
                 {
                     ((ClassSymbol)typeSymbol).SetStaticClass();
