@@ -51,20 +51,6 @@ function defineInterface(type, interfaces) {
     return [_interfaceMarker, type];
 }
 
-function createPropertyGet(obj, propertyName, fn) {
-    Object.defineProperty(obj, propertyName, {
-        configurable: true,
-        get: fn
-    });
-}
-
-function createPropertySet(obj, propertyName, fn) {
-    Object.defineProperty(obj, propertyName, {
-        configurable: true,
-        set: fn
-    });
-}
-
 function isClass(fn) {
     return fn.$type == _classMarker;
 }

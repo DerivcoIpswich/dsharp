@@ -566,6 +566,22 @@ namespace DSharp.Compiler.Compiler
                     }
                 }
 
+                if(leftExpression is PropertyExpression propertyExpression && propertyExpression.Property.GetPropertyNode().IsReadonlyProperty)
+                {
+                    var scriptType = symbolSet.ResolveIntrinsicType(IntrinsicType.Script);
+                    MethodSymbol createReadonlyPropertySymbol = (MethodSymbol)scriptType.GetMember("createReadonlyProperty");
+                    Debug.Assert(createReadonlyPropertySymbol != null);
+
+                    var methodExpression = new MethodExpression(
+                        new TypeExpression(scriptType, SymbolFilter.Public | SymbolFilter.StaticMembers),
+                        createReadonlyPropertySymbol);
+                    methodExpression.AddParameterValue(new ThisExpression(null, false));
+                    methodExpression.AddParameterValue(leftExpression);
+                    methodExpression.AddParameterValue(rightExpression);
+
+                    return methodExpression;
+                }
+
                 if (resultType == null)
                 {
                     return new BinaryExpression(operatorType, leftExpression, rightExpression);

@@ -58,6 +58,7 @@
             paramsGenerator: paramsGenerator,
             createPropertyGet: createPropertyGet,
             createPropertySet: createPropertySet,
+            createReadonlyProperty: createReadonlyProperty,
 
             module: module,
             modules: _modules,

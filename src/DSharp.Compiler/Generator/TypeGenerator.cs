@@ -44,13 +44,13 @@ namespace DSharp.Compiler.Generator
                 DocCommentGenerator.GenerateComment(generator, classSymbol);
             }
 
-            //Create Readonly Properties here
 
             foreach (MemberSymbol memberSymbol in classSymbol.Members)
+            {
                 if (memberSymbol.Type == SymbolType.Field &&
                     (memberSymbol.Visibility & MemberVisibility.Static) == 0)
                 {
-                    FieldSymbol fieldSymbol = (FieldSymbol) memberSymbol;
+                    FieldSymbol fieldSymbol = (FieldSymbol)memberSymbol;
 
                     if (fieldSymbol.HasInitializer)
                     {
@@ -62,6 +62,18 @@ namespace DSharp.Compiler.Generator
                         writer.WriteLine();
                     }
                 }
+                //Might need to move this down into when the ctor statements are built.
+                if(memberSymbol is PropertySymbol propertySymbol && propertySymbol.IsAutoProperty())
+                {
+                    var underlyingNode = propertySymbol.GetPropertyNode();
+                    if(underlyingNode.IsReadonlyProperty)
+                    {
+                        //Missing stuff here
+                        writer.WriteLine($@"ss.createReadonlyProperty(this, {propertySymbol.GeneratedName});");
+                    }
+                }
+            }
+            //Create Readonly Properties here
 
             if (classSymbol.Constructor != null)
             {
