@@ -48,6 +48,7 @@
     <Compile Remove="Source\Expression\Events\Code.cs" />
     <Compile Remove="Source\Expression\ExtensionMethods\Code.cs" />
     <Compile Remove="Source\Expression\Generics2\Code.cs" />
+    <Compile Remove="Source\Expression\Generics3\Code.cs" />
     <Compile Remove="Source\Expression\Generics\Code.cs" />
     <Compile Remove="Source\Expression\GetType\Code.cs" />
     <Compile Remove="Source\Expression\InlineScript\Code.cs" />
@@ -788,6 +789,9 @@
     <None Include="Source\Basic\Resources\Strings2.Designer.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Source\Expression\Generics3\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Content Include="Source\Expression\Generics2\Code.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -813,6 +817,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Source\CompilerTests.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Source\Expression\Generics3\Baseline.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

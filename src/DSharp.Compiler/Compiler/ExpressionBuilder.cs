@@ -1076,11 +1076,8 @@ namespace DSharp.Compiler.Compiler
 
         private Expression ProcessNameNode(NameNode node, SymbolFilter filter)
         {
-            string name = node.Name;
-
-            // TODO: When inside a static method, we should only lookup static members
-
-            Symbol symbol = symbolTable.FindSymbol(name, symbolContext, filter);
+            Symbol symbol = ResolveNameNodeSymbol(node, filter);
+            Debug.Assert(symbol != null);
 
             if (symbol is LocalSymbol localSymbol)
             {
@@ -1117,6 +1114,17 @@ namespace DSharp.Compiler.Compiler
             }
 
             return null;
+        }
+
+        private Symbol ResolveNameNodeSymbol(NameNode node, SymbolFilter filter)
+        {
+            if (node is GenericNameNode genericNameNode)
+            {
+                return symbolTable.FindSymbol(genericNameNode.FullGenericName, symbolContext, filter)
+                    ?? symbolTable.FindSymbol(node.Name, symbolContext, filter);
+            }
+
+            return symbolTable.FindSymbol(node.Name, symbolContext, filter);
         }
 
         private Expression ProcessNewNode(NewNode node)
