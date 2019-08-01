@@ -654,66 +654,7 @@ namespace DSharp.Compiler.Importer
 
             if (memberSet == PseudoClassMembers.Script)
             {
-                TypeSymbol objectType =
-                    (TypeSymbol)((ISymbolTable)symbols.SystemNamespace).FindSymbol("Object", null,
-                        SymbolFilter.Types);
-                Debug.Assert(objectType != null);
-
-                TypeSymbol stringType =
-                    (TypeSymbol)((ISymbolTable)symbols.SystemNamespace).FindSymbol("String", null,
-                        SymbolFilter.Types);
-                Debug.Assert(stringType != null);
-
-                TypeSymbol boolType =
-                    (TypeSymbol)((ISymbolTable)symbols.SystemNamespace).FindSymbol("Boolean", null,
-                        SymbolFilter.Types);
-                Debug.Assert(boolType != null);
-
-                TypeSymbol dateType =
-                    (TypeSymbol)((ISymbolTable)symbols.SystemNamespace).FindSymbol("Date", null, SymbolFilter.Types);
-                Debug.Assert(dateType != null);
-
-                // Enumerate - IEnumerable.GetEnumerator gets mapped to this
-
-                MethodSymbol enumerateMethod = new MethodSymbol("Enumerate", classSymbol, objectType,
-                    MemberVisibility.Public | MemberVisibility.Static);
-                enumerateMethod.SetTransformName(DSharpStringResources.ScriptExportMember("enumerate"));
-                enumerateMethod.AddParameter(new ParameterSymbol("obj", enumerateMethod, objectType, ParameterMode.In));
-                classSymbol.AddMember(enumerateMethod);
-
-                // TypeName - Type.Name gets mapped to this
-
-                MethodSymbol typeNameMethod = new MethodSymbol("GetTypeName", classSymbol, stringType,
-                    MemberVisibility.Public | MemberVisibility.Static);
-                typeNameMethod.SetTransformName(DSharpStringResources.ScriptExportMember("typeName"));
-                typeNameMethod.AddParameter(new ParameterSymbol("obj", typeNameMethod, objectType, ParameterMode.In));
-                classSymbol.AddMember(typeNameMethod);
-
-                // CompareDates - Date equality checks get converted to call to compareDates
-
-                MethodSymbol compareDatesMethod = new MethodSymbol("CompareDates", classSymbol, boolType,
-                    MemberVisibility.Public | MemberVisibility.Static);
-                compareDatesMethod.SetTransformName(DSharpStringResources.ScriptExportMember("compareDates"));
-                compareDatesMethod.AddParameter(new ParameterSymbol("d1", compareDatesMethod, dateType,
-                    ParameterMode.In));
-                compareDatesMethod.AddParameter(new ParameterSymbol("d2", compareDatesMethod, dateType,
-                    ParameterMode.In));
-                classSymbol.AddMember(compareDatesMethod);
-
-                //createReadonlyPropertyMethod - setups a replacement for readonly assignment expressions to generate readonly properties.
-
-                MethodSymbol createReadonlyPropertyMethod
-                    = new MethodSymbol(
-                        "CreateReadonlyProperty",
-                        classSymbol,
-                        boolType,
-                        MemberVisibility.Public | MemberVisibility.Static);
-                createReadonlyPropertyMethod.SetTransformName(DSharpStringResources.ScriptExportMember("createReadonlyProperty"));
-
-                createReadonlyPropertyMethod.AddParameter(new ParameterSymbol("instance", createReadonlyPropertyMethod, objectType, ParameterMode.In));
-                createReadonlyPropertyMethod.AddParameter(new ParameterSymbol("propertyName", createReadonlyPropertyMethod, stringType, ParameterMode.In));
-                createReadonlyPropertyMethod.AddParameter(new ParameterSymbol("value", createReadonlyPropertyMethod, objectType, ParameterMode.In));
-                classSymbol.AddMember(createReadonlyPropertyMethod);
+                AddScriptSymbolPseudoMembers(classSymbol);
 
                 return;
             }
@@ -762,6 +703,72 @@ namespace DSharp.Compiler.Importer
                 countMethod.SetTransformName(DSharpStringResources.ScriptExportMember("keyCount"));
                 classSymbol.AddMember(countMethod);
             }
+        }
+
+        private void AddScriptSymbolPseudoMembers(ClassSymbol classSymbol)
+        {
+            var symbolTable = symbols.SystemNamespace;
+
+            TypeSymbol objectType = symbolTable.FindSymbol<TypeSymbol>(nameof(Object), null, SymbolFilter.Types);
+            TypeSymbol stringType = symbolTable.FindSymbol<TypeSymbol>(nameof(String), null, SymbolFilter.Types);
+            TypeSymbol boolType = symbolTable.FindSymbol<TypeSymbol>(nameof(Boolean), null, SymbolFilter.Types);
+            TypeSymbol dateType = symbolTable.FindSymbol<TypeSymbol>("Date", null, SymbolFilter.Types);
+            TypeSymbol voidType = symbols.ResolveIntrinsicType(IntrinsicType.Void);
+
+            Debug.Assert(objectType != null);
+            Debug.Assert(stringType != null);
+            Debug.Assert(boolType != null);
+            Debug.Assert(dateType != null);
+            Debug.Assert(voidType != null);
+
+            // Enumerate - IEnumerable.GetEnumerator gets mapped to this
+
+            MethodSymbol enumerateMethod = new MethodSymbol("Enumerate", classSymbol, objectType,
+                MemberVisibility.Public | MemberVisibility.Static);
+            enumerateMethod.SetTransformName(DSharpStringResources.ScriptExportMember("enumerate"));
+            enumerateMethod.AddParameter(new ParameterSymbol("obj", enumerateMethod, objectType, ParameterMode.In));
+            classSymbol.AddMember(enumerateMethod);
+
+            // TypeName - Type.Name gets mapped to this
+
+            MethodSymbol typeNameMethod = new MethodSymbol("GetTypeName", classSymbol, stringType,
+                MemberVisibility.Public | MemberVisibility.Static);
+            typeNameMethod.SetTransformName(DSharpStringResources.ScriptExportMember("typeName"));
+            typeNameMethod.AddParameter(new ParameterSymbol("obj", typeNameMethod, objectType, ParameterMode.In));
+            classSymbol.AddMember(typeNameMethod);
+
+            // CompareDates - Date equality checks get converted to call to compareDates
+
+            MethodSymbol compareDatesMethod = new MethodSymbol("CompareDates", classSymbol, boolType,
+                MemberVisibility.Public | MemberVisibility.Static);
+            compareDatesMethod.SetTransformName(DSharpStringResources.ScriptExportMember("compareDates"));
+            compareDatesMethod.AddParameter(new ParameterSymbol("d1", compareDatesMethod, dateType,
+                ParameterMode.In));
+            compareDatesMethod.AddParameter(new ParameterSymbol("d2", compareDatesMethod, dateType,
+                ParameterMode.In));
+            classSymbol.AddMember(compareDatesMethod);
+
+            //createReadonlyPropertyMethod - setups a replacement for readonly assignment expressions to generate readonly properties.
+
+            MethodSymbol createReadonlyPropertyMethod
+                = new MethodSymbol("CreateReadonlyProperty", classSymbol, objectType, MemberVisibility.Public | MemberVisibility.Static);
+
+            createReadonlyPropertyMethod.SetTransformName(DSharpStringResources.ScriptExportMember("createReadonlyProperty"));
+
+            createReadonlyPropertyMethod.AddParameter(new ParameterSymbol("instance", createReadonlyPropertyMethod, objectType, ParameterMode.In));
+            createReadonlyPropertyMethod.AddParameter(new ParameterSymbol("propertyName", createReadonlyPropertyMethod, stringType, ParameterMode.In));
+            createReadonlyPropertyMethod.AddParameter(new ParameterSymbol("value", createReadonlyPropertyMethod, objectType, ParameterMode.In));
+
+            classSymbol.AddMember(createReadonlyPropertyMethod);
+
+            MethodSymbol definePropertyMethod = new MethodSymbol("DefineMethod", classSymbol, voidType, MemberVisibility.Public | MemberVisibility.Static);
+
+            definePropertyMethod.SetTransformName(DSharpStringResources.ScriptExportMember("defineProperty"));
+
+            definePropertyMethod.AddParameter(new ParameterSymbol("instance", definePropertyMethod, objectType, ParameterMode.In));
+            definePropertyMethod.AddParameter(new ParameterSymbol("propertyName", definePropertyMethod, stringType, ParameterMode.In));
+
+            classSymbol.AddMember(definePropertyMethod);
         }
 
         private void ImportScriptAssembly(MetadataSource mdSource, string assemblyPath, bool coreAssembly)

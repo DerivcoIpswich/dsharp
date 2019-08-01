@@ -1,5 +1,14 @@
 ﻿namespace DSharp.Shell.src
 {
+    public static int Main(string[] args)
+    {
+        string value = args[0].PadRightC(10, 'F')
+            .PadRightC(10, 'F')
+            .PadRightC(10, 'F');
+
+        return 0.Increment();
+    }
+
     public static class StringExtensions
     {
         public static string PadRightC(this string str, int times, char value)

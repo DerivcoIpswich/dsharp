@@ -1,4 +1,4 @@
-// NamespaceSymbol.cs
+﻿// NamespaceSymbol.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -52,11 +52,9 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             return true;
         }
 
-        #region ISymbolTable Members
+        public ICollection Symbols => types;
 
-        ICollection ISymbolTable.Symbols => types;
-
-        Symbol ISymbolTable.FindSymbol(string name, Symbol context, SymbolFilter filter)
+        public Symbol FindSymbol(string name, Symbol context, SymbolFilter filter)
         {
             Debug.Assert(string.IsNullOrEmpty(name) == false);
             Debug.Assert(context == null);
@@ -69,7 +67,5 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
             return null;
         }
-
-        #endregion
     }
 }

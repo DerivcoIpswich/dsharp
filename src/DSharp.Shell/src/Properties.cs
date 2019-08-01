@@ -33,7 +33,9 @@
 
         public Properties(string readonlyVal)
         {
-            ReadonlyValue = readonlyVal;
+            ReadonlyValue = readonlyVal ?? "InitialState_ReadonlyValue";
+            ReadLocalWrite = "InitialState_ReadLocalWrite";
+            Normal = "InitialState_Normal";
         }
 
         public void Change(string value)
