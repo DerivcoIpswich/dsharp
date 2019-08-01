@@ -82,7 +82,16 @@
                 current: currentCulture
             },
 
-            fail: fail
+            fail: fail,
+
+            contains: contains,
+            insert: insert,
+            clear: clear,
+            addRange: addRange,
+            getItem: getItem,
+            setItem: setItem,
+            removeAt: removeAt,
+            removeItem: removeItem
         });
   }
 
