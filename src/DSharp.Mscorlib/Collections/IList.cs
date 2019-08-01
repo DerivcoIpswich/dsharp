@@ -15,15 +15,21 @@ namespace System.Collections
         [ScriptName("push")]
         int Add(object value);
 
+        [DSharpScriptMemberName("contains")]
         bool Contains(object value);
 
+        [DSharpScriptMemberName("clear")]
         void Clear();
 
         int IndexOf(object value);
 
-        [DSharpScriptMemberName("remove")]
+        [DSharpScriptMemberName("insert")]
+        void Insert(int index, object value);
+
+        [DSharpScriptMemberName("removeItem")]
         void Remove(object value);
 
+        [DSharpScriptMemberName("removeAt")]
         void RemoveAt(int index);
     }
 }

@@ -44,8 +44,7 @@ define('test', ['ss'], function(ss) {
     var items2 = [ 1, 2 ];
     var items3 = [ 4, 5 ];
     var items4 = new Array(5);
-    var list = [];
-    var list2 = new Array(5);
+    var list = new Array(3);
     var list3 = ['abc', 'def', 'ghi'];
     var list4 = [1, 2, 3];
     var dates = [ new Date('1/1/2006'), new Date('1/1/2005') ];

@@ -15,8 +15,10 @@ namespace System.Collections.Generic
 
         int IndexOf(T item);
 
+        [DSharpScriptMemberName("insert")]
         void Insert(int index, T item);
 
+        [DSharpScriptMemberName("removeAt")]
         void RemoveAt(int index);
     }
 }

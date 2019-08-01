@@ -10,7 +10,7 @@ define('test', ['ss'], function(ss) {
     var s = elem.myString;
     elem.do('foo');
     elem.do('bar', 10);
-    elem['Smith'] = elem['Joe'];
+    ss.setItem(elem, 'Smith', ss.getItem(elem, 'Joe'));
     var n = ss.truncate(5.5);
     var parser = new DOMParser();
     var doc = parser.parseFromString('<markup></markup>', 'text/xml');

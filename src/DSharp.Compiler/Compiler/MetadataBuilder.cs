@@ -576,7 +576,7 @@ namespace DSharp.Compiler.Compiler
             return null;
         }
 
-        private void BuildInterfaceAssociations(ClassSymbol classSymbol)
+        public static void BuildInterfaceAssociations(ClassSymbol classSymbol)
         {
             if (classSymbol.PrimaryPartialClass != classSymbol)
             {
@@ -601,7 +601,7 @@ namespace DSharp.Compiler.Compiler
             }
         }
 
-        private void AggregateInterfaceMembers(ICollection<InterfaceSymbol> subInterfaceCollection,
+        public static void AggregateInterfaceMembers(ICollection<InterfaceSymbol> subInterfaceCollection,
                                                Dictionary<string, MemberSymbol> aggregateMemberCollection)
         {
             if (subInterfaceCollection == null)
@@ -616,7 +616,7 @@ namespace DSharp.Compiler.Compiler
             }
         }
 
-        private void AddInterfaceMembers(ICollection<MemberSymbol> newMemberSymbols,
+        public static void AddInterfaceMembers(ICollection<MemberSymbol> newMemberSymbols,
                                          Dictionary<string, MemberSymbol> aggregateMemberCollection)
         {
             if (newMemberSymbols == null)

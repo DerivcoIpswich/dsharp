@@ -1,3 +1,13 @@
+function createFallbackFunction(name, fallback) {
+    return function (instance) {
+        if (typeof instance[name] === "function") {
+            return instance[name].apply(instance, arguments.splice(1));
+        }
+
+        return fallback.apply(null, arguments);
+    }
+}
+
 function toArray(obj) {
     return obj
         ? typeof obj == "string"
@@ -5,12 +15,24 @@ function toArray(obj) {
             : Array.prototype.slice.call(obj)
         : null;
 }
-function removeItem(a, item) {
-    var index = a.indexOf(item);
+
+var removeAt = createFallbackFunction("removeAt", function (obj, index) {
     return index >= 0
-        ? (a.splice(index, 1), true)
+        ? (obj.splice(index, 1), true)
         : false;
-}
+});
+
+var removeItem = createFallbackFunction("remove", function (obj, item) {
+    var index = obj.indexOf(item);
+    return index >= 0
+        ? (obj.splice(index, 1), true)
+        : false;
+});
+
+function getRange(obj, start, end) {
+    return obj.slice(start, end);
+};
+
 function clearKeys(obj) {
     for (var key in obj) {
         delete obj[key];
@@ -47,3 +69,42 @@ function values(obj) {
 function keyCount(obj) {
     return keys(obj).length;
 }
+
+var contains = createFallbackFunction("contains", function (obj, value) {
+    return obj.indexOf(value) >= 0;
+});
+
+var insert = createFallbackFunction("insert", function (obj, index, value) {
+    obj.splice(index, 0, value);
+});
+
+var clear = createFallbackFunction("clear", function (obj) {
+    obj.length = 0;
+});
+
+var addRange = createFallbackFunction("addRange", function (obj, range) {
+    if (Array.isArray(range)) {
+        for (var i = 0; i < range.length; ++i) {
+            obj.push(range[i]);
+        }
+
+        return;
+    }
+
+    while (range.moveNext()) {
+        obj.push(range.current);
+    }
+});
+
+function addRangeParams(obj) {
+    var params = arguments.slice(1);
+    addRange(obj, params);
+}
+
+var getItem = createFallbackFunction("get_item", function (obj, key) {
+    return obj[key];
+});
+
+var setItem = createFallbackFunction("set_item", function (obj, key) {
+    return obj[key] = value;
+});

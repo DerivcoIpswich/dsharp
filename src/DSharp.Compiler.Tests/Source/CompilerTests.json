@@ -6,6 +6,11 @@
         "Name": "DateTime",
         "SourceFiles": [ "Code.cs" ],
         "ComparisonFile": "Baseline.txt"
+      },
+      {
+        "Name": "Collections",
+        "SourceFiles": [ "Code.cs" ],
+        "ComparisonFile": "Baseline.txt"
       }
     ]
   },
@@ -212,6 +217,12 @@
       },
       {
         "Name": "Generics2",
+        "SourceFiles": [ "Code.cs" ],
+        "ComparisonFile": "Baseline.txt",
+        "References": []
+      },
+      {
+        "Name": "Generics3",
         "SourceFiles": [ "Code.cs" ],
         "ComparisonFile": "Baseline.txt",
         "References": []

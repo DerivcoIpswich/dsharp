@@ -22,7 +22,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             {
                 TypeSymbol parameterType = ValueType;
 
-                if (parameterType.IsArray)
+                if (parameterType.IsNativeArray)
                 {
                     parameterType = ((ClassSymbol) parameterType).Indexer.AssociatedType;
 

@@ -127,7 +127,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             indexerSymbol.SetScriptIndexer();
             specificArrayTypeSymbol.AddMember(indexerSymbol);
             specificArrayTypeSymbol.SetIgnoreNamespace();
-            specificArrayTypeSymbol.SetArray();
+            specificArrayTypeSymbol.SetNativeArray();
 
             return specificArrayTypeSymbol;
         }
@@ -295,9 +295,9 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                     instanceClass.DisableNameTransformation();
                 }
 
-                if (genericClass.IsArray)
+                if (genericClass.IsNativeArray)
                 {
-                    instanceClass.SetArray();
+                    instanceClass.SetNativeArray();
                 }
 
                 instanceClass.AddGenericParameters(genericClass.GenericParameters);

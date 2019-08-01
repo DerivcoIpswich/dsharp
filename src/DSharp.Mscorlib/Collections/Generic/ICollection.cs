@@ -13,11 +13,13 @@ namespace System.Collections.Generic
         [ScriptName("push")]
         void Add(T item);
 
+        [DSharpScriptMemberName("clear")]
         void Clear();
 
+        [DSharpScriptMemberName("contains")]
         bool Contains(T item);
 
-        [DSharpScriptMemberName("remove")]
+        [DSharpScriptMemberName("removeItem")]
         bool Remove(T item);
     }
 }

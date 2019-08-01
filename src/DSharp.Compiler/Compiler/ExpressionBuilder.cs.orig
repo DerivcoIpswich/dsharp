@@ -1120,11 +1120,11 @@ namespace DSharp.Compiler.Compiler
             return null;
         }
 
+<<<<<<< HEAD
         private Expression ProcessObjectInitializerNode(ObjectInitializerNode objectInitializerNode)
         {
             return ProcessNewNode(objectInitializerNode.NewNodeExpression);
-        }
-
+=======
         private Symbol ResolveNameNodeSymbol(NameNode node, SymbolFilter filter)
         {
             if (node is GenericNameNode genericNameNode)
@@ -1134,6 +1134,7 @@ namespace DSharp.Compiler.Compiler
             }
 
             return symbolTable.FindSymbol(node.Name, symbolContext, filter);
+>>>>>>> feature/csharp-3
         }
 
         private Expression ProcessNewNode(NewNode node)

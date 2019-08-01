@@ -106,20 +106,20 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public ICollection<string> Imports { get; private set; }
 
-        private bool _isArray = false;
+        private bool isNativeArray = false;
 
-        public bool IsArray
+        public bool IsNativeArray
         {
             get
             {
-                if (_isArray)
+                if (this.isNativeArray)
                 {
                     return true;
                 }
 
-                if (this.IsCollectionType())
+                if (this.IsArgumentsType())
                 {
-                    SetArray(); // add to cache
+                    SetNativeArray(); // add to cache
 
                     return true;
                 }
@@ -241,9 +241,9 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             Dependency = dependency;
         }
 
-        public void SetArray()
+        public void SetNativeArray()
         {
-            _isArray = true;
+            this.isNativeArray = true;
         }
 
         public void SetImports(ICollection<string> imports)

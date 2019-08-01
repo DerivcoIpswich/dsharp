@@ -212,7 +212,7 @@ namespace DSharp.Compiler.Generator
                 writer.Write(" integer=\"true\"");
             }
 
-            if (typeSymbol.IsArray)
+            if (typeSymbol.IsNativeArray)
             {
                 ClassSymbol classSymbol = (ClassSymbol) typeSymbol;
 

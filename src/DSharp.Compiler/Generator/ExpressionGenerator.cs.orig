@@ -79,6 +79,19 @@ namespace DSharp.Compiler.Generator
 
                     if (!indexerSymbol.UseScriptIndexer)
                     {
+<<<<<<< HEAD
+                        writer.Write(((BaseExpression)indexExpression.ObjectReference)
+                                     .EvaluatedType.FullGeneratedName);
+                        writer.Write(".prototype.set_");
+                        writer.Write(indexExpression.Indexer.GeneratedName);
+                        writer.Write(".call(");
+                        writer.Write(generator.CurrentImplementation.ThisIdentifier);
+                        writer.Write(", ");
+                        GenerateExpressionList(generator, symbol, indexExpression.Indices);
+                        writer.Write(", ");
+                        GenerateExpression(generator, symbol, expression.RightOperand);
+                        writer.Write(")");
+=======
                         Debug.Assert(indexExpression.Type == ExpressionType.Indexer);
 
                         if (indexExpression.ObjectReference is BaseExpression objectReference)
@@ -107,6 +120,7 @@ namespace DSharp.Compiler.Generator
                         }
 
                         return;
+>>>>>>> feature/csharp-3
                     }
                     else if (indexerSymbol.Parent is TypeSymbol typeSymbol && !typeSymbol.IsNativeArray)
                     {

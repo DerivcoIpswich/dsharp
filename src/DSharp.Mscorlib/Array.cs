@@ -21,11 +21,8 @@ namespace System
         [ScriptName("length")]
         public extern int Length { get; }
 
-        [ScriptField]
-        [ScriptName("length")]
         public extern int Count { get; }
 
-        [ScriptName("push")]
         public extern int Add(object value);
 
         public extern void Clear();
@@ -36,12 +33,11 @@ namespace System
 
         public extern int IndexOf(object value);
 
-        [DSharpScriptMemberName("remove")]
+        public extern void Insert(int index, object value);
+
         public extern void Remove(object value);
 
         public extern void RemoveAt(int index);
-
-        public extern static explicit operator ArrayList(Array array);
 
         public extern static explicit operator List<object>(Array array);
     }

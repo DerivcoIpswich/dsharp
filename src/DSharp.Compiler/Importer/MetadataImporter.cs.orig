@@ -104,10 +104,14 @@ namespace DSharp.Compiler.Importer
 
             // Resolve Base Types
             foreach (TypeSymbol typeSymbol in importedTypes)
-                if (typeSymbol is ClassSymbol classSymbol)
+                if (typeSymbol.Type == SymbolType.Class)
                 {
-                    ImportBaseType(classSymbol);
-                    BuildInterfaceAssociations(classSymbol);
+<<<<<<< HEAD
+                    ImportBaseType((ClassSymbol)typeSymbol);
+=======
+                    ImportBaseType((ClassSymbol) typeSymbol);
+                    BuildInterfaceAssociations((ClassSymbol)typeSymbol);
+>>>>>>> feature/csharp-3
                 }
                 else if (typeSymbol.Type == SymbolType.Interface)
                 {

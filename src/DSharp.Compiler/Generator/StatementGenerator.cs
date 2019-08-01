@@ -4,6 +4,7 @@
 //
 
 using System.Diagnostics;
+using DSharp.Compiler.Extensions;
 using DSharp.Compiler.ScriptModel.Expressions;
 using DSharp.Compiler.ScriptModel.Statements;
 using DSharp.Compiler.ScriptModel.Symbols;
@@ -109,6 +110,7 @@ namespace DSharp.Compiler.Generator
                                                    ForInStatement statement)
         {
             ScriptTextWriter writer = generator.Writer;
+            TypeSymbol evaluatedType = statement.CollectionExpression.EvaluatedType;
 
             if (statement.IsDictionaryEnumeration)
             {
@@ -159,7 +161,7 @@ namespace DSharp.Compiler.Generator
                 writer.Indent--;
                 writer.WriteLine("}");
             }
-            else if (statement.CollectionExpression.EvaluatedType.IsArray)
+            else if (evaluatedType.IsNativeArray || evaluatedType.IsListType())
             {
                 string dataSourceVariableName = statement.LoopVariable.GeneratedName;
                 string indexVariableName = dataSourceVariableName + "_index";
@@ -174,8 +176,16 @@ namespace DSharp.Compiler.Generator
 
                 ++writer.Indent;
 
-                // var i = items[items_index];
-                writer.WriteLine("var " + statement.ItemVariable.GeneratedName + " = " + dataSourceVariableName + "[" + indexVariableName + "];");
+                if (evaluatedType.IsNativeArray)
+                {
+                    // var i = items[items_index];
+                    writer.WriteLine("var " + statement.ItemVariable.GeneratedName + " = " + dataSourceVariableName + "[" + indexVariableName + "];");
+                }
+                else
+                {
+                    // var i = ss.getItem(items, items_index);
+                    writer.WriteLine("var " + statement.ItemVariable.GeneratedName + " = ss.getItem(" + dataSourceVariableName + ", " + indexVariableName + ");");
+                }
 
                 GenerateStatement(generator, symbol, statement.Body);
 

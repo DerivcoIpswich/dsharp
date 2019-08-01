@@ -7,6 +7,7 @@ namespace System.Collections.Generic
     [ScriptName("IEnumerable")]
     public interface IEnumerable<T> : IEnumerable
     {
+        [DSharpScriptMemberName("enumerate")]
         new IEnumerator<T> GetEnumerator();
     }
 }

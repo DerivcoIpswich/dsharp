@@ -29,7 +29,7 @@ define('test', ['ss'], function(ss) {
       sum = 0;
       var $enum2 = (items);
       for(var $enum2_index = 0; $enum2_index < $enum2.length; ++$enum2_index) {
-        var i = $enum2[$enum2_index];
+        var i = ss.getItem($enum2, $enum2_index);
         sum += i;
       }
       sum = 0;

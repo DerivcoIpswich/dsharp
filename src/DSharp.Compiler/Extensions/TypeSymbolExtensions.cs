@@ -29,7 +29,7 @@ namespace DSharp.Compiler.Extensions
             return null;
         }
 
-        internal static bool IsCollectionType(this TypeSymbol symbol)
+        internal static bool IsListType(this TypeSymbol symbol)
         {
             var interfaces = symbol.GetInterfaces();
 
@@ -38,12 +38,18 @@ namespace DSharp.Compiler.Extensions
                 return false;
             }
 
-            if (interfaces.Any(i => i.FullName.StartsWith("System.Collections") && i.FullGeneratedName.EndsWith("ICollection")))
+            if (interfaces.Any(i => i.FullName.StartsWith("System.Collections")
+                && (i.FullGeneratedName.EndsWith("IList") || i.FullGeneratedName.EndsWith("IList`1"))))
             {
                 return true;
             }
 
             return false;
+        }
+
+        internal static bool IsArgumentsType(this TypeSymbol symbol)
+        {
+            return symbol.FullName == "System.Arguments";
         }
     }
 }
