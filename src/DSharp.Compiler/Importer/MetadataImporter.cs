@@ -337,6 +337,13 @@ namespace DSharp.Compiler.Importer
                 fieldSymbol.SetVisibility(visibility);
                 ImportMemberDetails(fieldSymbol, null, field);
 
+                if (field.IsLiteral && field.HasConstant && !typeSymbol.IsCoreType
+                    && (field.FieldType.IsPrimitive || field.FieldType.Name == "String"))
+                {
+                    fieldSymbol.SetConstant();
+                    fieldSymbol.Value = field.Constant;
+                }
+
                 typeSymbol.AddMember(fieldSymbol);
             }
         }
@@ -427,8 +434,8 @@ namespace DSharp.Compiler.Importer
                 importedTypes = ImportAssemblies(mdSource);
             }
 
-            return resolveError 
-                ? null 
+            return resolveError
+                ? null
                 : importedTypes;
         }
 
@@ -477,9 +484,9 @@ namespace DSharp.Compiler.Importer
                 }
 
                 MethodSymbol methodSymbol = new MethodSymbol(
-                    methodName, 
-                    typeSymbol, 
-                    returnType, 
+                    methodName,
+                    typeSymbol,
+                    returnType,
                     MetadataHelpers.IsExtensionMethod(method));
 
                 methodSymbol.SetParseContext(method);

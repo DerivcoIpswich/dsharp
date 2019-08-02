@@ -64,6 +64,8 @@
     <Compile Remove="Source\Expression\Truthy\Code.cs" />
     <Compile Remove="Source\Expression\Tuples\Code.cs" />
     <Compile Remove="Source\Expression\Unary\Code.cs" />
+    <Compile Remove="Source\Member\Constants\Code.cs" />
+    <Compile Remove="Source\Member\Constants\Lib1.cs" />
     <Compile Remove="Source\Member\Constructors\Code.cs" />
     <Compile Remove="Source\Member\Events\Code.cs" />
     <Compile Remove="Source\Member\Fields\Code.cs" />
@@ -176,6 +178,7 @@
     <None Remove="Source\Expression\Truthy\Baseline.txt" />
     <None Remove="Source\Expression\Tuples\Baseline.txt" />
     <None Remove="Source\Expression\Unary\Baseline.txt" />
+    <None Remove="Source\Member\Constants\Lib1.dll" />
     <None Remove="Source\Member\Constructors\Baseline.txt" />
     <None Remove="Source\Member\Events\Baseline.txt" />
     <None Remove="Source\Member\Fields\Baseline.txt" />
@@ -530,6 +533,12 @@
     <Content Include="Source\Expression\Unary\Code.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Source\Member\Constants\Lib1.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Source\Member\Constants\Lib1.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Source\Member\Constructors\Baseline.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -790,6 +799,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Source\Expression\Generics3\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Source\Member\Constants\Code.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <Content Include="Source\Expression\Generics2\Code.cs">

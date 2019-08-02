@@ -560,6 +560,11 @@ namespace DSharp.Compiler.Generator
             {
                 writer.Write(expression.Field.GeneratedName);
             }
+            else if (expression.Field.IsConstant)
+            {
+                GenerateLiteralExpression(generator, symbol,
+                    new LiteralExpression(expression.Field.AssociatedType, expression.Field.Value));
+            }
             else
             {
                 GenerateExpression(generator, symbol, expression.ObjectReference);
