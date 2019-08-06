@@ -661,6 +661,7 @@ namespace DSharp.Compiler.Compiler
         {
             Debug.Assert(node.RightChild is NameNode);
 
+            memberSymbol = null;
             Expression objectExpression = null;
 
             if (node.LeftChild.NodeType == ParseNodeType.Name || node.LeftChild.NodeType == ParseNodeType.GenericName)
@@ -675,6 +676,11 @@ namespace DSharp.Compiler.Compiler
             if (objectExpression is MemberExpression)
             {
                 objectExpression = TransformMemberExpression((MemberExpression)objectExpression);
+            }
+
+            if (objectExpression == null)
+            {
+                throw new ExpressionBuildException($"ObjectExpression is null: {{{node.LeftChild.Token.Location}}} - {{{node.RightChild.Token.Location}}}");
             }
 
             if (objectExpression is LiteralExpression)
@@ -1078,6 +1084,11 @@ namespace DSharp.Compiler.Compiler
         {
             Symbol symbol = ResolveNameNodeSymbol(node, filter);
             Debug.Assert(symbol != null);
+
+            if (symbol == null)
+            {
+                throw new ExpressionBuildException($"Null Symbol for node: {node.Token.Location}");
+            }
 
             if (symbol is LocalSymbol localSymbol)
             {
