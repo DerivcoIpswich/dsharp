@@ -28,6 +28,7 @@
       <ScriptOutput Include="%(TfmOutputDirs.Identity)$(ScriptName).js;%(Identity)$(ScriptName).min.js" Condition="%(IsDSharpBuild) == 'true'" >
         <PackagePath>%(TfmOutputDirs.PackagePath)</PackagePath>
         <PackageCopyToOutput>true</PackageCopyToOutput>
+        <BuildAction>Content</BuildAction>
       </ScriptOutput>
     </ItemGroup>
   </Target>
@@ -41,11 +42,13 @@
         <Pack Condition="%(TfmOutputDirs.IsDSharpBuild)">true</Pack>
         <PackagePath>%(TfmOutputDirs.PackagePath)</PackagePath>
         <PackageCopyToOutput>true</PackageCopyToOutput>
+        <BuildAction>Content</BuildAction>
       </None>
       <None Include="@(PackagedScript -> '$(_tfmoutdir)%(Filename).min.js')">
         <Pack Condition="Exists('@(PackagedScript -> '$(_tfmoutdir)%(Filename).min.js')')">true</Pack>
         <PackagePath>%(TfmOutputDirs.PackagePath)</PackagePath>
         <PackageCopyToOutput>true</PackageCopyToOutput>
+        <BuildAction>Content</BuildAction>
       </None>
     </ItemGroup>
   </Target>
@@ -56,6 +59,7 @@
         <Pack Condition="Exists(%(Identity))">true</Pack>
         <PackagePath>%(ScriptOutput.PackagePath)</PackagePath>
         <PackageCopyToOutput>true</PackageCopyToOutput>
+        <BuildAction>Content</BuildAction>
       </None>
     </ItemGroup>
   </Target>
@@ -65,7 +69,7 @@
       <TfmOutputDirs Include="$(OutputPath)">
         <TargetFramework>$(TargetFramework)</TargetFramework>
         <TargetFrameworkIdentifier>$(TargetFrameworkIdentifier)</TargetFrameworkIdentifier>
-        <PackagePath>lib\$(TargetFramework)\</PackagePath>
+        <PackagePath>contentFiles\any\$(TargetFramework)\</PackagePath>
         <IsDSharpBuild>$(IsDSharpBuild)</IsDSharpBuild>
       </TfmOutputDirs>
     </ItemGroup>
