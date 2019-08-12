@@ -1,0 +1,9 @@
+<Project>
+  <ItemGroup>
+<<<<<<< HEAD
+    <PackageReference Include="DSharp.Web" Version="1.0.0-dev.158" IsImplicitlyDefined="true" PrivateAssets="All" />
+=======
+    <PackageReference Include="DSharp.Web" Version="1.0.0-dev.137" IsImplicitlyDefined="true" PrivateAssets="All" />
+>>>>>>> master
+  </ItemGroup>
+</Project>
