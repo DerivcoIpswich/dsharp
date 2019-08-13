@@ -70,6 +70,7 @@ namespace DSharp.Compiler.Generator
                         GenerateExpression(generator, symbol, expression.RightOperand);
                     }
 
+                    propExpression.Property.IncrementReferenceCount();
                     return;
                 }
 
@@ -106,6 +107,7 @@ namespace DSharp.Compiler.Generator
                         writer.Write(")");
                     }
 
+                    indexExpression.Indexer.IncrementReferenceCount();
                     return;
                 }
             }
@@ -133,6 +135,7 @@ namespace DSharp.Compiler.Generator
                     writer.Write(OperatorConverter.OperatorToString(expression.Operator - 1));
                     GenerateExpression(generator, symbol, expression.RightOperand);
 
+                    propExpression.Property.IncrementReferenceCount();
                     return;
                 }
             }
@@ -159,6 +162,7 @@ namespace DSharp.Compiler.Generator
                 writer.Write(typeExpression.AssociatedType.FullGeneratedName);
                 writer.Write(")");
 
+                typeExpression.AssociatedType.Dependency.IncrementTypeReferenceCount();
                 return;
             }
             else if (expression.Operator == Operator.EqualEqualEqual ||
@@ -370,6 +374,8 @@ namespace DSharp.Compiler.Generator
                 GenerateExpression(generator, symbol, expression.Handler);
                 writer.Write(")");
             }
+
+            expression.Event.IncrementReferenceCount();
         }
 
         public static void GenerateExpression(ScriptGenerator generator, MemberSymbol symbol, Expression expression)
@@ -571,6 +577,8 @@ namespace DSharp.Compiler.Generator
                 writer.Write(".");
                 writer.Write(expression.Field.GeneratedName);
             }
+
+            expression.Field.IncrementReferenceCount();
         }
 
         private static void GenerateIndexerExpression(ScriptGenerator generator, MemberSymbol symbol,
@@ -605,6 +613,8 @@ namespace DSharp.Compiler.Generator
                 GenerateExpressionList(generator, expression.Indexer, expression.Indices);
                 writer.Write(")");
             }
+
+            expression.Indexer.IncrementReferenceCount();
         }
 
         private static void GenerateInlineScriptExpression(ScriptGenerator generator, MemberSymbol symbol,
@@ -953,6 +963,8 @@ namespace DSharp.Compiler.Generator
                     writer.Write(")");
                 }
             }
+
+            expression.Method.IncrementReferenceCount();
         }
 
         private static void GenerateNewExpression(ScriptGenerator generator, MemberSymbol symbol,
@@ -1076,6 +1088,7 @@ namespace DSharp.Compiler.Generator
             }
 
             writer.Write(")");
+            expression.AssociatedType.IncrementReferenceCount();
         }
 
         private static void GeneratePropertyExpression(ScriptGenerator generator, MemberSymbol symbol,
@@ -1104,6 +1117,8 @@ namespace DSharp.Compiler.Generator
                 writer.Write(".");
                 writer.Write(expression.Property.GeneratedName);
             }
+
+            expression.Property.IncrementReferenceCount();
         }
 
         private static void GenerateThisExpression(ScriptGenerator generator, MemberSymbol symbol,
@@ -1118,6 +1133,7 @@ namespace DSharp.Compiler.Generator
         {
             ScriptTextWriter writer = generator.Writer;
             writer.Write(expression.AssociatedType.FullGeneratedName);
+            expression.AssociatedType.IncrementReferenceCount();
         }
 
         private static void GenerateUnaryExpression(ScriptGenerator generator, MemberSymbol symbol,

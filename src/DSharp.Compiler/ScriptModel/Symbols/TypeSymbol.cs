@@ -34,6 +34,8 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public ScriptReference Dependency { get; private set; }
 
+        public ScriptReference Source { get; private set; }
+
         public override string DocumentationId
         {
             get
@@ -239,6 +241,21 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
             IsApplicationType = false;
             Dependency = dependency;
+        }
+
+        public void SetSource(ScriptReference source)
+        {
+            Source = source;
+        }
+
+        public void IncrementReferenceCount()
+        {
+            if (Source == null)
+            {
+                return;
+            }
+
+            Source.IncrementTypeReferenceCount();
         }
 
         public void SetArray()

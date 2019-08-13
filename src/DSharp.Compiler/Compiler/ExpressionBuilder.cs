@@ -2041,6 +2041,7 @@ namespace DSharp.Compiler.Compiler
 
                     if (((FieldSymbol)expression.Member).IsConstant)
                     {
+                        expression.Member.IncrementReferenceCount();
                         return new LiteralExpression(expression.Member.AssociatedType,
                             ((FieldSymbol)expression.Member).Value);
                     }

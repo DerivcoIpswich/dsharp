@@ -105,5 +105,22 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         {
             HasInitializer = hasInitializer;
         }
+
+        public override void IncrementReferenceCount()
+        {
+            if (IsConstant)
+            {
+                TypeSymbol parent = (TypeSymbol)Parent;
+
+                if (parent.Source != null)
+                {
+                    parent.Source.IncrementConstReferenceCount();
+                }
+
+                return;
+            }
+
+            base.IncrementReferenceCount();
+        }
     }
 }

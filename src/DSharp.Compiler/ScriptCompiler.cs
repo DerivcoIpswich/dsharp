@@ -309,6 +309,17 @@ namespace DSharp.Compiler
                     continue;
                 }
 
+                if (dependency.TypeReferenceCount <= 0
+                    && dependency.Identifier != DSharpStringResources.DSHARP_SCRIPT_NAME)
+                {
+                    if (dependency.ConstReferenceCount <= 0)
+                    {
+                        Console.Error.WriteLine($"WARN: Unnecessary dependency to '{dependency.Identifier}'.");
+                    }
+
+                    continue;
+                }
+
                 if (firstDependency)
                 {
                     depLookupBuilder.Append("var ");

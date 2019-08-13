@@ -771,15 +771,13 @@ namespace DSharp.Compiler.Importer
                 assembly = mdSource.GetMetadata(assemblyPath);
             }
 
-            string scriptNamespace = null;
+            ScriptReference dependency = null;
             scriptName = MetadataHelpers.GetScriptAssemblyName(assembly, out string scriptIdentifier);
 
             if (string.IsNullOrEmpty(scriptName) == false)
             {
-                ScriptReference dependency = new ScriptReference(scriptName, scriptIdentifier);
-
+                dependency = new ScriptReference(scriptName, scriptIdentifier);
                 symbols.AddDependency(dependency);
-                scriptNamespace = dependency.Identifier;
             }
 
             foreach (TypeDefinition type in assembly.MainModule.Types)
@@ -790,7 +788,7 @@ namespace DSharp.Compiler.Importer
                         continue;
                     }
 
-                    ImportType(mdSource, type, coreAssembly, scriptNamespace);
+                    ImportType(mdSource, type, coreAssembly, dependency);
                 }
                 catch (Exception e)
                 {
@@ -799,7 +797,7 @@ namespace DSharp.Compiler.Importer
         }
 
         private void ImportType(MetadataSource mdSource, TypeDefinition type, bool inScriptCoreAssembly,
-                                string scriptNamespace)
+                                ScriptReference dependency)
         {
             if (type.IsPublic == false)
             {
@@ -880,13 +878,11 @@ namespace DSharp.Compiler.Importer
                     typeSymbol.AddGenericParameters(genericArguments);
                 }
 
-                ScriptReference dependency = null;
                 string dependencyName = MetadataHelpers.GetScriptDependencyName(type, out string dependencyIdentifier);
 
                 if (dependencyName != null)
                 {
                     dependency = new ScriptReference(dependencyName, dependencyIdentifier);
-                    scriptNamespace = dependency.Identifier;
                 }
 
                 typeSymbol.SetImported(dependency);
@@ -894,13 +890,13 @@ namespace DSharp.Compiler.Importer
 
                 bool ignoreNamespace = MetadataHelpers.ShouldIgnoreNamespace(type);
 
-                if (ignoreNamespace || string.IsNullOrEmpty(scriptNamespace))
+                if (ignoreNamespace || dependency == null || string.IsNullOrEmpty(dependency.Identifier))
                 {
                     typeSymbol.SetIgnoreNamespace();
                 }
                 else
                 {
-                    typeSymbol.ScriptNamespace = scriptNamespace;
+                    typeSymbol.ScriptNamespace = dependency.Identifier;
                 }
 
                 typeSymbol.IsPublic = true;
@@ -912,6 +908,7 @@ namespace DSharp.Compiler.Importer
 
                 SetArrayTypeMetadata(type, typeSymbol, scriptName);
 
+                typeSymbol.SetSource(dependency);
                 namespaceSymbol.AddType(typeSymbol);
                 importedTypes.Add(typeSymbol);
             }
