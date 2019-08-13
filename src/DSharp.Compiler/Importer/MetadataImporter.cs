@@ -832,6 +832,26 @@ namespace DSharp.Compiler.Importer
             definePropertyMethod.AddParameter(new ParameterSymbol("propertyName", definePropertyMethod, stringType, ParameterMode.In));
 
             classSymbol.AddMember(definePropertyMethod);
+
+            MethodSymbol getGenericConstructorMethod 
+                = new MethodSymbol("getGenericConstructor", classSymbol, typeSymbol, MemberVisibility.Public | MemberVisibility.Static);
+            getGenericConstructorMethod.SetTransformName(DSharpStringResources.ScriptExportMember("getGenericConstructor"));
+            getGenericConstructorMethod.AddParameter(
+                new ParameterSymbol("ctorMethod", getGenericConstructorMethod, typeSymbol, ParameterMode.In));
+            getGenericConstructorMethod.AddParameter(
+                new ParameterSymbol("typeArguments", getGenericConstructorMethod, objectType, ParameterMode.In));
+
+            classSymbol.AddMember(getGenericConstructorMethod);
+
+            MethodSymbol getTypeArgument
+                = new MethodSymbol("getTypeArgument", classSymbol, typeSymbol, MemberVisibility.Public | MemberVisibility.Static);
+            getTypeArgument.SetTransformName(DSharpStringResources.ScriptExportMember("getTypeArgument"));
+            getTypeArgument.AddParameter(
+                new ParameterSymbol("instance", getTypeArgument, objectType, ParameterMode.In));
+            getTypeArgument.AddParameter(
+                new ParameterSymbol("typeArgumentName", getTypeArgument, stringType, ParameterMode.In));
+
+            classSymbol.AddMember(getTypeArgument);
         }
 
         private void ImportScriptAssembly(MetadataSource mdSource, string assemblyPath, bool coreAssembly)

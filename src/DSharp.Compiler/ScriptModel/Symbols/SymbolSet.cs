@@ -894,6 +894,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                 foreach (ParseNode argNode in genericNameNode.TypeArguments)
                 {
                     TypeSymbol argType = ResolveType(argNode, symbolTable, contextSymbol);
+                    Debug.Assert(argType != null);
                     typeArguments.Add(argType);
                 }
 
@@ -983,6 +984,11 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                 {
                     var genericType = methodContext.GenericArguments?.SingleOrDefault(a => a.Name == name);
 
+                    if(genericType == null && methodContext.Parent.IsGeneric)
+                    {
+                        genericType = methodContext.Parent.GenericParameters.FirstOrDefault(a => a.Name == name);
+                    }
+
                     if (genericType != null)
                     {
                         return genericType;
@@ -1013,6 +1019,15 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                 if (typeSymbol == null)
                 {
                     return null;
+                }
+
+                if (typeSymbol.IsGeneric)
+                {
+                    var resolved = typeSymbol.GenericParameters.FirstOrDefault(param => param.Name == name);
+                    if(resolved != null)
+                    {
+                        return resolved;
+                    }
                 }
 
                 bool systemNamespaceChecked = false;

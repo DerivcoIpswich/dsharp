@@ -665,6 +665,7 @@ namespace DSharp.Compiler.Compiler
         {
             Debug.Assert(node.RightChild is NameNode);
 
+            memberSymbol = null;
             Expression objectExpression = null;
 
             if (node.LeftChild.NodeType == ParseNodeType.Name || node.LeftChild.NodeType == ParseNodeType.GenericName)
@@ -679,6 +680,11 @@ namespace DSharp.Compiler.Compiler
             if (objectExpression is MemberExpression)
             {
                 objectExpression = TransformMemberExpression((MemberExpression)objectExpression);
+            }
+
+            if (objectExpression == null)
+            {
+                throw new ExpressionBuildException($"ObjectExpression is null: {{{node.LeftChild.Token.Location}}} - {{{node.RightChild.Token.Location}}}");
             }
 
             if (objectExpression is LiteralExpression)
@@ -1082,6 +1088,11 @@ namespace DSharp.Compiler.Compiler
         {
             Symbol symbol = ResolveNameNodeSymbol(node, filter);
             Debug.Assert(symbol != null);
+
+            if (symbol == null)
+            {
+                throw new ExpressionBuildException($"Null Symbol for node: {node.Token.Location}");
+            }
 
             if (symbol is LocalSymbol localSymbol)
             {
@@ -1774,6 +1785,16 @@ namespace DSharp.Compiler.Compiler
             TypeSymbol referencedType = symbolSet.ResolveType(node.TypeReference, symbolTable, symbolContext);
             Debug.Assert(referencedType != null);
 
+            return CreateTypeOfExpression(referencedType);
+        }
+
+        private Expression CreateTypeOfExpression(TypeSymbol referencedType)
+        {
+            if(referencedType == null)
+            {
+                throw new ArgumentNullException(nameof(referencedType));
+            }
+
             if (referencedType.Dependency != null)
             {
                 symbolSet.AddDependency(referencedType.Dependency);
@@ -1782,7 +1803,52 @@ namespace DSharp.Compiler.Compiler
             TypeSymbol typeSymbol = symbolSet.ResolveIntrinsicType(IntrinsicType.Type);
             Debug.Assert(typeSymbol != null);
 
+            if (referencedType is GenericParameterSymbol genericParameterSymbol)
+            {
+                TypeSymbol scriptSymbol = symbolSet.ResolveIntrinsicType(IntrinsicType.Script);
+                TypeSymbol stringSymbol = symbolSet.ResolveIntrinsicType(IntrinsicType.String);
+
+                TypeExpression scriptExpression = new TypeExpression(scriptSymbol, SymbolFilter.Public | SymbolFilter.StaticMembers);
+                var methodSymbol = (MethodSymbol)scriptSymbol.GetMember("getTypeArgument");
+                var methodExpression = new MethodExpression(scriptExpression, methodSymbol);
+                methodExpression.AddParameterValue(new ThisExpression(referencedType.Parent as ClassSymbol, false));
+                methodExpression.AddParameterValue(new LiteralExpression(stringSymbol, genericParameterSymbol.GeneratedName));
+
+                //ss.getTypeArgument(this, "T");
+                return methodExpression;
+            }
+            else if (referencedType.IsGeneric)
+            {
+                TypeSymbol scriptSymbol = symbolSet.ResolveIntrinsicType(IntrinsicType.Script);
+
+                TypeExpression scriptExpression = new TypeExpression(scriptSymbol, SymbolFilter.Public | SymbolFilter.StaticMembers);
+                var methodSymbol = (MethodSymbol)scriptSymbol.GetMember("getGenericConstructor");
+                var methodExpression = new MethodExpression(scriptExpression, methodSymbol);
+
+                methodExpression.AddParameterValue(new LiteralExpression(typeSymbol, referencedType));
+                ObjectExpression typeInferenceMap = CreateTypeInterenceMap(referencedType);
+                methodExpression.AddParameterValue(typeInferenceMap);
+
+                //return an expression like: ss.getGenericConstructor(MyType, { T: ConstructorOfT })
+                return methodExpression; 
+            }
+
             return new LiteralExpression(typeSymbol, referencedType);
+        }
+
+        private ObjectExpression CreateTypeInterenceMap(TypeSymbol referencedType)
+        {
+            Dictionary<string, Expression> typeInterenceMap = new Dictionary<string, Expression>();
+            for (int i = 0; i < referencedType.GenericParameters.Count; i++)
+            {
+                var genericParameter = referencedType.GenericParameters[i];
+                var genericArgument = referencedType.GenericArguments[i];
+
+                var typeofExpression = CreateTypeOfExpression(genericArgument);
+                typeInterenceMap.Add(genericParameter.GeneratedName, typeofExpression);
+            }
+
+            return new ObjectExpression(null, typeInterenceMap);
         }
 
         private Expression ProcessUnaryExpressionNode(UnaryExpressionNode node)

@@ -96,9 +96,9 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public override string GeneratedName => base.GeneratedName.Replace("`", "_$");
 
-        public ICollection<TypeSymbol> GenericArguments { get; private set; }
+        public IList<TypeSymbol> GenericArguments { get; private set; }
 
-        public ICollection<GenericParameterSymbol> GenericParameters { get; private set; }
+        public IList<GenericParameterSymbol> GenericParameters { get; private set; }
 
         public TypeSymbol GenericType { get; private set; }
 
@@ -173,7 +173,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             memberTable[memberSymbol.Name] = memberSymbol;
         }
 
-        public void AddGenericArguments(TypeSymbol genericType, ICollection<TypeSymbol> genericArguments)
+        public void AddGenericArguments(TypeSymbol genericType, IList<TypeSymbol> genericArguments)
         {
             Debug.Assert(genericType != null);
             Debug.Assert(GenericType == null);
@@ -188,7 +188,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             GenericArguments = genericArguments;
         }
 
-        public void AddGenericParameters(ICollection<GenericParameterSymbol> genericParameters)
+        public void AddGenericParameters(IList<GenericParameterSymbol> genericParameters)
         {
             Debug.Assert(GenericParameters == null);
             Debug.Assert(genericParameters != null);

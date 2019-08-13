@@ -8,6 +8,7 @@ using DSharp.Compiler.CodeModel.Attributes;
 using DSharp.Compiler.CodeModel.Names;
 using DSharp.Compiler.CodeModel.Statements;
 using DSharp.Compiler.CodeModel.Tokens;
+using DSharp.Compiler.CodeModel.Types;
 
 namespace DSharp.Compiler.CodeModel.Members
 {
@@ -71,5 +72,7 @@ namespace DSharp.Compiler.CodeModel.Members
         internal ParseNodeList TypeParameters => typeParameters;
 
         internal ParseNodeList Constraints => constraints;
+
+        public bool IsGenericMethod => TypeParameters?.Any() ?? false;
     }
 }

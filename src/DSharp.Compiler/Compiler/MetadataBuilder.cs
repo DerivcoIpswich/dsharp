@@ -835,12 +835,13 @@ namespace DSharp.Compiler.Compiler
             }
             else
             {
-                TypeSymbol returnType = typeSymbol.SymbolSet.ResolveType(methodNode.Type, symbolTable, typeSymbol);
-                Debug.Assert(returnType != null);
+                TypeSymbol returnTypeSymbol = ResolveMethodReturnType(methodNode, typeSymbol);
 
-                if (returnType != null)
+                Debug.Assert(returnTypeSymbol != null);
+
+                if (returnTypeSymbol != null)
                 {
-                    method = new MethodSymbol(methodNode.Name, typeSymbol, returnType, methodNode.IsExensionMethod);
+                    method = new MethodSymbol(methodNode.Name, typeSymbol, returnTypeSymbol, methodNode.IsExensionMethod);
 
                     if (methodNode.TypeParameters.Any())
                     {
@@ -922,6 +923,23 @@ namespace DSharp.Compiler.Compiler
             return method;
         }
 
+        private TypeSymbol ResolveMethodReturnType(MethodDeclarationNode methodNode, TypeSymbol typeSymbol)
+        {
+            TypeSymbol returnTypeSymbol;
+
+            if (methodNode.IsGenericReturnType())
+            {
+                //We should try and find the best resolved type here, or maybe have a marker type for a generic symbol?
+                returnTypeSymbol = typeSymbol.SymbolSet.ResolveIntrinsicType(IntrinsicType.Object);
+            }
+            else
+            {
+                returnTypeSymbol = typeSymbol.SymbolSet.ResolveType(methodNode.Type, symbolTable, typeSymbol);
+            }
+
+            return returnTypeSymbol;
+        }
+
         private void BuildMethodGenericArguments(MethodSymbol method, MethodDeclarationNode methodNode, TypeSymbol typeSymbol)
         {
             List<GenericParameterSymbol> genericArguments = new List<GenericParameterSymbol>();
@@ -976,6 +994,13 @@ namespace DSharp.Compiler.Compiler
 
             TypeSymbol parameterType =
                 methodSymbol.SymbolSet.ResolveType(parameterNode.Type, symbolTable, methodSymbol);
+            if (parameterType == null && methodSymbol.Parent.IsGeneric)
+            {
+                if(parameterNode.Type is NameNode nameNode)
+                {
+                    parameterType = methodSymbol.Parent.GenericParameters.FirstOrDefault(parameter => parameter.Name == nameNode.Name);
+                }
+            }
 
             Debug.Assert(parameterType != null);
 
@@ -1094,6 +1119,12 @@ namespace DSharp.Compiler.Compiler
             TypeSymbol typeSymbol = null;
             ParseNodeList attributes = typeNode.Attributes;
 
+            string name = typeNode.Name;
+            if (typeNode.TypeParameters.Any())
+            {
+                name += "`" + typeNode.TypeParameters.Count;
+            }
+
             if (typeNode.Type == TokenType.Class || typeNode.Type == TokenType.Struct)
             {
                 CustomTypeNode customTypeNode = (CustomTypeNode)typeNode;
@@ -1101,15 +1132,15 @@ namespace DSharp.Compiler.Compiler
 
                 if (AttributeNode.FindAttribute(attributes, "ScriptObject") != null)
                 {
-                    typeSymbol = new RecordSymbol(typeNode.Name, namespaceSymbol);
+                    typeSymbol = new RecordSymbol(name, namespaceSymbol);
                 }
                 else if (AttributeNode.FindAttribute(attributes, "ScriptResources") != null)
                 {
-                    typeSymbol = new ResourcesSymbol(typeNode.Name, namespaceSymbol);
+                    typeSymbol = new ResourcesSymbol(name, namespaceSymbol);
                 }
                 else
                 {
-                    typeSymbol = new ClassSymbol(typeNode.Name, namespaceSymbol);
+                    typeSymbol = new ClassSymbol(name, namespaceSymbol);
 
                     NameNode baseTypeNameNode = null;
 
@@ -1121,7 +1152,7 @@ namespace DSharp.Compiler.Compiler
             }
             else if (typeNode.Type == TokenType.Interface)
             {
-                typeSymbol = new InterfaceSymbol(typeNode.Name, namespaceSymbol);
+                typeSymbol = new InterfaceSymbol(name, namespaceSymbol);
             }
             else if (typeNode.Type == TokenType.Enum)
             {
@@ -1134,11 +1165,11 @@ namespace DSharp.Compiler.Compiler
                     flags = true;
                 }
 
-                typeSymbol = new EnumerationSymbol(typeNode.Name, namespaceSymbol, flags);
+                typeSymbol = new EnumerationSymbol(name, namespaceSymbol, flags);
             }
             else if (typeNode.Type == TokenType.Delegate)
             {
-                typeSymbol = new DelegateSymbol(typeNode.Name, namespaceSymbol);
+                typeSymbol = new DelegateSymbol(name, namespaceSymbol);
                 typeSymbol.SetTransformedName("Function");
                 typeSymbol.SetIgnoreNamespace();
             }
@@ -1147,6 +1178,22 @@ namespace DSharp.Compiler.Compiler
 
             if (typeSymbol != null)
             {
+                List<GenericParameterSymbol> genericParameterSymbols = new List<GenericParameterSymbol>();
+
+                for (int i = 0; i < typeNode.TypeParameters.Count; i++)
+                {
+                    var typeParameter = (TypeParameterNode)typeNode.TypeParameters[i];
+
+                    GenericParameterSymbol typeParameterSymbol
+                        = new GenericParameterSymbol(i, typeParameter.NameNode.Name, true, symbols.GlobalNamespace);
+                    genericParameterSymbols.Add(typeParameterSymbol);
+                }
+
+                if(genericParameterSymbols.Any())
+                {
+                    typeSymbol.AddGenericParameters(genericParameterSymbols);
+                }
+
                 if (typeNode.Modifiers.HasFlag(Modifiers.Public))
                 {
                     typeSymbol.IsPublic = true;

@@ -425,6 +425,11 @@
         "ComparisonFile": "Baseline.txt"
       },
       {
+        "Name": "GenericClasses",
+        "SourceFiles": [ "Code.cs" ],
+        "ComparisonFile": "Baseline.txt"
+      },
+      {
         "Name": "Globals",
         "SourceFiles": [ "Code.cs" ],
         "ComparisonFile": "Baseline.txt"

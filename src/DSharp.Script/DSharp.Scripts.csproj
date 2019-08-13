@@ -19,4 +19,12 @@
       <EmbeddedResource Include="dist\ds.js" />
     </ItemGroup>
   </Target>
+
+  <ItemGroup>
+    <None Include="dist\**\*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="dist\" />
+  </ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-// UserTypeNode.cs
+﻿// UserTypeNode.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -15,8 +15,6 @@ namespace DSharp.Compiler.CodeModel.Types
         private readonly ParseNodeList constraintClauses;
         private readonly AtomicNameNode nameNode;
 
-        private readonly ParseNodeList typeParameters;
-
         public UserTypeNode(ParseNodeType type, Token token, TokenType tokenType,
                             ParseNodeList attributes,
                             Modifiers modifiers,
@@ -29,9 +27,11 @@ namespace DSharp.Compiler.CodeModel.Types
             Attributes = GetParentedNodeList(AttributeNode.GetAttributeList(attributes));
             Modifiers = modifiers;
             nameNode = name;
-            this.typeParameters = GetParentedNodeList(typeParameters);
+            this.TypeParameters = GetParentedNodeList(typeParameters);
             this.constraintClauses = GetParentedNodeList(constraintClauses);
         }
+
+        public ParseNodeList TypeParameters { get; }
 
         public ParseNodeList Attributes { get; }
 
@@ -57,9 +57,9 @@ namespace DSharp.Compiler.CodeModel.Types
                 Modifiers |= partialTypeNode.Modifiers & Modifiers.PartialModifiers;
             }
 
-            if (partialTypeNode.typeParameters.Count > 0)
+            if (partialTypeNode.TypeParameters.Count > 0)
             {
-                typeParameters.Append(GetParentedNodeList(partialTypeNode.typeParameters));
+                TypeParameters.Append(GetParentedNodeList(partialTypeNode.TypeParameters));
             }
 
             if (partialTypeNode.constraintClauses.Count > 0)

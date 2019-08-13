@@ -108,6 +108,8 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public bool IsExtensionMethod { get; } = false;
 
+        public new TypeSymbol Parent => base.Parent as TypeSymbol;
+
         public void AddGenericArguments(ICollection<GenericParameterSymbol> genericArguments)
         {
             Debug.Assert(GenericArguments == null);

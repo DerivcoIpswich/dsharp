@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup Label="SetDefaults">
     <GenerateScript Condition="'$(GenerateScript)' == ''">true</GenerateScript>
-    <LangVersion Condition="'$(GenerateScript)' == 'True'">ISO-2</LangVersion>
+    <LangVersion Condition="'$(GenerateScript)' == 'True'">3</LangVersion>
     <ExcludeCoreLib Condition="'$(ExcludeCoreLib)' == ''">false</ExcludeCoreLib>
     <SkipScriptCopy Condition="'$(SkipScriptCopy)' == ''">false</SkipScriptCopy>
     <DefineConstants>DSHARP;@(DefineConstants)</DefineConstants>

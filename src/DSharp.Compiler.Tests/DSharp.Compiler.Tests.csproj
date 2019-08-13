@@ -88,6 +88,7 @@
     <Compile Remove="Source\Type\Delegates\Code.cs" />
     <Compile Remove="Source\Type\Enumerator\Code.cs" />
     <Compile Remove="Source\Type\Enums\Code.cs" />
+    <Compile Remove="Source\Type\GenericClasses\Code.cs" />
     <Compile Remove="Source\Type\Globals\Code.cs" />
     <Compile Remove="Source\Type\Imported\Code.cs" />
     <Compile Remove="Source\Type\Interfaces\Code.cs" />
@@ -800,6 +801,9 @@
     <None Include="Source\Expression\Generics3\Code.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Source\Type\GenericClasses\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Content Include="Source\Expression\Generics2\Code.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -828,6 +832,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Source\Expression\Generics3\Baseline.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Source\Type\GenericClasses\Baseline.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
