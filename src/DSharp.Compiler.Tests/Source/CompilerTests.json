@@ -298,6 +298,12 @@
     "Category": "Member",
     "Tests": [
       {
+        "Name": "Constants",
+        "SourceFiles": [ "Code.cs" ],
+        "ComparisonFile": "Baseline.txt",
+        "References": [ "Lib1.dll" ]
+      },
+      {
         "Name": "Constructors",
         "SourceFiles": [ "Code.cs" ],
         "ComparisonFile": "Baseline.txt"
