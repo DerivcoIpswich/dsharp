@@ -777,6 +777,7 @@ namespace DSharp.Compiler.Importer
             TypeSymbol boolType = symbolTable.FindSymbol<TypeSymbol>(nameof(Boolean), null, SymbolFilter.Types);
             TypeSymbol dateType = symbolTable.FindSymbol<TypeSymbol>("Date", null, SymbolFilter.Types);
             TypeSymbol voidType = symbols.ResolveIntrinsicType(IntrinsicType.Void);
+            TypeSymbol typeSymbol = symbols.ResolveIntrinsicType(IntrinsicType.Type);
 
             Debug.Assert(objectType != null);
             Debug.Assert(stringType != null);

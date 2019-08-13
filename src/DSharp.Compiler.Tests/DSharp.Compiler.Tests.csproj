@@ -92,7 +92,6 @@
     <Compile Remove="Source\Type\Globals\Code.cs" />
     <Compile Remove="Source\Type\Imported\Code.cs" />
     <Compile Remove="Source\Type\Interfaces\Code.cs" />
-    <Compile Remove="Source\Type\Modules\Code.cs" />
     <Compile Remove="Source\Type\Namespaces\Code.cs" />
     <Compile Remove="Source\Type\Nullable\Code.cs" />
     <Compile Remove="Source\Type\Partials\Code1.cs" />
@@ -109,7 +108,6 @@
     <Compile Remove="Source\Validation\Overloads\Code.cs" />
     <Compile Remove="Source\Validation\Properties\Code.cs" />
     <Compile Remove="Source\Validation\Records\Code.cs" />
-    <Compile Remove="Source\Validation\ScriptExtension\Code.cs" />
     <Compile Remove="Source\Validation\Unsupported\Code1.cs" />
     <Compile Remove="Source\Validation\Unsupported\Code2.cs" />
   </ItemGroup>
@@ -205,8 +203,6 @@
     <None Remove="Source\Type\Globals\Baseline.txt" />
     <None Remove="Source\Type\Imported\Baseline.txt" />
     <None Remove="Source\Type\Interfaces\Baseline.txt" />
-    <None Remove="Source\Type\Modules\Baseline.txt" />
-    <None Remove="Source\Type\Modules\ZeroExportsBaseline.txt" />
     <None Remove="Source\Type\Namespaces\Baseline.txt" />
     <None Remove="Source\Type\Nullable\Baseline.txt" />
     <None Remove="Source\Type\Partials\Baseline.txt" />
@@ -695,15 +691,6 @@
     <Content Include="Source\Type\Interfaces\Code.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Source\Type\Modules\Baseline.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Source\Type\Modules\Code.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Source\Type\Modules\ZeroExportsBaseline.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Source\Type\Namespaces\Baseline.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -765,9 +752,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Source\Validation\Records\Code.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Source\Validation\ScriptExtension\Code.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Source\Validation\Unsupported\Code1.cs">

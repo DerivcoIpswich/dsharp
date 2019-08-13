@@ -112,7 +112,6 @@ namespace DSharp.Compiler.Generator
                 DocCommentGenerator.GenerateComment(generator, classSymbol);
             }
 
-
             foreach (MemberSymbol memberSymbol in classSymbol.Members)
             {
                 if (memberSymbol.Type == SymbolType.Field &&
@@ -131,7 +130,6 @@ namespace DSharp.Compiler.Generator
                     }
                 }
             }
-            //Create Readonly Properties here
 
             if (classSymbol.Constructor != null)
             {
@@ -302,13 +300,6 @@ namespace DSharp.Compiler.Generator
 
         public static void GenerateRegistrationScript(ScriptGenerator generator, TypeSymbol typeSymbol)
         {
-            ClassSymbol classSymbol = typeSymbol as ClassSymbol;
-
-            if (classSymbol != null)
-            {
-                return;
-            }
-
             ScriptTextWriter writer = generator.Writer;
 
             writer.Write(typeSymbol.GeneratedName);
@@ -317,7 +308,7 @@ namespace DSharp.Compiler.Generator
             switch (typeSymbol.Type)
             {
                 case SymbolType.Class:
-                    GenerateClassRegistrationScript(generator, classSymbol);
+                    GenerateClassRegistrationScript(generator, (ClassSymbol)typeSymbol);
 
                     break;
                 case SymbolType.Interface:

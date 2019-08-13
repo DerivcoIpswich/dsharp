@@ -33,15 +33,8 @@ define('test', ['ss'], function(ss) {
     toString: function() {
       window.m1();
       var x = new X();
-      $.fn.extend(x, 10);
       return null;
     }
-  };
-
-
-  // MemberTests.Foo
-
-  $global.doStuff = function() {
   };
 
 

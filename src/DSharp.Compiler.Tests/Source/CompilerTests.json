@@ -446,21 +446,6 @@
         "ComparisonFile": "Baseline.txt"
       },
       {
-        "Name": "Modules_Included_Export",
-        "SourceFolder": "Modules",
-        "SourceFiles": [ "Code.cs" ],
-        "References": [ "DSharp.Web.dll" ],
-        "Defines": [ "INCLUDE_EXPORT" ],
-        "ComparisonFile": "Baseline.txt"
-      },
-      {
-        "Name": "Modules_Without_Export",
-        "SourceFolder": "Modules",
-        "SourceFiles": [ "Code.cs" ],
-        "References": [ "DSharp.Web.dll" ],
-        "ComparisonFile": "ZeroExportsBaseline.txt"
-      },
-      {
         "Name": "Namespaces",
         "SourceFiles": [ "Code.cs" ],
         "ComparisonFile": "Baseline.txt"

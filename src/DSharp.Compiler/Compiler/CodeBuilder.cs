@@ -191,7 +191,7 @@ namespace DSharp.Compiler.Compiler
 
         private void BuildCode(PropertySymbol propertySymbol)
         {
-            if (propertySymbol.IsAbstract || propertySymbol.IsReadOnly || propertySymbol.IsAutoProperty())
+            if (propertySymbol.IsAbstract || propertySymbol.IsAutoProperty())
             {
                 return;
             }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Html;
 using System.Runtime.CompilerServices;
 
@@ -43,40 +43,13 @@ namespace MemberTests {
             Bar.M1();
 
             X x = new X();
-            Plugin.Extend(x, 10);
 
             return null;
-        }
-    }
-
-    [ScriptExtension("$global")]
-    public static class Foo {
-
-        public static void DoStuff() {
-        }
-    }
-
-    [ScriptExtension("window")]
-    public static class Bar {
-
-        public static void M1() {
-        }
-
-        public static void M2() {
         }
     }
 
     public class X {
 
         public void Update(int i) { }
-    }
-
-    [ScriptExtension("$.fn")]
-    public static class Plugin {
-
-        public static X Extend(X x, int i) {
-            x.Update(i);
-            return x;
-        }
     }
 }
