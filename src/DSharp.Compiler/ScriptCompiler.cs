@@ -37,12 +37,7 @@ namespace DSharp.Compiler
 
         public bool Compile(CompilerOptions options)
         {
-            if (options == null)
-            {
-                throw new ArgumentNullException("options");
-            }
-
-            this.options = options;
+            this.options = options ?? throw new ArgumentNullException(nameof(options));
 
             hasErrors = false;
             symbols = new SymbolSet();
@@ -136,17 +131,17 @@ namespace DSharp.Compiler
             //    continue;
             //}
 
-            //if (appType.Type == SymbolType.Class &&
-            //    ((ClassSymbol)appType).PrimaryPartialClass != appType)
-            //{
-            //    // Skip the check for partial types, since they should only be
-            //    // checked once.
-            //    continue;
-            //}
+            var classSymbol = typeSymbol as ClassSymbol;
+            if (classSymbol != null && classSymbol.PrimaryPartialClass != typeSymbol)
+            {
+                // Skip the check for partial types, since they should only be
+                // checked once.
+                return false;
+            }
 
             return typeSymbol.IsApplicationType
                 && typeSymbol.Type != SymbolType.Delegate
-                || (typeSymbol is ClassSymbol classSymbol && classSymbol.PrimaryPartialClass != typeSymbol);
+                || (classSymbol != null && classSymbol.PrimaryPartialClass != typeSymbol);
         }
 
         private void CheckForDuplicateTypes()

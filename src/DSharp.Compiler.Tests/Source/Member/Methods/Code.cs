@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Html;
 using System.Runtime.CompilerServices;
 
 [assembly: ScriptAssembly("test")]
@@ -40,8 +39,6 @@ namespace MemberTests {
         public abstract object getRunOptions();
 
         public override string ToString() {
-            Bar.M1();
-
             X x = new X();
 
             return null;

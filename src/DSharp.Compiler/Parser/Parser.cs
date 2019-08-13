@@ -3319,7 +3319,7 @@ namespace DSharp.Compiler.Parser
             }
 
             var typeInitialiser = new NewNode(token, type, ParseParenArgumentList());
-            if(PeekType() == TokenType.OpenCurly) //Does our assignment have an object initialiser
+            if(PeekType() == TokenType.OpenCurly)
             {
                 NextToken();
 

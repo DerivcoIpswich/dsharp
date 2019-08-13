@@ -121,13 +121,6 @@
         "SourceFiles": [ "Code.cs" ],
         "Defines": [ "AMD_TEMPLATE" ],
         "ComparisonFile": "AMDBaseline.txt"
-      },
-      {
-        "Name": "Resources",
-        "SourceFiles": [ "Code.cs", "Strings1.Designer.cs", "Strings2.Designer.cs" ],
-        "Resources": [ "Strings1.resx", "Strings1.fr.resx", "Strings1.fr-FR.resx", "Strings2.resx" ],
-        "Defines": [ "DEBUG" ],
-        "ComparisonFile": "Baseline.txt"
       }
     ]
   },

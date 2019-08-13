@@ -1194,14 +1194,6 @@ namespace DSharp.Compiler.Compiler
                     typeSymbol.AddGenericParameters(genericParameterSymbols);
                 }
 
-                if (typeNode.Modifiers.HasFlag(Modifiers.Public))
-                {
-                    typeSymbol.IsPublic = true;
-                }
-                else if (typeNode.Modifiers.HasFlag(Modifiers.Internal))
-                {
-                    typeSymbol.IsInternal = true;
-                }
 
                 BuildType(typeSymbol, typeNode);
             }
@@ -1268,6 +1260,15 @@ namespace DSharp.Compiler.Compiler
             }
 
             string scriptName = attributes.GetAttributeValue("ScriptName");
+
+            if (typeNode.Modifiers.HasFlag(Modifiers.Public))
+            {
+                typeSymbol.IsPublic = true;
+            }
+            else if (typeNode.Modifiers.HasFlag(Modifiers.Internal))
+            {
+                typeSymbol.IsInternal = true;
+            }
 
             if (scriptName != null)
             {

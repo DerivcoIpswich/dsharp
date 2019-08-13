@@ -1087,7 +1087,7 @@ namespace DSharp.Compiler.Compiler
         private Expression ProcessNameNode(NameNode node, SymbolFilter filter)
         {
             Symbol symbol = ResolveNameNodeSymbol(node, filter);
-            Debug.Assert(symbol != null);
+            //Debug.Assert(symbol != null);
 
             if (symbol == null)
             {

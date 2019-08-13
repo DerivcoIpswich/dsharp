@@ -204,7 +204,6 @@ namespace DSharp.Compiler.Generator
 
         public void StartImplementation(SymbolImplementation implementation)
         {
-            Debug.Assert(implementation != null);
             implementationStack.Push(implementation);
         }
 

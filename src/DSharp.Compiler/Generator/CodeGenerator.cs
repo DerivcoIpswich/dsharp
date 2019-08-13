@@ -3,6 +3,7 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
+using System;
 using DSharp.Compiler.ScriptModel.Statements;
 using DSharp.Compiler.ScriptModel.Symbols;
 
@@ -15,6 +16,11 @@ namespace DSharp.Compiler.Generator
             MemberSymbol symbol,
             SymbolImplementation implementation)
         {
+            if(implementation == null)
+            {
+                throw new ArgumentNullException(nameof(implementation), $"Member: {symbol?.Name} has no valid implementation");
+            }
+
             generator.StartImplementation(implementation);
 
             try

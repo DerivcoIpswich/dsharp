@@ -48,8 +48,6 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         {
             get
             {
-                Debug.Assert(implementation != null);
-
                 return implementation;
             }
         }
