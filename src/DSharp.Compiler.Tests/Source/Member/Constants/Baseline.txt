@@ -1,6 +1,6 @@
 "use strict";
 
-define('test', ['ss', 'lib1'], function(ss, lib1) {
+define('test', ['ss'], function(ss) {
   var $global = this;
   // DSharp.Shell.src.UsageOfConstants
 
