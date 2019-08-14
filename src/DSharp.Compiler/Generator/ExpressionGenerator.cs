@@ -161,8 +161,7 @@ namespace DSharp.Compiler.Generator
                 writer.Write(", ");
                 writer.Write(typeExpression.AssociatedType.FullGeneratedName);
                 writer.Write(")");
-
-                typeExpression.AssociatedType.Dependency.IncrementTypeReferenceCount();
+                typeExpression.AssociatedType.IncrementReferenceCount();
                 return;
             }
             else if (expression.Operator == Operator.EqualEqualEqual ||

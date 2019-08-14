@@ -112,7 +112,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             {
                 TypeSymbol parent = (TypeSymbol)Parent;
 
-                if (parent.Source != null)
+                if (parent != null && parent.Source != null)
                 {
                     parent.Source.IncrementConstReferenceCount();
                 }
