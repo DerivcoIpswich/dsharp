@@ -21,6 +21,7 @@
             value: value,
             extend: extend,
             keys: keys,
+            values: values,
             keyCount: keyCount,
             keyExists: keyExists,
             clearKeys: clearKeys,
