@@ -26,6 +26,7 @@
             clearKeys: clearKeys,
             enumerate: enumerate,
             array: toArray,
+            toArray: toArray,
             remove: removeItem,
             boolean: parseBoolean,
             regexp: parseRegExp,
