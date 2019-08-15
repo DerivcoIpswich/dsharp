@@ -33,9 +33,13 @@ function baseBind(fn, o) {
     }
 
     var name = null;
-    fn = typeof fn === 'string'
-        ? o.constructor.$base.prototype[name = fn]
-        : fn;
+    if (typeof fn === 'string') {
+        name = fn;
+        fn = o.constructor.$base.prototype[name];
+        if (!fn) {
+            throw new Error("Unable to find '" + name + "' on any of the prototype hierarcy for " + o);
+        }
+    }
 
     return internalBind(fn, o, name);
 }
@@ -84,7 +88,7 @@ function bindSub(binding, value) {
     var fnList = binding._fnList || [binding];
     var index = fnList.indexOf(value);
     if (index >= 0) {
-        if (fnList.length == 1) {
+        if (fnList.length === 1) {
             return null;
         }
 
