@@ -321,12 +321,30 @@ namespace DSharp.Compiler.Generator
             }
             else
             {
-                writer.Write($"{DSharpStringResources.ScriptExportMember("bind")}('");
+                string bindingFunctionName = GetExpressionBindingFunctionName(expression.ObjectReference);
+                writer.Write($"{DSharpStringResources.ScriptExportMember(bindingFunctionName)}('");
                 writer.Write(expression.Method.GeneratedName);
                 writer.Write("', ");
-                GenerateExpression(generator, symbol, expression.ObjectReference);
+                if(expression.ObjectReference is BaseExpression)
+                {
+                    GenerateThisExpression(generator);
+                }
+                else
+                {
+                    GenerateExpression(generator, symbol, expression.ObjectReference);
+                }
                 writer.Write(")");
             }
+        }
+
+        private static string GetExpressionBindingFunctionName(Expression expression)
+        {
+            if(expression is BaseExpression)
+            {
+                return "baseBind";
+            }
+
+            return "bind";
         }
 
         private static void GenerateEnumerationFieldExpression(ScriptGenerator generator, MemberSymbol symbol,
@@ -405,9 +423,7 @@ namespace DSharp.Compiler.Generator
 
                     break;
                 case ExpressionType.Member:
-                    Debug.Fail("MemberExpression missed from conversion to higher level expression.");
-
-                    break;
+                    throw new ScriptGeneratorException(symbol, "MemberExpression missed from conversion to higher level expression.");
                 case ExpressionType.Field:
                     GenerateFieldExpression(generator, symbol, (FieldExpression) expression);
 
@@ -421,9 +437,7 @@ namespace DSharp.Compiler.Generator
 
                     break;
                 case ExpressionType.PropertySet:
-                    Debug.Fail("PropertyExpression(set) should be covered as part of BinaryExpression logic.");
-
-                    break;
+                    throw new ScriptGeneratorException(symbol, "PropertyExpression(set) should be covered as part of BinaryExpression logic.");
                 case ExpressionType.MethodInvoke:
                 case ExpressionType.DelegateInvoke:
                     GenerateMethodExpression(generator, symbol, (MethodExpression) expression);
@@ -443,13 +457,11 @@ namespace DSharp.Compiler.Generator
 
                     break;
                 case ExpressionType.This:
-                    GenerateThisExpression(generator, symbol, (ThisExpression) expression);
+                    GenerateThisExpression(generator);
 
                     break;
                 case ExpressionType.Base:
-                    Debug.Fail("BaseExpression not handled by container expression.");
-
-                    break;
+                    throw new ScriptGeneratorException(symbol, "BaseExpression not handled by container expression");
                 case ExpressionType.New:
                     GenerateNewExpression(generator, symbol, (NewExpression) expression);
 
@@ -487,9 +499,7 @@ namespace DSharp.Compiler.Generator
 
                     break;
                 default:
-                    Debug.Fail("Unexpected expression type: " + expression.Type);
-
-                    break;
+                    throw new ScriptGeneratorException(symbol, "Unexpected expression type: " + expression.Type);
             }
 
             if (expression.Parenthesized)
@@ -1125,8 +1135,8 @@ namespace DSharp.Compiler.Generator
             }
         }
 
-        private static void GenerateThisExpression(ScriptGenerator generator, MemberSymbol symbol,
-                                                   ThisExpression expression)
+
+        private static void GenerateThisExpression(ScriptGenerator generator)
         {
             ScriptTextWriter writer = generator.Writer;
             writer.Write(generator.CurrentImplementation.ThisIdentifier);
