@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using DSharp.Compiler.Errors;
+using DSharp.Compiler.References;
 using DSharp.Compiler.ScriptModel.Symbols;
 using Mono.Cecil;
 
@@ -776,7 +777,7 @@ namespace DSharp.Compiler.Importer
 
             if (string.IsNullOrEmpty(scriptName) == false)
             {
-                dependency = new ScriptReference(scriptName, scriptIdentifier);
+                dependency = ScriptReferenceProvider.Instance.GetReference(scriptName, scriptIdentifier);
                 symbols.AddDependency(dependency);
             }
 
@@ -882,7 +883,7 @@ namespace DSharp.Compiler.Importer
 
                 if (dependencyName != null)
                 {
-                    dependency = new ScriptReference(dependencyName, dependencyIdentifier);
+                    dependency = ScriptReferenceProvider.Instance.GetReference(dependencyName, dependencyIdentifier);
                 }
 
                 typeSymbol.SetImported(dependency);

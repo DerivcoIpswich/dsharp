@@ -15,6 +15,7 @@ using DSharp.Compiler.CodeModel.Types;
 using DSharp.Compiler.Errors;
 using DSharp.Compiler.Extensions;
 using DSharp.Compiler.Importer;
+using DSharp.Compiler.References;
 using DSharp.Compiler.ScriptModel.Symbols;
 
 namespace DSharp.Compiler.Compiler
@@ -34,7 +35,7 @@ namespace DSharp.Compiler.Compiler
         }
 
         public ICollection<TypeSymbol> BuildMetadata(
-            ParseNodeList compilationUnits, 
+            ParseNodeList compilationUnits,
             SymbolSet symbols,
             CompilerOptions options)
         {
@@ -277,8 +278,8 @@ namespace DSharp.Compiler.Compiler
 
         private static bool IsExtensionMethod(MemberSymbol memberSymbol)
         {
-            return memberSymbol is MethodSymbol methodSymbol 
-                && methodSymbol.IsExtensionMethod 
+            return memberSymbol is MethodSymbol methodSymbol
+                && methodSymbol.IsExtensionMethod
                 && (memberSymbol.Visibility.HasFlag(MemberVisibility.Public) || memberSymbol.IsInternal);
         }
 
@@ -305,6 +306,7 @@ namespace DSharp.Compiler.Compiler
                 string identifier = null;
                 string path = null;
                 bool delayLoad = false;
+                bool isExplicit = false;
 
                 Debug.Assert(attribNode.Arguments.Count != 0 &&
                              attribNode.Arguments[0].NodeType == ParseNodeType.Literal);
@@ -315,9 +317,9 @@ namespace DSharp.Compiler.Compiler
                 {
                     for (int i = 1; i < attribNode.Arguments.Count; i++)
                     {
-                        Debug.Assert(attribNode.Arguments[1] is BinaryExpressionNode);
+                        Debug.Assert(attribNode.Arguments[i] is BinaryExpressionNode);
 
-                        BinaryExpressionNode propExpression = (BinaryExpressionNode)attribNode.Arguments[1];
+                        BinaryExpressionNode propExpression = (BinaryExpressionNode)attribNode.Arguments[i];
                         Debug.Assert(propExpression.LeftChild.NodeType == ParseNodeType.Name);
 
                         string propName = ((NameNode)propExpression.LeftChild).Name;
@@ -344,12 +346,24 @@ namespace DSharp.Compiler.Compiler
 
                             delayLoad = (bool)((LiteralNode)propExpression.RightChild).Value;
                         }
+                        else if (string.CompareOrdinal(propName, "IsExplicit") == 0)
+                        {
+                            Debug.Assert(propExpression.RightChild.NodeType == ParseNodeType.Literal);
+                            Debug.Assert(((LiteralNode)propExpression.RightChild).Value is bool);
+
+                            isExplicit = (bool)((LiteralNode)propExpression.RightChild).Value;
+                        }
                     }
                 }
 
                 ScriptReference reference = symbols.GetDependency(name, out bool newReference);
                 reference.Path = path;
                 reference.DelayLoaded = delayLoad;
+
+                if (isExplicit)
+                {
+                    reference.IncrementTypeReferenceCount();
+                }
 
                 if (newReference)
                 {
@@ -1168,7 +1182,7 @@ namespace DSharp.Compiler.Compiler
                         dependencyIdentifier = (string)((LiteralNode)propExpression.RightChild).Value;
                     }
 
-                    dependency = new ScriptReference(dependencyName, dependencyIdentifier);
+                    dependency = ScriptReferenceProvider.Instance.GetReference(dependencyName, dependencyIdentifier);
                 }
 
                 typeSymbol.SetImported(dependency);
