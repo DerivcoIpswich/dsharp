@@ -321,6 +321,8 @@ namespace DSharp.Compiler.Generator
             }
             else
             {
+                //Todo: Fix chain `base` calls when binding-> `base.base.base.SomeMethod`,
+                //Just need to know how deep the hierarchy is and pass that depth in to the `baseBind` function
                 string bindingFunctionName = GetExpressionBindingFunctionName(expression.ObjectReference);
                 writer.Write($"{DSharpStringResources.ScriptExportMember(bindingFunctionName)}('");
                 writer.Write(expression.Method.GeneratedName);
