@@ -45,7 +45,6 @@ namespace System
         [ScriptName(CONSOLE_LOGGING_METHOD)]
         public extern static void WriteLine(int value);
 
-
         [ScriptName(CONSOLE_LOGGING_METHOD)]
         public extern static void WriteLine(ulong value);
 
