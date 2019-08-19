@@ -1,22 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$(SolutionDir)NuGetCommon.props" Condition="Exists('$(SolutionDir)NuGetCommon.props')" />
+
   <PropertyGroup>
-    <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <ProjectGuid>{8780581F-7C26-4B64-9236-BA1C458DF36E}</ProjectGuid>
     <DefaultItemExcludes>${DefaultItemExcludes};node_modules\**;dist\**;package-lock.json</DefaultItemExcludes>
     <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
   </PropertyGroup>
-  
+
   <ItemGroup>
+    <PackageReference Include="JsonPoke.MSBuild" Version="1.0.9">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="2.9.1" />
   </ItemGroup>
-
-  <Target Name="RunScriptBuild" AfterTargets="Build">
-    <RemoveDir Directories="dist" />
-    <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
-    <Exec Command="npm install" />
-    <Exec Command="npm start" />
-    <ItemGroup>
-      <EmbeddedResource Include="dist\ds.js" />
-    </ItemGroup>
-  </Target>
+  
+  <Import Project="DSharp.Scripts.Build.targets" Condition="Exists('DSharp.Scripts.Build.targets')" />
 </Project>

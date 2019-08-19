@@ -1,16 +1,19 @@
 {
-  "name": "dsharp.script",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "@derivco/dsharp.script",
+  "version": "1.0.0-dev.137",
+  "description": "DSharp runtime script to execute DSharp transpiled libraries within the browser",
+  "main": "dist/ss.min.js",
   "scripts": {
-    "start": "node build.js",
+    "build": "node build.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Derivco Ipswich",
   "license": "ISC",
-  "devDependencies": {},
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
     "buildify": "^0.4.0"
-  }
+  },
+  "files": [
+    "dist/*.js"
+  ]
 }

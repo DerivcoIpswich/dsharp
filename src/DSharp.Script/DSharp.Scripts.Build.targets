@@ -1,0 +1,46 @@
+﻿<Project>
+  <PropertyGroup>
+    <NpmProjectFile>$(MSBuildThisFileDirectory)package.json</NpmProjectFile>
+    <OutputDirectory>$(MSBuildThisFileDirectory)dist</OutputDirectory>
+    <NpmInstallStampFile>$(MSBuildThisFileDirectory)node_modules/.install-stamp</NpmInstallStampFile>
+    <JsonPokeMsBuildScript>$(NuGetPackageRoot)jsonpoke.msbuild\1.0.9\build\JsonPoke.MSBuild.Targets</JsonPokeMsBuildScript>
+    <PackageOutputFile>derivco-dsharp.script-$(PackageVersion).tgz</PackageOutputFile>
+  </PropertyGroup>
+
+  <Import Project="$(JsonPokeMsBuildScript)" Condition="Exists('$(JsonPokeMsBuildScript)')"/>
+
+  <Target Name="NpmInstall"
+          Inputs="$(NpmProjectFile)"
+          Outputs="$(NpmInstallStampFile)">
+    <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
+    <Exec Command="npm install" />
+    <Touch Files="$(NpmInstallStampFile)" AlwaysCreate="true" />
+  </Target>
+  
+  <Target Name="UpdateVersions" 
+          DependsOnTargets="NpmInstall">
+    <Message Importance="high" Text="Updating package.json with version $(PackageVersion)" />
+    <JsonPoke JsonInputPath="$(NpmProjectFile)" JValue="$(PackageVersion)" JPath="version"/>
+  </Target>
+
+  <Target Name="BuildScript" 
+          AfterTargets="Build" 
+          DependsOnTargets="UpdateVersions">
+    <Message Importance="high" Text="Building script" />
+    <Exec Command="npm run build" />
+    <Message Importance="high" Text="Running tests" />
+  </Target>
+
+  <Target Name="PackScript" 
+          AfterTargets="BuildScript">
+    <Exec Command="npm pack" />
+    <Error Condition="!Exists('$(MSBuildThisFileDirectory)$(PackageOutputFile)')" Text="Package file not created" />
+    <Move SourceFiles="$(MSBuildThisFileDirectory)$(PackageOutputFile)" DestinationFolder="$(OutputDirectory)"/>
+  </Target>
+
+  <Target Name="CleanOutput" 
+          BeforeTargets="Clean">
+    <RemoveDir Directories="$(OutputDirectory)" />
+    <Delete Files="$(MSBuildThisFileDirectory)$(PackageOutputFile);$(OutputDirectory)$(PackageOutputFile)" />
+  </Target>
+</Project>
