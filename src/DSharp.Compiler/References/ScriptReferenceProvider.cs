@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
 
 namespace DSharp.Compiler.References
 {
     public class ScriptReferenceProvider : IScriptReferenceProvider
     {
         private static readonly ScriptReferenceProvider instance;
-        private readonly Dictionary<string, ScriptReference> references;
+        private readonly ConcurrentDictionary<string, ScriptReference> references;
 
         public static IScriptReferenceProvider Instance
         {
@@ -19,19 +19,13 @@ namespace DSharp.Compiler.References
 
         public ScriptReferenceProvider()
         {
-            references = new Dictionary<string, ScriptReference>();
+            references = new ConcurrentDictionary<string, ScriptReference>();
         }
 
         public ScriptReference GetReference(string name, string identifier)
         {
             string referenceKey = identifier ?? name;
-
-            if (!references.TryGetValue(referenceKey, out ScriptReference reference))
-            {
-                reference = new ScriptReference(name, identifier);
-                references.Add(referenceKey, reference);
-            }
-
+            ScriptReference reference = references.GetOrAdd(referenceKey, (key) => new ScriptReference(name, identifier));
             return reference;
         }
 
