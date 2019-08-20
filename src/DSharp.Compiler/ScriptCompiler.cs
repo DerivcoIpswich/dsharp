@@ -10,6 +10,7 @@ using DSharp.Compiler.Compiler;
 using DSharp.Compiler.Errors;
 using DSharp.Compiler.Generator;
 using DSharp.Compiler.Importer;
+using DSharp.Compiler.References;
 using DSharp.Compiler.ScriptModel.Symbols;
 using DSharp.Compiler.Validator;
 
@@ -183,6 +184,7 @@ namespace DSharp.Compiler
 
             hasErrors = false;
             symbols = new SymbolSet();
+            ScriptReferenceProvider.Instance.Reset();
 
             ImportMetadata();
 

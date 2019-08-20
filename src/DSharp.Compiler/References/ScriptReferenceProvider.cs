@@ -34,5 +34,10 @@ namespace DSharp.Compiler.References
 
             return reference;
         }
+
+        public void Reset()
+        {
+            references.Clear();
+        }
     }
 }
