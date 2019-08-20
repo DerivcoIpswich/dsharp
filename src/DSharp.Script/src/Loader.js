@@ -23,11 +23,13 @@
         value: value,
         extend: extend,
         keys: keys,
+        values: values,
         keyCount: keyCount,
         keyExists: keyExists,
         clearKeys: clearKeys,
         enumerate: enumerate,
         array: toArray,
+        toArray: toArray,
         remove: removeItem,
         boolean: parseBoolean,
         regexp: parseRegExp,
@@ -54,6 +56,7 @@
         removeString: removeString,
         replaceString: replaceString,
         bind: bind,
+        baseBind: baseBind,
         bindAdd: bindAdd,
         bindSub: bindSub,
         bindExport: bindExport,
@@ -81,11 +84,7 @@
         getConstructorParams: getConstructorParams,
         createInstance: paramsGenerator(1, createInstance),
 
-        culture: {
-            neutral: neutralCulture,
-            current: currentCulture
-        },
-
+        culture: culture,
         fail: fail,
         contains: contains,
         insert: insert,

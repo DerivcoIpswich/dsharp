@@ -39,6 +39,11 @@ namespace DSharp.Compiler
         {
             this.options = options ?? throw new ArgumentNullException(nameof(options));
 
+            if(options.DebugMode)
+            {
+                Debugger.Launch();
+            }
+
             hasErrors = false;
             symbols = new SymbolSet();
 
@@ -226,7 +231,7 @@ namespace DSharp.Compiler
             }
             catch (Exception e)
             {
-                Debug.Fail(e.ToString());
+                throw;
             }
             finally
             {
@@ -253,7 +258,7 @@ namespace DSharp.Compiler
             }
             catch (Exception e)
             {
-                Debug.Fail(e.ToString());
+                throw;
             }
             finally
             {

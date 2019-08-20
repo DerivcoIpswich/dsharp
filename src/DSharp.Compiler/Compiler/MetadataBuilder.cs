@@ -228,7 +228,7 @@ namespace DSharp.Compiler.Compiler
 
         private void ImportTypeMembers(List<TypeSymbol> types)
         {
-            foreach (TypeSymbol typeSymbol in types)
+            foreach (TypeSymbol typeSymbol in types.OrderByDescending(type => type.IsGeneric))
                 BuildMembers(typeSymbol);
         }
 
