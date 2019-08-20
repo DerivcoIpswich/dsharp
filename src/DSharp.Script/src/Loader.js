@@ -64,6 +64,7 @@
         createPropertyGet: createPropertyGet,
         createPropertySet: createPropertySet,
         createReadonlyProperty: createReadonlyProperty,
+        defineProperty: defineProperty,
         copyArray: copyArray,
 
         module: module,
