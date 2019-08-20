@@ -62,7 +62,6 @@ namespace DSharp.Compiler.Compiler
         {
             if (classSymbol.Constructor != null)
             {
-                //Need to add readonly properties in here. 
                 BuildCode(classSymbol.Constructor);
             }
 
@@ -151,7 +150,7 @@ namespace DSharp.Compiler.Compiler
             if (indexerSymbol.IsReadOnly == false)
             {
                 implBuilder.TryBuildPropertySetter(indexerSymbol, out var implementation);
-                indexerSymbol.AddImplementation(implementation, /* getter */ false);
+                indexerSymbol.AddImplementation(implementation, false);
                 implementations.Add(indexerSymbol.SetterImplementation);
             }
 

@@ -813,7 +813,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Source\CompilerTests.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Source\Expression\Generics3\Baseline.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

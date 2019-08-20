@@ -72,6 +72,9 @@ define('test', ['ss'], function(ss) {
   // MemberTests.Properties
 
   function Properties(readonlyVal) {
+    ss.defineProperty(this, 'Normal');
+    ss.defineProperty(this, 'Standard');
+    ss.defineProperty(this, 'ReadLocalWrite');
     ss.createReadonlyProperty(this, 'ReadonlyValue', ss.value(readonlyVal, 'InitialState_ReadonlyValue'));
     this.ReadLocalWrite = 'InitialState_ReadLocalWrite';
     this.Normal = ss.value(this.ReadLocalWrite, Properties._createNormalExpression(function() {

@@ -3,6 +3,7 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using DSharp.Compiler.ScriptModel.Symbols;
@@ -112,6 +113,13 @@ namespace DSharp.Compiler.Generator
                 DocCommentGenerator.GenerateComment(generator, classSymbol);
             }
 
+            foreach (var property in GetNonReadonlyAutoProperties(classSymbol))
+            {
+                writer.Write(DSharpStringResources.ScriptExportMember("defineProperty"));
+                writer.Write($"(this, '{property.GeneratedName}');");
+                writer.WriteLine();
+            }
+
             foreach (MemberSymbol memberSymbol in classSymbol.Members)
             {
                 if (memberSymbol.Type == SymbolType.Field &&
@@ -144,6 +152,14 @@ namespace DSharp.Compiler.Generator
 
             writer.Indent--;
             writer.WriteLine("}");
+        }
+
+        private static IEnumerable<PropertySymbol> GetNonReadonlyAutoProperties(ClassSymbol classSymbol)
+        {
+            return classSymbol.Members
+                .Where(symbol => symbol is PropertySymbol)
+                .Cast<PropertySymbol>()
+                .Where(prop => prop.IsAutoProperty() && !prop.IsReadOnly);
         }
 
         private static void GenerateEnumeration(ScriptGenerator generator, EnumerationSymbol enumSymbol)
