@@ -27,7 +27,7 @@ buildify()
             './src/TypeSystem.js'
         ]), '\r\n')
     .wrap('src/Loader.js', {
-        version: 1.0
+        version: process.env['version']
     })
     .save('dist/ss.js')
     .uglify()

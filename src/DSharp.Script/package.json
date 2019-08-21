@@ -1,16 +1,16 @@
 {
   "name": "dsharp.script",
   "version": "1.0.0",
-  "description": "",
+  "description": "the DSharp runtime library",
   "main": "index.js",
+  "author": "Derivco Ipswich",
   "scripts": {
     "start": "node build.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {},
-  "dependencies": {
+  "devDependencies": {
+    "jest": "^24.9.0",
+    "jest-editor-support": "^25.0.1",
     "buildify": "^0.4.0"
   }
 }

@@ -1,25 +1,67 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="$(SolutionDir)NuGetCommon.props" Condition="Exists('$(SolutionDir)NuGetCommon.props')" />
-  
+
   <PropertyGroup>
     <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
-    <ProjectGuid>{8780581F-7C26-4B64-9236-BA1C458DF36E}</ProjectGuid>
     <DefaultItemExcludes>${DefaultItemExcludes};node_modules\**;dist\**;package-lock.json</DefaultItemExcludes>
     <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <JavaScriptTestRoot>.\test</JavaScriptTestRoot>
+    <JavaScriptTestFramework>Jest</JavaScriptTestFramework>
+    <GenerateProgramFile>false</GenerateProgramFile>
   </PropertyGroup>
-  
+
   <ItemGroup>
-    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="2.9.1" />
+    <!--<ProjectCapability Include="DotNetCoreWeb" />-->
+    <ProjectCapability Include="JavaScript" />
+    <ProjectCapability Include="JavaScriptProject" />
   </ItemGroup>
 
-  <Target Name="RunScriptBuild" AfterTargets="Build">
-    <RemoveDir Directories="dist" />
-    <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
+  <ItemGroup>
+    <SourceScript Include="src\**\*.js" />
+    <Content Include="src\**\*.js">
+      <TestFramework>Jest</TestFramework>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="test\array.spec.js" />
+    <None Remove="test\clearKeys.spec.js" />
+    <None Remove="test\enumerate.spec.js" />
+    <None Remove="test\extend.spec.js" />
+    <None Remove="test\isValue.spec.js" />
+    <None Remove="test\keyCount.spec.js" />
+    <None Remove="test\keyExists.spec.js" />
+    <None Remove="test\keys.spec.js" />
+    <None Remove="test\value.spec.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="test\array.spec.js" />
+    <Content Include="test\clearKeys.spec.js" />
+    <Content Include="test\enumerate.spec.js" />
+    <Content Include="test\extend.spec.js" />
+    <Content Include="test\isValue.spec.js" />
+    <Content Include="test\keyCount.spec.js" />
+    <Content Include="test\keyExists.spec.js" />
+    <Content Include="test\keys.spec.js" />
+    <Content Include="test\value.spec.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.JavaScript.UnitTest" Version="1.5.10610.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <Target Name="NpmRestore" BeforeTargets="_GenerateRestoreProjectSpec;CollectPackageReferences" Inputs="package.json" Outputs="obj\npm_last_restore">
+    <Message Text="NpmRestore" Importance="High" />
     <Exec Command="npm install" />
-    <Exec Command="npm start" />
-    <ItemGroup>
-      <EmbeddedResource Include="dist\ds.js" />
-    </ItemGroup>
+    <WriteLinesToFile File="obj\npm_last_restore" Overwrite="true" Lines="" />
+  </Target>
+
+  <Target Name="Buildify" AfterTargets="Build" Inputs="@(SourceScript)" Outputs="dist\ss.js;dist\ss.min.js">
+    <Exec Command="npm start" EnvironmentVariables="version=$(PackageVersion)" />
   </Target>
 </Project>
