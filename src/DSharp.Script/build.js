@@ -29,6 +29,9 @@ buildify()
     .wrap('src/Loader.js', {
         version: process.env['version']
     })
+    .perform(function (content) {
+        return content.replace(/[\ufeff]/g, '');
+    })
     .save('dist/ss.js')
     .uglify()
     .save('dist/ss.min.js');
