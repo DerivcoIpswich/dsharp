@@ -6,6 +6,8 @@ describe('enumerate', () => {
 
         //Act
         const result = enumerate(null);
+
+        //Assert
         expect(result.moveNext()).toBe(false);
     });
 
