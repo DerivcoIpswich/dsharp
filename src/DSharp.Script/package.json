@@ -1,7 +1,7 @@
 {
   "name": "dsharp.script",
   "version": "1.0.0",
-  "description": "the DSharp runtime library",
+  "description": "The DSharp runtime library",
   "main": "index.js",
   "author": "Derivco Ipswich",
   "scripts": {

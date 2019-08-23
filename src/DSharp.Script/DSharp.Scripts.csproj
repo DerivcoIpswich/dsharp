@@ -12,7 +12,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!--<ProjectCapability Include="DotNetCoreWeb" />-->
     <ProjectCapability Include="JavaScript" />
     <ProjectCapability Include="JavaScriptProject" />
   </ItemGroup>
