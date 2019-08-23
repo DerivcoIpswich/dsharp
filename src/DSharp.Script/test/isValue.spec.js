@@ -1,48 +1,102 @@
 
 describe('isValue', () => {
     test('null is not a value', () => {
-        const isValue = require('../dist/ss.js').isValue;
-        expect(isValue(null)).toBe(false);
+        //Arrange
+        const isValue = require(process.env['RUNTIME']).isValue;
+
+        //Act
+        const result = isValue(null);
+
+        //Assert
+        expect(result).toBe(false);
     });
 
     test('undefined is not a value', () => {
-        const isValue = require('../dist/ss.js').isValue;
+        //Arrange
+        const isValue = require(process.env['RUNTIME']).isValue;
         const object = {};
-        expect(isValue(object.property)).toBe(false);
+
+        //Act
+        const result = isValue(object.property);
+
+        //Assert
+        expect(result).toBe(false);
     });
 
     test('empty string is a value', () => {
-        const isValue = require('../dist/ss.js').isValue;
-        expect(isValue("")).toBe(true);
+        //Arrange
+        const isValue = require(process.env['RUNTIME']).isValue;
+
+        //Act
+        const result = isValue("");
+
+        //Assert
+        expect(result).toBe(true);
     });
 
     test('string is a value', () => {
-        const isValue = require('../dist/ss.js').isValue;
-        expect(isValue("string")).toBe(true);
+        //Arrange
+        const isValue = require(process.env['RUNTIME']).isValue;
+
+        //Act
+        const result = isValue("string");
+
+        //Assert
+        expect(result).toBe(true);
     });
 
     test('0 is a value', () => {
-        const isValue = require('../dist/ss.js').isValue;
-        expect(isValue(0)).toBe(true);
+        //Arrange
+        const isValue = require(process.env['RUNTIME']).isValue;
+
+        //Act
+        const result = isValue(0);
+
+        //Assert
+        expect(result).toBe(true);
     });
 
     test('1 is a value', () => {
-        const isValue = require('../dist/ss.js').isValue;
-        expect(isValue(1)).toBe(true);
+        //Arrange
+        const isValue = require(process.env['RUNTIME']).isValue;
+
+        //Act
+        const result = isValue(1);
+
+        //Assert
+        expect(result).toBe(true);
     });
     
     test('false is a value', () => {
-        const isValue = require('../dist/ss.js').isValue;
-        expect(isValue(false)).toBe(true);
+        //Arrange
+        const isValue = require(process.env['RUNTIME']).isValue;
+
+        //Act
+        const result = isValue(false);
+
+        //Assert
+        expect(result).toBe(true);
     });
 
     test('true is a value', () => {
-        const isValue = require('../dist/ss.js').isValue;
-        expect(isValue(true)).toBe(true);
+        //Arrange
+        const isValue = require(process.env['RUNTIME']).isValue;
+
+        //Act
+        const result = isValue(true);
+
+        //Assert
+        expect(result).toBe(true);
     });
 
     test('function is a value', () => {
-        const isValue = require('../dist/ss.js').isValue;
-        expect(isValue(function(){})).toBe(true);
+        //Arrange
+        const isValue = require(process.env['RUNTIME']).isValue;
+
+        //Act
+        const result = isValue(function () { });
+
+        //Assert
+        expect(result).toBe(true);
     });
 });

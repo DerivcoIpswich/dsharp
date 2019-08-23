@@ -1,12 +1,24 @@
 
 describe('keyExists', () => {
     test('missing key returns false', () => {
-        const keyExists = require('../dist/ss.js').keyExists;
-        expect(keyExists({ }, 'a')).toBe(false);
+        //Arrange
+        const keyExists = require(process.env['RUNTIME']).keyExists;
+
+        //Act
+        const result = keyExists({}, 'a');
+
+        //Assert
+        expect(result).toBe(false);
     });
 
     test('existing key returns true', () => {
-        const keyExists = require('../dist/ss.js').keyExists;
-        expect(keyExists({ a: 1 }, 'a')).toBe(true);
+        //Arrange
+        const keyExists = require(process.env['RUNTIME']).keyExists;
+
+        //Act
+        const result = keyExists({ a: 1 }, 'a');
+
+        //Assert
+        expect(result).toBe(true);
     });
 });

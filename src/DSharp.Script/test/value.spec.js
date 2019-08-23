@@ -1,27 +1,73 @@
 
 describe('value', () => {
     test('null is returned if no values are passed', () => {
-        const value = require('../dist/ss.js').value;
-        expect(value()).toBeNull();
-        expect(value(null)).toBeNull();
-        expect(value(null, null)).toBeNull();
+        //Arrange
+        const value = require(process.env['RUNTIME']).value;
+
+        //Act
+        const result = value();
+
+        //Assert
+        expect(result).toBeNull();
+    });
+
+    test('null is returned if null values are passed', () => {
+        //Arrange
+        const value = require(process.env['RUNTIME']).value;
+
+        //Act
+        const results = [
+            value(null),
+            value(null, null),
+            value(null, null, null)
+        ];
+
+        //Assert
+        expect(results[0]).toBeNull();
+        expect(results[1]).toBeNull();
+        expect(results[2]).toBeNull();
     });
 
     test('first argument is returned if it is a value', () => {
-        const value = require('../dist/ss.js').value;
-        expect(value(1)).toBe(1);
-        expect(value(1, 2)).toBe(1);
-        expect(value(1, 2, 3)).toBe(1);
+        //Arrange
+        const value = require(process.env['RUNTIME']).value;
+
+        //Act
+        const results = [
+            value(1),
+            value(1, 2),
+            value(1, 2, 3)
+        ];
+
+        //Assert
+        expect(results[0]).toBe(1);
+        expect(results[1]).toBe(1);
+        expect(results[2]).toBe(1);
     });
 
     test('second argument is returned if it is a value but first is not', () => {
-        const value = require('../dist/ss.js').value;
-        expect(value(null, 2)).toBe(2);
-        expect(value(null, 2, 3)).toBe(2);
+        //Arrange
+        const value = require(process.env['RUNTIME']).value;
+
+        //Act
+        const results = [
+            value(null, 2),
+            value(null, 2, 3)
+        ];
+
+        //Assert
+        expect(results[0]).toBe(2);
+        expect(results[1]).toBe(2);
     });
     
     test('third argument is returned if it is the first passed value', () => {
-        const value = require('../dist/ss.js').value;
-        expect(value(null, null, 3)).toBe(3);
+        //Arrange
+        const value = require(process.env['RUNTIME']).value;
+
+        //Act
+        const result = value(null, null, 3);
+
+        //Assert
+        expect(result).toBe(3);
     });
 });

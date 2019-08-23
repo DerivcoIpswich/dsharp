@@ -1,20 +1,38 @@
 
 describe('array', () => {
     test('null returns null', () => {
-const array = require('../dist/ss.js').array;
-        expect(array(null)).toBeNull();
+        //Arrange
+        const array = require(process.env['RUNTIME']).array;
+
+        //Act
+        const result = array(null);
+
+        //Assert
+        expect(result).toBeNull();
     });
 
     test('arguments is converted to array', () => {
-const array = require('../dist/ss.js').array;
+        //Arrange
+        const array = require(process.env['RUNTIME']).array;
+
+        //Act
+        const result = array(arguments);
+
+        //Assert
         expect(Array.isArray(arguments)).toBe(false);
-        expect(Array.isArray(array(arguments))).toBe(true);
+        expect(Array.isArray(result)).toBe(true);
     });
 
     test('array is cloned', () => {
-const array = require('../dist/ss.js').array;
-        const arr = [1,2,3];
-        expect(array(arr)).not.toBe(arr);
-        expect(array(arr)).toEqual(arr);
+        //Arrange
+        const array = require(process.env['RUNTIME']).array;
+        const arr = [1, 2, 3];
+
+        //Act
+        const result = array(arr);
+
+        //Assert
+        expect(result).not.toBe(arr);
+        expect(result).toEqual(arr);
     });
 });
