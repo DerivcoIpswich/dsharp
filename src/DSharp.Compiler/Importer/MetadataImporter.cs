@@ -899,7 +899,7 @@ namespace DSharp.Compiler.Importer
         private void ImportType(MetadataSource mdSource, TypeDefinition type, bool inScriptCoreAssembly,
                                 string scriptNamespace, TypeSymbol outerType = null)
         {
-            if (type.IsPublic == false && type.IsNestedPublic == false)
+            if (!type.IsPublic && !type.IsNestedPublic)
             {
                 return;
             }
