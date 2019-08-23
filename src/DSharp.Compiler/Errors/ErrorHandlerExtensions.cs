@@ -8,8 +8,8 @@ namespace DSharp.Compiler.Errors
     {
         public static void ReportNodeValidationError(this IErrorHandler errorHandler, string message, ParseNode parseNode)
         {
-            string location = parseNode?.Token?.Location;
-            CompilerError error = new CompilerError((ushort)CompilerErrorCode.NodeValidationError, message, location, parseNode?.Token?.Position.Line, parseNode?.Token?.Position.Column);
+            string location = parseNode?.Token?.SourcePath;
+            CompilerError error = new CompilerError((ushort)CompilerErrorCode.NodeValidationError, message, location, parseNode?.Token?.Position.Line +1, parseNode?.Token?.Position.Column +1);
             errorHandler.ReportError(error);
         }
 
