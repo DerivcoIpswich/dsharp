@@ -104,7 +104,9 @@
     <Compile Remove="Source\Validation\InlineScript\Code.cs" />
     <Compile Remove="Source\Validation\Keywords\Code.cs" />
     <Compile Remove="Source\Validation\Modules\Code.cs" />
-    <Compile Remove="Source\Validation\NestedTypes\Code.cs" />
+    <Compile Remove="Source\Validation\NewKeywordOnType\Code.cs" />
+    <Compile Remove="Source\Validation\ProtectedNestedTypes\Code.cs" />
+    <Compile Remove="Source\Validation\PrivateNestedTypes\Code.cs" />
     <Compile Remove="Source\Validation\Overloads\Code.cs" />
     <Compile Remove="Source\Validation\Properties\Code.cs" />
     <Compile Remove="Source\Validation\Records\Code.cs" />
@@ -742,7 +744,13 @@
     <Content Include="Source\Validation\Modules\Code.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Source\Validation\NestedTypes\Code.cs">
+    <Content Include="Source\Validation\NewKeywordOnType\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Source\Validation\ProtectedNestedTypes\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Source\Validation\PrivateNestedTypes\Code.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Source\Validation\Overloads\Code.cs">

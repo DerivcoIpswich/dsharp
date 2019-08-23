@@ -14,7 +14,6 @@ using DSharp.Compiler.CodeModel.Tokens;
 using DSharp.Compiler.CodeModel.Types;
 using DSharp.Compiler.Errors;
 using DSharp.Compiler.Extensions;
-using DSharp.Compiler.Importer;
 using DSharp.Compiler.ScriptModel.Symbols;
 
 namespace DSharp.Compiler.Compiler
@@ -135,82 +134,107 @@ namespace DSharp.Compiler.Compiler
                     // Build type symbols for all user-defined types
                     foreach (TypeNode typeNode in namespaceNode.Members)
                     {
-                        UserTypeNode userTypeNode = typeNode as UserTypeNode;
-
-                        if (userTypeNode == null)
-                        {
-                            continue;
-                        }
-
-                        ClassSymbol partialTypeSymbol = null;
-                        bool isPartial = false;
-
-                        if ((userTypeNode.Modifiers & Modifiers.Partial) != 0)
-                        {
-                            partialTypeSymbol =
-                                (ClassSymbol)((ISymbolTable)namespaceSymbol).FindSymbol(userTypeNode.Name, /* context */
-                                    null, SymbolFilter.Types);
-
-                            if (partialTypeSymbol != null && partialTypeSymbol.IsApplicationType)
-                            {
-                                // This class will be considered as a partial class
-                                isPartial = true;
-
-                                // Merge code model information for the partial class onto the code model node
-                                // for the primary partial class. Interesting bits of information include things
-                                // such as base class etc. that is yet to be processed.
-                                CustomTypeNode partialTypeNode = (CustomTypeNode)partialTypeSymbol.ParseContext;
-                                partialTypeNode.MergePartialType((CustomTypeNode)userTypeNode);
-
-                                // Merge interesting bits of information onto the primary type symbol as well
-                                // representing this partial class
-                                BuildType(partialTypeSymbol, userTypeNode);
-                            }
-                        }
-
-                        TypeSymbol typeSymbol = BuildType(userTypeNode, namespaceSymbol);
-
-                        if (typeSymbol != null)
-                        {
-                            typeSymbol.SetParseContext(userTypeNode);
-                            typeSymbol.SetParentSymbolTable(symbols);
-
-                            if (imports != null)
-                            {
-                                typeSymbol.SetImports(imports);
-                            }
-
-                            if (aliases != null)
-                            {
-                                typeSymbol.SetAliases(aliases);
-                            }
-
-                            if (isPartial == false)
-                            {
-                                namespaceSymbol.AddType(typeSymbol);
-                            }
-                            else
-                            {
-                                // Partial types don't get added to the namespace, so we don't have
-                                // duplicated named items. However, they still do get instantiated
-                                // and processed as usual.
-                                //
-                                // The members within partial classes refer to the partial type as their parent,
-                                // and hence derive context such as the list of imports scoped to the
-                                // particular type.
-                                // However, the members will get added to the primary partial type's list of
-                                // members so they can be found.
-                                // Effectively the partial class here gets created just to hold
-                                // context of type-symbol level bits of information such as the list of
-                                // imports, that are consumed when generating code for the members defined
-                                // within a specific partial class.
-                                ((ClassSymbol)typeSymbol).SetPrimaryPartialClass(partialTypeSymbol);
-                            }
-
-                            types.Add(typeSymbol);
-                        }
+                        TryAddType(symbols, types, namespaceSymbol, imports, aliases, typeNode);
                     }
                 }
+        }
+
+        private void TryAddType(SymbolSet symbols, List<TypeSymbol> types, NamespaceSymbol namespaceSymbol, List<string> imports, Dictionary<string, string> aliases, TypeNode typeNode, TypeSymbol outerType = null)
+        {
+            UserTypeNode userTypeNode = typeNode as UserTypeNode;
+
+            if (userTypeNode == null)
+            {
+                return;
+            }
+
+            ClassSymbol partialTypeSymbol = null;
+            bool isPartial = false;
+
+            if ((userTypeNode.Modifiers & Modifiers.Partial) != 0)
+            {
+                partialTypeSymbol =
+                    (ClassSymbol)((ISymbolTable)namespaceSymbol).FindSymbol(userTypeNode.Name, /* context */
+                        null, SymbolFilter.Types);
+
+                if (partialTypeSymbol != null && partialTypeSymbol.IsApplicationType)
+                {
+                    // This class will be considered as a partial class
+                    isPartial = true;
+
+                    // Merge code model information for the partial class onto the code model node
+                    // for the primary partial class. Interesting bits of information include things
+                    // such as base class etc. that is yet to be processed.
+                    CustomTypeNode partialTypeNode = (CustomTypeNode)partialTypeSymbol.ParseContext;
+                    partialTypeNode.MergePartialType((CustomTypeNode)userTypeNode);
+                    ((CustomTypeNode)userTypeNode).MergePartialType(partialTypeNode);
+                    // Merge interesting bits of information onto the primary type symbol as well
+                    // representing this partial class
+                    SetTypeSymbolProperties(partialTypeSymbol, userTypeNode);
+                }
+            }
+
+            TypeSymbol typeSymbol = BuildTypeSymbol(userTypeNode, namespaceSymbol, outerType);
+
+            if (typeSymbol != null)
+            {
+                typeSymbol.SetParseContext(userTypeNode);
+
+                if(outerType is TypeSymbol)
+                {
+                    typeSymbol.SetParentSymbolTable(outerType);
+                }
+                else
+                {
+                    typeSymbol.SetParentSymbolTable(symbols);
+                }
+
+                if (imports != null)
+                {
+                    typeSymbol.SetImports(imports);
+                }
+
+                if (aliases != null)
+                {
+                    typeSymbol.SetAliases(aliases);
+                }
+
+                if (isPartial == false)
+                {
+                    namespaceSymbol.AddType(typeSymbol);
+                }
+                else
+                {
+                    // Partial types don't get added to the namespace, so we don't have
+                    // duplicated named items. However, they still do get instantiated
+                    // and processed as usual.
+                    //
+                    // The members within partial classes refer to the partial type as their parent,
+                    // and hence derive context such as the list of imports scoped to the
+                    // particular type.
+                    // However, the members will get added to the primary partial type's list of
+                    // members so they can be found.
+                    // Effectively the partial class here gets created just to hold
+                    // context of type-symbol level bits of information such as the list of
+                    // imports, that are consumed when generating code for the members defined
+                    // within a specific partial class.
+                    ((ClassSymbol)typeSymbol).SetPrimaryPartialClass(partialTypeSymbol);
+                }
+
+                if(outerType is TypeSymbol)
+                {
+                    outerType.AddType(typeSymbol);
+                }
+
+                types.Add(typeSymbol);
+
+                var nestedTypes = (typeNode as CustomTypeNode)?.Members.Where(m => m.NodeType == ParseNodeType.Type).Cast<TypeNode>() ?? Enumerable.Empty<TypeNode>();
+
+                foreach(var nestedTypeNode in nestedTypes)
+                {
+                    TryAddType(symbols, types, namespaceSymbol, imports, aliases, nestedTypeNode, typeSymbol);
+                }
+            }
         }
 
         private void BuildTypeInheritence(List<TypeSymbol> types)
@@ -297,7 +321,7 @@ namespace DSharp.Compiler.Compiler
                 }
             }
         }
-        
+
         private IEnumerable<(TypeSymbol, IEnumerable<MethodSymbol>)> FetchTypesWithExtensionMethods(IEnumerable<TypeSymbol> typeSymbols)
         {
             return typeSymbols.Where(symbol => symbol.IsPublic || symbol.IsInternal).Select(type =>
@@ -725,7 +749,7 @@ namespace DSharp.Compiler.Compiler
 
             CustomTypeNode typeNode = (CustomTypeNode)typeSymbol.ParseContext;
 
-            foreach (MemberNode member in typeNode.Members)
+            foreach (MemberNode member in typeNode.Members.Where(m=>m.NodeType != ParseNodeType.Type))
             {
                 var nodeAttributes = member.Attributes.Cast<AttributeNode>();
 
@@ -996,7 +1020,7 @@ namespace DSharp.Compiler.Compiler
                 methodSymbol.SymbolSet.ResolveType(parameterNode.Type, symbolTable, methodSymbol);
             if (parameterType == null && methodSymbol.Parent.IsGeneric)
             {
-                if(parameterNode.Type is NameNode nameNode)
+                if (parameterNode.Type is NameNode nameNode)
                 {
                     parameterType = methodSymbol.Parent.GenericParameters.FirstOrDefault(parameter => parameter.Name == nameNode.Name);
                 }
@@ -1111,7 +1135,7 @@ namespace DSharp.Compiler.Compiler
             }
         }
 
-        private TypeSymbol BuildType(UserTypeNode typeNode, NamespaceSymbol namespaceSymbol)
+        private TypeSymbol BuildTypeSymbol(UserTypeNode typeNode, NamespaceSymbol namespaceSymbol, TypeSymbol outerType = null)
         {
             Debug.Assert(typeNode != null);
             Debug.Assert(namespaceSymbol != null);
@@ -1119,7 +1143,8 @@ namespace DSharp.Compiler.Compiler
             TypeSymbol typeSymbol = null;
             ParseNodeList attributes = typeNode.Attributes;
 
-            string name = typeNode.Name;
+            string name = outerType is TypeSymbol ? $"{outerType.Name}${typeNode.Name}" : typeNode.Name;
+
             if (typeNode.TypeParameters.Any())
             {
                 name += "`" + typeNode.TypeParameters.Count;
@@ -1189,19 +1214,19 @@ namespace DSharp.Compiler.Compiler
                     genericParameterSymbols.Add(typeParameterSymbol);
                 }
 
-                if(genericParameterSymbols.Any())
+                if (genericParameterSymbols.Any())
                 {
                     typeSymbol.AddGenericParameters(genericParameterSymbols);
                 }
 
 
-                BuildType(typeSymbol, typeNode);
+                SetTypeSymbolProperties(typeSymbol, typeNode);
             }
 
             return typeSymbol;
         }
 
-        private void BuildType(TypeSymbol typeSymbol, UserTypeNode typeNode)
+        private void SetTypeSymbolProperties(TypeSymbol typeSymbol, UserTypeNode typeNode)
         {
             Debug.Assert(typeSymbol != null);
             Debug.Assert(typeNode != null);
@@ -1265,8 +1290,9 @@ namespace DSharp.Compiler.Compiler
             {
                 typeSymbol.IsPublic = true;
             }
-            else if (typeNode.Modifiers.HasFlag(Modifiers.Internal))
+            else
             {
+                //todo: improve the logic here to support private/protected access modifiers for nested classes
                 typeSymbol.IsInternal = true;
             }
 

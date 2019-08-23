@@ -24,13 +24,14 @@
         public static readonly string SCRIPT_LITERAL_CONSTANT_ERROR = "The argument to Script.Literal must be a constant string.";
         public static readonly string SCRIPT_LITERAL_FORMAT_ERROR = "The argument to Script.Literal must be a valid String.Format string.";
         public static readonly string RESERVED_KEYWORD_ERROR_FORMAT = "{0} is a reserved keyword.";
-        public static readonly string NESTED_TYPE_ERROR = "Only members are allowed inside types. Nested types are not supported.";
         public static readonly string EXTERN_IMPLEMENTATION_FOUND_ERROR = "Extern methods used to declare alternate signatures should have a corresponding non-extern implementation as well.";
         public static readonly string EXTERN_STATIC_MEMBER_MISMATCH_ERROR = "The implemenation method and associated alternate signature methods should have the same access type.";
         public static readonly string SCRIPT_OBJECT_ATTRIBUTE_ERROR = "ScriptObject attribute can only be set on sealed classes.";
         public static readonly string SCRIPT_OBJECT_CLASS_INHERITENCE_ERROR = "Classes marked with ScriptObject must not derive from another class or implement interfaces.";
         public static readonly string SCRIPT_OBJECT_MEMBER_VIOLATION_ERROR = "Classes marked with ScriptObject attribute should only have a constructor and field members.";
         public static readonly string CONFLICTING_TYPE_NAME_ERROR_FORMAT = "The type '{0}' conflicts with with '{1}' as they have the same name.";
+        public static readonly string ACCESS_MODIFIER_ON_TYPE_UNSUPPORTED = "private and protected type declarations are not supported.";
+        public static readonly string NEW_KEYWORD_ON_TYPE_UNSUPPORTED = "The new modifier is not supported on type declarations.";
         //TODO: None of these error messages are tested
         public static readonly string SCRIPT_NAMESPACE_VIOLATION = "A script namespace must be a valid script identifier.";
         public static readonly string SCRIPT_NAMESPACE_TYPE_VIOLATION = "Non-namespaced types are not supported.";

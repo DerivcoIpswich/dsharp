@@ -449,7 +449,6 @@ namespace DSharp.Compiler.Importer
                     ImportProperties(typeSymbol);
                     ImportMethods(typeSymbol);
                     ImportEvents(typeSymbol);
-
                     break;
                 case SymbolType.Enumeration:
                     ImportEnumFields(typeSymbol);
@@ -898,9 +897,9 @@ namespace DSharp.Compiler.Importer
         }
 
         private void ImportType(MetadataSource mdSource, TypeDefinition type, bool inScriptCoreAssembly,
-                                string scriptNamespace)
+                                string scriptNamespace, TypeSymbol outerType = null)
         {
-            if (type.IsPublic == false)
+            if (type.IsPublic == false && type.IsNestedPublic == false)
             {
                 return;
             }
@@ -910,8 +909,8 @@ namespace DSharp.Compiler.Importer
                 return;
             }
 
-            string name = type.Name;
-            string namespaceName = type.Namespace;
+            string name = outerType is TypeSymbol ? $"{outerType.Name}${type.Name}" : type.Name;
+            string namespaceName = outerType is TypeSymbol ? outerType.Namespace : type.Namespace;
 
             bool dummy;
             string scriptName = MetadataHelpers.GetScriptName(type, out dummy, out dummy);
@@ -1008,6 +1007,19 @@ namespace DSharp.Compiler.Importer
 
                 namespaceSymbol.AddType(typeSymbol);
                 importedTypes.Add(typeSymbol);
+
+                if(outerType is TypeSymbol)
+                {
+                    outerType.AddType(typeSymbol);
+                }
+
+                if(type.HasNestedTypes)
+                {
+                    foreach (TypeDefinition nestedType in type.NestedTypes)
+                    {
+                        ImportType(mdSource, nestedType, inScriptCoreAssembly, scriptNamespace, typeSymbol);
+                    }
+                }
             }
         }
 
@@ -1034,8 +1046,7 @@ namespace DSharp.Compiler.Importer
             {
                 type = genericType.ElementType;
             }
-
-            string name = type.FullName;
+            string name = ProcessNestedTypeName(type);
 
             if (string.CompareOrdinal(name, MscorlibTypeNames.System_ValueType) == 0)
             {
@@ -1084,6 +1095,11 @@ namespace DSharp.Compiler.Importer
             }
 
             return typeSymbol;
+        }
+
+        private static string ProcessNestedTypeName(TypeReference type)
+        {
+            return type.FullName.Replace('/', '$');
         }
 
         private enum PseudoClassMembers

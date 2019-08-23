@@ -57,12 +57,19 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         public Symbol FindSymbol(string name, Symbol context, SymbolFilter filter)
         {
             Debug.Assert(string.IsNullOrEmpty(name) == false);
-            Debug.Assert(context == null);
             Debug.Assert(filter == SymbolFilter.Types);
 
             if (typeMap.ContainsKey(name))
             {
                 return typeMap[name];
+            }
+
+            foreach(var type in types)
+            {
+                if((type as ISymbolTable).FindSymbol(name, context, filter | SymbolFilter.ExcludeParent) is Symbol result)
+                {
+                    return result;
+                }
             }
 
             return null;

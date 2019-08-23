@@ -31,6 +31,20 @@ namespace DSharp.Compiler.Validator
                 return false;
             }
 
+            if ((typeNode.Modifiers & Modifiers.New) != 0)
+            {
+                errorHandler.ReportNodeValidationError(DSharpStringResources.NEW_KEYWORD_ON_TYPE_UNSUPPORTED, typeNode);
+
+                return false;
+            }
+
+            if ((typeNode.Modifiers & (Modifiers.Private | Modifiers.Protected)) != 0)
+            {
+                errorHandler.ReportNodeValidationError(DSharpStringResources.ACCESS_MODIFIER_ON_TYPE_UNSUPPORTED, typeNode);
+
+                return false;
+            }
+
             if ((typeNode.Modifiers & Modifiers.Partial) != 0 &&
                 typeNode.Type != TokenType.Class)
             {
@@ -68,8 +82,6 @@ namespace DSharp.Compiler.Validator
                 {
                     if (!(genericMemberNode is MemberNode))
                     {
-                        errorHandler.ReportNodeValidationError(DSharpStringResources.NESTED_TYPE_ERROR, node);
-
                         continue;
                     }
 

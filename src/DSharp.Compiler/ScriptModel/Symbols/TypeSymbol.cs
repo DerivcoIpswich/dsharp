@@ -3,9 +3,11 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using DSharp.Compiler.Extensions;
 
@@ -15,6 +17,9 @@ namespace DSharp.Compiler.ScriptModel.Symbols
     {
         private readonly List<MemberSymbol> members;
         private readonly Dictionary<string, MemberSymbol> memberTable;
+
+        private readonly Dictionary<string, TypeSymbol> typeMap;
+        private readonly List<TypeSymbol> types;
 
         private object metadataReference;
 
@@ -27,12 +32,18 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
             memberTable = new Dictionary<string, MemberSymbol>();
             members = new List<MemberSymbol>();
+
+            types = new List<TypeSymbol>();
+            typeMap = new Dictionary<string, TypeSymbol>();
+
             IsApplicationType = true;
         }
 
         public IDictionary<string, string> Aliases { get; private set; }
 
         public ScriptReference Dependency { get; private set; }
+
+        public bool HasNestedTypes => types.Any();
 
         public override string DocumentationId
         {
@@ -278,33 +289,20 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         Symbol ISymbolTable.FindSymbol(string name, Symbol context, SymbolFilter filter)
         {
             Debug.Assert(string.IsNullOrEmpty(name) == false);
-            Debug.Assert(context != null);
 
             Symbol symbol = null;
 
-            if ((filter & SymbolFilter.Members) != 0)
+            if((filter & SymbolFilter.Types) != 0)
+            {
+                symbol = GetNestedType(name, context, filter);
+            }
+
+            if (symbol == null && (filter & SymbolFilter.Members) != 0)
             {
                 SymbolFilter baseFilter = filter | SymbolFilter.ExcludeParent;
 
-                symbol = GetMember(name);
-
-                if (symbol == null)
-                {
-                    TypeSymbol baseType = GetBaseType();
-                    TypeSymbol objectType =
-                        (TypeSymbol) ((ISymbolTable) SymbolSet.SystemNamespace).FindSymbol("Object", null,
-                            SymbolFilter.Types);
-
-                    if (baseType == null && this != objectType)
-                    {
-                        baseType = objectType;
-                    }
-
-                    if (baseType != null)
-                    {
-                        symbol = ((ISymbolTable) baseType).FindSymbol(name, context, baseFilter);
-                    }
-                }
+                symbol = GetMember(name)
+                    ?? FindSymbolFromBase(name, context, symbol, baseFilter);
 
                 if (symbol != null && symbol.MatchFilter(filter) == false)
                 {
@@ -319,6 +317,59 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             }
 
             return symbol;
+        }
+
+        private Symbol FindSymbolFromBase(string name, Symbol context, Symbol symbol, SymbolFilter baseFilter)
+        {
+            TypeSymbol baseType = GetBaseType();
+            TypeSymbol objectType =
+                (TypeSymbol)((ISymbolTable)SymbolSet.SystemNamespace).FindSymbol("Object", null,
+                    SymbolFilter.Types);
+
+            if (baseType == null && this != objectType)
+            {
+                baseType = objectType;
+            }
+
+            if (baseType != null)
+            {
+                symbol = ((ISymbolTable)baseType).FindSymbol(name, context, baseFilter);
+            }
+
+            return symbol;
+        }
+
+        private Symbol GetNestedType(string name, Symbol context, SymbolFilter filter)
+        {
+            string nestedName = name.Substring(name.LastIndexOf('$') + 1);
+
+            if (typeMap.ContainsKey(nestedName))
+            {
+                return typeMap[nestedName];
+            }
+            else
+            {
+                foreach (var nestedType in types)
+                {
+                    if(((ISymbolTable)nestedType).FindSymbol(name, context, filter | SymbolFilter.ExcludeParent) is Symbol symbol)
+                    {
+                        return symbol;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        public void AddType(TypeSymbol typeSymbol)
+        {
+            Debug.Assert(typeSymbol != null);
+            Debug.Assert(string.IsNullOrEmpty(typeSymbol.Name) == false);
+
+            string nestedName = typeSymbol.Name.Substring(typeSymbol.Name.LastIndexOf('$') + 1);
+
+            types.Add(typeSymbol);
+            typeMap[nestedName] = typeSymbol;
         }
 
         #endregion

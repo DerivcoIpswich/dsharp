@@ -274,7 +274,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             if (templateType.Type == SymbolType.Class)
             {
                 ClassSymbol genericClass = (ClassSymbol)templateType;
-                ClassSymbol instanceClass = new ClassSymbol(genericClass.Name, (NamespaceSymbol) genericClass.Parent);
+                ClassSymbol instanceClass = new ClassSymbol(genericClass.Name, (NamespaceSymbol)genericClass.Parent);
 
                 instanceClass.SetInheritance(genericClass.BaseClass, genericClass.Interfaces);
                 instanceClass.SetImported(genericClass.Dependency);
@@ -954,6 +954,12 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public ICollection Symbols => namespaces;
 
+        private bool CompareTypeName(TypeSymbol typeSymbol, string name)
+        {
+            return name.Equals(typeSymbol.FullName.Replace('$', '.'))
+                || name.Equals(typeSymbol.Name.Replace('$', '.'));
+        }
+
         public Symbol FindSymbol(string name, Symbol context, SymbolFilter filter)
         {
             if ((filter & SymbolFilter.Types) == 0)
@@ -965,16 +971,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
             if (name.IndexOf('.') > 0)
             {
-                int nameIndex = name.LastIndexOf('.') + 1;
-                Debug.Assert(nameIndex < name.Length);
-
-                string namespaceName = name.Substring(0, nameIndex - 1);
-                name = name.Substring(nameIndex);
-
-                if (namespaceMap.TryGetValue(namespaceName, out NamespaceSymbol namespaceSymbol))
-                {
-                    symbol = ((ISymbolTable)namespaceSymbol).FindSymbol(name, /* context */ null, SymbolFilter.Types);
-                }
+                symbol = FindSymbolFromNamespace(name, context);
             }
             else
             {
@@ -982,12 +979,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
                 if (context is MethodSymbol methodContext)
                 {
-                    var genericType = methodContext.GenericArguments?.SingleOrDefault(a => a.Name == name);
-
-                    if(genericType == null && methodContext.Parent.IsGeneric)
-                    {
-                        genericType = methodContext.Parent.GenericParameters.FirstOrDefault(a => a.Name == name);
-                    }
+                    GenericParameterSymbol genericType = FindGenericType(name, methodContext);
 
                     if (genericType != null)
                     {
@@ -1024,7 +1016,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                 if (typeSymbol.IsGeneric)
                 {
                     var resolved = typeSymbol.GenericParameters.FirstOrDefault(param => param.Name == name);
-                    if(resolved != null)
+                    if (resolved != null)
                     {
                         return resolved;
                     }
@@ -1035,7 +1027,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                 NamespaceSymbol containerNamespace = (NamespaceSymbol)typeSymbol.Parent;
                 Debug.Assert(containerNamespace != null);
 
-                symbol = ((ISymbolTable)containerNamespace).FindSymbol(name, /* context */ null, SymbolFilter.Types);
+                symbol = ((ISymbolTable)containerNamespace).FindSymbol(name, /* context */ typeSymbol, SymbolFilter.Types);
 
                 if (containerNamespace == SystemNamespace)
                 {
@@ -1098,6 +1090,73 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             }
 
             return symbol;
+        }
+
+        private static GenericParameterSymbol FindGenericType(string name, MethodSymbol methodContext)
+        {
+            var genericType = methodContext.GenericArguments?.SingleOrDefault(a => a.Name == name);
+
+            if (genericType == null && methodContext.Parent.IsGeneric)
+            {
+                genericType = methodContext.Parent.GenericParameters.FirstOrDefault(a => a.Name == name);
+            }
+
+            return genericType;
+        }
+
+        private Symbol FindSymbolFromNamespace(string name, Symbol context)
+        {
+            int nameIndex = name.LastIndexOf('.');
+            string typeName = name.Substring(nameIndex + 1);
+            string namespaceName = name.Substring(0, nameIndex);
+
+            if (namespaceMap.TryGetValue(namespaceName, out NamespaceSymbol namespaceSymbol))
+            {
+                return namespaceSymbol.FindSymbol(typeName, /* context */ null, SymbolFilter.Types);
+            }
+            else
+            {
+                return SearchAllNamespaces(name, context, typeName, namespaceName);
+            }
+        }
+
+        private Symbol SearchAllNamespaces(string name, Symbol context, string typeName, string namespaceName)
+        {
+            foreach (NamespaceSymbol namespaceSymbol in namespaces)
+            {
+                if(namespaceSymbol.FindSymbol(typeName, /* context */ null, SymbolFilter.Types) is TypeSymbol foundType)
+                {
+                    if (IsNamespaceMatch(foundType, name, namespaceName, context))
+                    {
+                        return foundType;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private bool IsNamespaceMatch(TypeSymbol foundType, string name, string namespaceName, Symbol context)
+        {
+            return CompareTypeName(foundType, name)
+                || string.Equals(foundType.Namespace, namespaceName)
+                || GetAliasesFromContext(context)
+                    .Select(a => name.Replace(a.Key, a.Value))
+                    .Any(n => CompareTypeName(foundType, n));
+        }
+
+        private IEnumerable<KeyValuePair<string, string>> GetAliasesFromContext(Symbol context)
+        {
+            if(context is TypeSymbol typeContext)
+            {
+                return typeContext.Aliases ?? Enumerable.Empty<KeyValuePair<string, string>>();
+            }
+            if(context is MemberSymbol memberContext && memberContext.Parent is TypeSymbol parentContext)
+            {
+                return parentContext.Aliases ?? Enumerable.Empty<KeyValuePair<string, string>>();
+            }
+
+            return Enumerable.Empty<KeyValuePair<string, string>>();
         }
     }
 }

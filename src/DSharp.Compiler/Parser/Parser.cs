@@ -593,7 +593,7 @@ namespace DSharp.Compiler.Parser
             return null;
         }
 
-        private TypeNode ParseTypeDeclaration(Token token, ParseNodeList attributes, Modifiers modifiers)
+        private TypeNode ParseTypeDeclaration(Token token, ParseNodeList attributes, Modifiers modifiers, bool isNestedType = false)
         {
             TokenType type = PeekType();
             NextToken();
@@ -609,7 +609,8 @@ namespace DSharp.Compiler.Parser
                     new ParseNodeList(),
                     ParseBaseList(true),
                     new ParseNodeList(),
-                    ParseEnumBody());
+                    ParseEnumBody(),
+                    isNestedType);
             }
 
             return new CustomTypeNode(
@@ -621,7 +622,8 @@ namespace DSharp.Compiler.Parser
                 ParseTypeParametersOpt(),
                 ParseBaseList(false),
                 ParseConstraintClauses(),
-                ParseClassOrStructBody());
+                ParseClassOrStructBody(),
+                isNestedType);
         }
 
         private ParseNodeList ParseTypeParametersOpt()
@@ -1071,21 +1073,21 @@ namespace DSharp.Compiler.Parser
                 case TokenType.Delegate:
                     NextToken();
 
-                    return ParseDelegate(token, attributes, CheckModifiers(Modifiers.DelegateModifiers, modifiers));
+                    return ParseDelegate(token, attributes, CheckModifiers(Modifiers.DelegateModifiers, modifiers), true);
                 case TokenType.Class:
 
-                    return ParseTypeDeclaration(token, attributes, CheckModifiers(Modifiers.ClassModifiers, modifiers));
+                    return ParseTypeDeclaration(token, attributes, CheckModifiers(Modifiers.ClassModifiers, modifiers), true);
                 case TokenType.Struct:
 
                     return ParseTypeDeclaration(token, attributes,
-                        CheckModifiers(Modifiers.StructModifiers, modifiers));
+                        CheckModifiers(Modifiers.StructModifiers, modifiers), true);
                 case TokenType.Enum:
 
-                    return ParseTypeDeclaration(token, attributes, CheckModifiers(Modifiers.EnumModifiers, modifiers));
+                    return ParseTypeDeclaration(token, attributes, CheckModifiers(Modifiers.EnumModifiers, modifiers), true);
                 case TokenType.Interface:
 
                     return ParseTypeDeclaration(token, attributes,
-                        CheckModifiers(Modifiers.InterfaceModifiers, modifiers));
+                        CheckModifiers(Modifiers.InterfaceModifiers, modifiers), true);
                 default:
                     Debug.Fail("Bad token type");
 
@@ -1765,7 +1767,7 @@ namespace DSharp.Compiler.Parser
             return new StackAllocNode(token, type, numberOfElements);
         }
 
-        private DelegateTypeNode ParseDelegate(Token token, ParseNodeList attributes, Modifiers modifiers)
+        private DelegateTypeNode ParseDelegate(Token token, ParseNodeList attributes, Modifiers modifiers, bool isNestedType = false)
         {
             ParseNode returnType = ParseReturnType();
             AtomicNameNode name = ParseIdentifier();
@@ -1782,7 +1784,8 @@ namespace DSharp.Compiler.Parser
                 name,
                 typeParameters,
                 formals,
-                constraints);
+                constraints,
+                isNestedType);
         }
 
         private ParseNode ParseNonArrayType()

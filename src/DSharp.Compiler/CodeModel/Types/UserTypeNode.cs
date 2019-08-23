@@ -20,7 +20,8 @@ namespace DSharp.Compiler.CodeModel.Types
                             Modifiers modifiers,
                             AtomicNameNode name,
                             ParseNodeList typeParameters,
-                            ParseNodeList constraintClauses)
+                            ParseNodeList constraintClauses,
+                            bool isNestedType = false)
             : base(type, token)
         {
             Type = tokenType;
@@ -29,6 +30,7 @@ namespace DSharp.Compiler.CodeModel.Types
             nameNode = name;
             this.TypeParameters = GetParentedNodeList(typeParameters);
             this.constraintClauses = GetParentedNodeList(constraintClauses);
+            IsNestedType = isNestedType;
         }
 
         public ParseNodeList TypeParameters { get; }
@@ -42,6 +44,8 @@ namespace DSharp.Compiler.CodeModel.Types
         public Modifiers Modifiers { get; private set; }
 
         public TokenType Type { get; }
+
+        public bool IsNestedType { get; internal set; }
 
         internal virtual void MergePartialType(CustomTypeNode partialTypeNode)
         {
