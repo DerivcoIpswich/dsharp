@@ -684,7 +684,7 @@ namespace DSharp.Compiler.Compiler
 
             if (objectExpression == null)
             {
-                throw new ExpressionBuildException($"ObjectExpression is null: {{{node.LeftChild.Token.Location}}} - {{{node.RightChild.Token.Location}}}");
+                return null;
             }
 
             if (objectExpression is LiteralExpression)
@@ -816,7 +816,10 @@ namespace DSharp.Compiler.Compiler
                 }
             }
 
-            Debug.Assert(objectExpression != null);
+            if(objectExpression == null)
+            {
+                Debugger.Launch();
+            }
 
             if (objectExpression == null)
             {
@@ -1005,7 +1008,7 @@ namespace DSharp.Compiler.Compiler
         private TypeSymbol ResolveTypeNode(BinaryExpressionNode node)
         {
             MethodDeclarationNode parentMethod = FindParentNode<MethodDeclarationNode>(node);
-            var token = parentMethod.Parameters.FirstOrDefault()?.Token;
+            var token = parentMethod?.Parameters?.FirstOrDefault()?.Token;
             var typeNode = symbolSet.ResolveIntrinsicToken(token);
             return typeNode;
         }
@@ -1105,11 +1108,10 @@ namespace DSharp.Compiler.Compiler
         private Expression ProcessNameNode(NameNode node, SymbolFilter filter)
         {
             Symbol symbol = ResolveNameNodeSymbol(node, filter);
-            //Debug.Assert(symbol != null);
 
             if (symbol == null)
             {
-                throw new ExpressionBuildException($"Null Symbol for node: {node.Token.Location}");
+                return null;
             }
 
             if (symbol is LocalSymbol localSymbol)
