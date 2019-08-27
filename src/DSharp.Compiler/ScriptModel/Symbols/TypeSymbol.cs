@@ -310,10 +310,16 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                 }
             }
 
-            if (symbol == null && parentSymbolTable != null &&
-                (filter & SymbolFilter.ExcludeParent) == 0)
+            if(symbol == null && !filter.HasFlag(SymbolFilter.ExcludeParent))
             {
-                symbol = parentSymbolTable.FindSymbol(name, context, filter);
+                if (parentSymbolTable != null)
+                {
+                    symbol = parentSymbolTable.FindSymbol(name, context, filter);
+                }
+                else if (context?.Parent is ISymbolTable symbolTable)
+                {
+                    symbolTable.FindSymbol(name, context, filter);
+                }
             }
 
             return symbol;

@@ -793,9 +793,19 @@ namespace DSharp.Compiler.Compiler
                 }
                 else if (node.LeftChild.Token is IdentifierToken identifier)
                 {
-                    MethodDeclarationNode parentMethod = FindParentNode<MethodDeclarationNode>(node);
-                    var token = parentMethod.Parameters.First().Token;
-                    var typeNode = symbolSet.ResolveIntrinsicToken(token);
+                    TypeSymbol typeNode = ResolveTypeNode(node);
+
+                    if(typeNode == null)
+                    {
+                        var symbol = symbolTable.FindSymbol(
+                            identifier.Identifier,
+                            memberContext, SymbolFilter.AnyMember | SymbolFilter.Members | SymbolFilter.Locals);
+
+                        if (symbol is LocalSymbol localSymbol)
+                            typeNode = localSymbol.ValueType;
+                        else if (symbol is MemberSymbol member)
+                            typeNode = member.AssociatedType;
+                    }
 
                     Expression extensionMethodInvocation = CreateExtensionMethodInvocationExpression(node, typeNode);
 
@@ -990,6 +1000,14 @@ namespace DSharp.Compiler.Compiler
             }
 
             return expression;
+        }
+
+        private TypeSymbol ResolveTypeNode(BinaryExpressionNode node)
+        {
+            MethodDeclarationNode parentMethod = FindParentNode<MethodDeclarationNode>(node);
+            var token = parentMethod.Parameters.FirstOrDefault()?.Token;
+            var typeNode = symbolSet.ResolveIntrinsicToken(token);
+            return typeNode;
         }
 
         private Expression CreateExtensionMethodInvocationExpression(BinaryExpressionNode node, TypeSymbol typeToExtend)

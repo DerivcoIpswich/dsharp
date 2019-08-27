@@ -726,6 +726,11 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public TypeSymbol ResolveIntrinsicToken(Token token)
         {
+            if(token == null)
+            {
+                return null;
+            }
+
             IntrinsicType intrinsicType = IntrinsicType.Void;
 
             switch (token.Type)

@@ -414,7 +414,8 @@ namespace DSharp.Compiler.Generator
 
                     break;
                 case ExpressionType.Member:
-                    throw new ScriptGeneratorException(symbol, "MemberExpression missed from conversion to higher level expression.");
+                    GenerateMemberExpression(generator, symbol, (MemberExpression)expression);
+                    break;
                 case ExpressionType.Field:
                     GenerateFieldExpression(generator, symbol, (FieldExpression)expression);
 
@@ -501,6 +502,18 @@ namespace DSharp.Compiler.Generator
             {
                 writer.Write(")");
             }
+        }
+
+        private static void GenerateMemberExpression(ScriptGenerator generator, MemberSymbol symbol, MemberExpression expression)
+        {
+            ScriptTextWriter writer = generator.Writer;
+
+            if (expression.RequiresThisContext)
+            {
+                writer.Write("this.");
+            }
+
+            writer.Write(expression.Member.GeneratedName);
         }
 
         private static void GenerateObjectExpression(ScriptGenerator generator, MemberSymbol symbol, ObjectExpression expression)
