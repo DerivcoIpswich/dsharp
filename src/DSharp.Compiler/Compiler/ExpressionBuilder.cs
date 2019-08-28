@@ -1834,7 +1834,6 @@ namespace DSharp.Compiler.Compiler
                 methodExpression.AddParameterValue(new ThisExpression(referencedType.Parent as ClassSymbol, false));
                 methodExpression.AddParameterValue(new LiteralExpression(stringSymbol, genericParameterSymbol.GeneratedName));
 
-                //ss.getTypeArgument(this, "T");
                 return methodExpression;
             }
             else if (referencedType.IsGeneric)
