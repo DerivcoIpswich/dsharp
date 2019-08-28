@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using DSharp.Compiler.Extensions;
 using DSharp.Compiler.ScriptModel.Expressions;
 using DSharp.Compiler.ScriptModel.Symbols;
@@ -1110,7 +1111,7 @@ namespace DSharp.Compiler.Generator
                 }
             }
 
-            if(expression.AssociatedType.IsGeneric)
+            if(expression.AssociatedType.IsGeneric && (expression?.AssociatedType?.GenericArguments?.Any() ?? false))
             {
                 writer.Write(DSharpStringResources.ScriptExportMember("createGenericType"));
                 writer.Write("(");
