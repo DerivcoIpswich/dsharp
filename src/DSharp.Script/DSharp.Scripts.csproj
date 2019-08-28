@@ -44,6 +44,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <SourceScript Remove="src\System\Generics.js" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="dist\" />
   </ItemGroup>
   <Target Name="Buildify" AfterTargets="Build" Inputs="@(SourceScript);build.js" Outputs="dist\ss.js;dist\ss.min.js">
