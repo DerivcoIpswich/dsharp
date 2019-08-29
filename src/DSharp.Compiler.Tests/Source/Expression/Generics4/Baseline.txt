@@ -11,11 +11,17 @@ define('test', ['ss'], function(ss) {
 
   function Usages() {
   }
+  Usages.doSomethingAwesome = function(TArgs, value) {
+    return ss.createGenericType(GenericClass_$1, {T : TArgs['T']}, value);
+  };
   var Usages$ = {
     use: function() {
       var genericClass = ss.createGenericType(GenericClass_$1, {T : Number}, 1);
       genericClass.doSomethingWith({TNew: Boolean}, false, 1);
       genericClass.register({TBase: Usages$IBase, TImplementation: Usages$ImplementsBase});
+      var newClass = Usages.doSomethingAwesome({T: Number}, 1);
+      var success1 = ss.typeOf(newClass) === ss.getGenericConstructor(GenericClass_$1, {T: Number});
+      var success2 = ss.typeOf(newClass) === ss.typeOf(newClass);
     }
   };
 

@@ -21,7 +21,11 @@ namespace DSharp.Compiler.Generator
             {
                 var typeArgument = typeArguments[i];
                 var typeParameter = typeParameters[i];
-                dictionary.Add(typeParameter.FullName, typeArgument.FullGeneratedName);
+
+                var typeArgumentName = typeArgument is GenericParameterSymbol
+                    ? $"{DSharpStringResources.GeneratedScript.GENERIC_ARGS_PARAMETER_NAME}['{typeArgument.FullGeneratedName}']"
+                    : typeArgument.FullGeneratedName;
+                dictionary.Add(typeParameter.FullName, typeArgumentName);
             }
 
             writer.GenerateObject(dictionary);

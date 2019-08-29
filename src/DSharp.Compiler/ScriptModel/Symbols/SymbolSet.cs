@@ -234,17 +234,35 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         public TypeSymbol CreateGenericTypeSymbol(TypeSymbol templateType, IList<TypeSymbol> typeArguments)
         {
             foreach (TypeSymbol typeSymbol in typeArguments)
-                if (typeSymbol.Type == SymbolType.GenericParameter)
+                if (typeSymbol is GenericParameterSymbol genericParameterSymbol && genericParameterSymbol.Owner == null)
                 {
                     return templateType;
                 }
 
             StringBuilder keyBuilder = new StringBuilder(templateType.FullName);
 
-            foreach (TypeSymbol typeSymbol in typeArguments)
+            foreach (TypeSymbol typeArgument in typeArguments)
             {
                 keyBuilder.Append("+");
-                keyBuilder.Append(typeSymbol.FullName);
+                if(typeArgument is GenericParameterSymbol genericParameterSymbol)
+                {
+                    if(genericParameterSymbol.Owner is MethodSymbol ownerMethoSymbol)
+                    {
+                        keyBuilder.Append(ownerMethoSymbol.Name + "_" + typeArgument.FullName);
+                    }
+                    else if(genericParameterSymbol.Owner is TypeSymbol ownerTypeSymbol)
+                    {
+                        keyBuilder.Append(ownerTypeSymbol.FullName + "_" + typeArgument.FullName);
+                    }
+                    else
+                    {
+                        keyBuilder.Append(typeArgument.FullName);
+                    }
+                }
+                else
+                {
+                    keyBuilder.Append(typeArgument.FullName);
+                }
             }
 
             string key = keyBuilder.ToString();

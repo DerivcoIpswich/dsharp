@@ -12,11 +12,20 @@ namespace TypeTests
             GenericClass<int> genericClass = new GenericClass<int>(1);
             genericClass.DoSomethingWith<bool>(false, 1);
             genericClass.Register<IBase, ImplementsBase>();
+
+            GenericClass<int> newClass = DoSomethingAwesome<int>(1);
+            var success1 = newClass.GetType() == typeof(GenericClass<int>);
+            var success2 = newClass.GetType() == newClass.GetType();
         }
 
         public interface IBase { }
 
         public class ImplementsBase : IBase { }
+
+        public static GenericClass<T> DoSomethingAwesome<T>(T value)
+        {
+            return new GenericClass<T>(value);
+        }
     }
 
     public class GenericClass<T>

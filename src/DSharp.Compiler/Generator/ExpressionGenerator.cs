@@ -1163,13 +1163,6 @@ namespace DSharp.Compiler.Generator
             }
         }
 
-        public static void GenerateGenericTypeArguments(ScriptGenerator generator, IList<TypeSymbol> typeArguments, IList<GenericParameterSymbol> typeParameters)
-        {
-            ScriptTextWriter writer = generator.Writer;
-
-            
-        }
-
         private static void GeneratePropertyExpression(ScriptGenerator generator, MemberSymbol symbol,
                                                        PropertyExpression expression)
         {
