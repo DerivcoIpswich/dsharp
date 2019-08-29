@@ -550,6 +550,7 @@ namespace DSharp.Compiler.Importer
                             new GenericParameterSymbol(genericParameter.Position, genericParameter.Name,
                                 /* typeArgument */ false,
                                 symbols.GlobalNamespace);
+                        arg.Owner = methodSymbol;
                         genericArguments.Add(arg);
                     }
 
@@ -964,9 +965,8 @@ namespace DSharp.Compiler.Importer
                     foreach (GenericParameter genericParameter in type.GenericParameters)
                     {
                         GenericParameterSymbol arg =
-                            new GenericParameterSymbol(genericParameter.Position, genericParameter.Name,
-                                /* typeArgument */ true,
-                                symbols.GlobalNamespace);
+                            new GenericParameterSymbol(genericParameter.Position, genericParameter.Name, true, symbols.GlobalNamespace);
+                        arg.Owner = typeSymbol;
                         genericArguments.Add(arg);
                     }
 
