@@ -110,6 +110,8 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public new TypeSymbol Parent => base.Parent as TypeSymbol;
 
+        public bool IgnoreGeneratedTypeArguments { get; set; }
+
         public void AddGenericArguments(ICollection<GenericParameterSymbol> genericArguments)
         {
             Debug.Assert(GenericArguments == null);

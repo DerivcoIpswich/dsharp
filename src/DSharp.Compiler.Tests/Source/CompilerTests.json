@@ -221,6 +221,12 @@
         "References": []
       },
       {
+        "Name": "Generics4",
+        "SourceFiles": [ "Code.cs" ],
+        "ComparisonFile": "Baseline.txt",
+        "References": []
+      },
+      {
         "Name": "GetType",
         "SourceFiles": [ "Code.cs" ],
         "ComparisonFile": "Baseline.txt"

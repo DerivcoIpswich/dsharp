@@ -61,5 +61,10 @@
         {
             return $"{DSHARP_SCRIPT_NAME}.{methodName}";
         }
+
+        public class GeneratedScript
+        {
+            public const string GENERIC_ARGS_PARAMETER_NAME = "TArgs";
+        }
     }
 }

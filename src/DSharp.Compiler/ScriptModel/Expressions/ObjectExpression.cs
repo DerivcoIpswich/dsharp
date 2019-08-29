@@ -5,14 +5,12 @@ namespace DSharp.Compiler.ScriptModel.Expressions
 {
     internal class ObjectExpression : Expression
     {
-        private readonly Dictionary<string, Expression> properties;
-
-        public IReadOnlyDictionary<string, Expression> Properties => properties;
+        public IDictionary<string, Expression> Properties { get; }
 
         public ObjectExpression(TypeSymbol evaluatedType, IDictionary<string, Expression> properties)
             : base(ExpressionType.Object, evaluatedType, SymbolFilter.AllTypes)
         {
-            this.properties = new Dictionary<string, Expression>(properties);
+            Properties = properties ?? new Dictionary<string, Expression>();
         }
     }
 }

@@ -34,12 +34,12 @@ define('test', ['ss'], function(ss) {
     if (ss.canAssign(ss.getGenericConstructor(IBulkAsyncExecutionManager_$1, {T: String}), ss.typeOf(bem))) {
     }
   };
-  Program.copy = function(source, startIndex, count) {
+  Program.copy = function(TArgs, source, startIndex, count) {
     var destination = new Array(source.length);
     ss.copyArray(source, startIndex, destination, 0, count);
     return destination;
   };
-  Program.copyDictionary = function(source) {
+  Program.copyDictionary = function(TArgs, source) {
     var newDictionary = {};
     for (var $key1 in source) {
       var item = { key: $key1, value: source[$key1] };
@@ -47,7 +47,7 @@ define('test', ['ss'], function(ss) {
     }
     return newDictionary;
   };
-  Program.copyDictionaryOfStringKeys = function(source) {
+  Program.copyDictionaryOfStringKeys = function(TArgs, source) {
     var newDictionary = {};
     for (var $key1 in source) {
       var item = { key: $key1, value: source[$key1] };

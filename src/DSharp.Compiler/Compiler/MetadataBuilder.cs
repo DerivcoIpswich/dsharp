@@ -867,6 +867,11 @@ namespace DSharp.Compiler.Compiler
                 {
                     method = new MethodSymbol(methodNode.Name, typeSymbol, returnTypeSymbol, methodNode.IsExensionMethod);
 
+                    if (methodNode.Attributes.Cast<AttributeNode>().Any(node => node.TypeName.Contains("ScriptIgnoreGenericArguments")))
+                    {
+                        method.IgnoreGeneratedTypeArguments = true;
+                    }
+
                     if (methodNode.TypeParameters.Any())
                     {
                         BuildMethodGenericArguments(method, methodNode, typeSymbol);

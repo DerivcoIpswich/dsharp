@@ -299,7 +299,7 @@ namespace DSharp.Compiler.Generator
             }
 
             writer.Write("function(");
-            WriteParameters(methodSymbol, writer);
+            WriteParameters(methodSymbol, writer, true);
 
             writer.WriteLine(") {");
             writer.Indent++;
@@ -336,12 +336,17 @@ namespace DSharp.Compiler.Generator
             return lastParameterParseContext.Flags.HasFlag(ParameterFlags.Params);
         }
 
-        private static void WriteParameters(MethodSymbol methodSymbol, ScriptTextWriter writer)
+        private static void WriteParameters(MethodSymbol methodSymbol, ScriptTextWriter writer, bool includeGenericParameters = default)
         {
+            int paramIndex = 0;
+            if (includeGenericParameters && (methodSymbol.GenericArguments?.Any() ?? false) && !methodSymbol.IgnoreGeneratedTypeArguments)
+            {
+                writer.Write(DSharpStringResources.GeneratedScript.GENERIC_ARGS_PARAMETER_NAME);
+                paramIndex++;
+            }
+
             if (methodSymbol.Parameters != null)
             {
-                int paramIndex = 0;
-
                 foreach (ParameterSymbol parameterSymbol in methodSymbol.Parameters)
                 {
                     if (paramIndex > 0)

@@ -889,7 +889,14 @@ namespace DSharp.Compiler.Generator
                 }
                 else if (value is char || value is string)
                 {
-                    textValue = Utility.QuoteString(value.ToString());
+                    if (expression.EvaluatedType is TypeSymbol typeSymbol && typeSymbol.IsNativeObject())
+                    {
+                        textValue = value.ToString();
+                    }
+                    else
+                    {
+                        textValue = Utility.QuoteString(value.ToString());
+                    }
                 }
                 else if (value is TypeSymbol typeSymbol)
                 {
@@ -1124,7 +1131,7 @@ namespace DSharp.Compiler.Generator
                     GenerateExpression(generator, symbol, expression.TypeExpression);
                 }
                 writer.Write(", ");
-                GenerateGenericTypeArguments(generator, expression.AssociatedType);
+                writer.GenerateGenericTypeArguments(expression.AssociatedType.GenericArguments, expression.AssociatedType.GenericParameters);
                 writer.Write(", ");
                 if (expression.Parameters != null)
                 {
@@ -1156,26 +1163,11 @@ namespace DSharp.Compiler.Generator
             }
         }
 
-        private static void GenerateGenericTypeArguments(ScriptGenerator generator, TypeSymbol associatedType)
+        public static void GenerateGenericTypeArguments(ScriptGenerator generator, IList<TypeSymbol> typeArguments, IList<GenericParameterSymbol> typeParameters)
         {
             ScriptTextWriter writer = generator.Writer;
-            var typeArguments = associatedType.GenericArguments;
-            var typeParameters = associatedType.GenericParameters;
 
-            if(typeArguments.Count == 0 || typeArguments.Count != typeParameters.Count)
-            {
-                Debug.Fail($"{associatedType.Name} is generic, but contains no generic arguments, unable to generate generic arguments dictionary");
-                return;
-            }
-
-            writer.Write("{");
-            for (int i = 0; i < typeArguments.Count; i++)
-            {
-                var typeArgument = typeArguments[i];
-                var typeParameter = typeParameters[i];
-                writer.Write($"{typeParameter.FullName} : {typeArgument.FullGeneratedName}");
-            }
-            writer.Write("}");
+            
         }
 
         private static void GeneratePropertyExpression(ScriptGenerator generator, MemberSymbol symbol,

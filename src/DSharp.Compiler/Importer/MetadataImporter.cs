@@ -537,6 +537,11 @@ namespace DSharp.Compiler.Importer
                     returnType,
                     MetadataHelpers.IsExtensionMethod(method));
 
+                if(MetadataHelpers.ShouldIgnoreMethodGeneratedTypeArguments(method))
+                {
+                    methodSymbol.IgnoreGeneratedTypeArguments = true;
+                }
+
                 methodSymbol.SetParseContext(method);
                 ImportMemberDetails(methodSymbol, method, method);
 
