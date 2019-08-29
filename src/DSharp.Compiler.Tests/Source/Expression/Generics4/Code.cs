@@ -16,6 +16,9 @@ namespace TypeTests
             GenericClass<int> newClass = DoSomethingAwesome<int>(1);
             var success1 = newClass.GetType() == typeof(GenericClass<int>);
             var success2 = newClass.GetType() == newClass.GetType();
+
+            //Nested generic type arguments
+            var instance = new GenericClass<GenericClass<int>>(1);
         }
 
         public interface IBase { }

@@ -22,6 +22,7 @@ define('test', ['ss'], function(ss) {
       var newClass = Usages.doSomethingAwesome({T: Number}, 1);
       var success1 = ss.typeOf(newClass) === ss.getGenericConstructor(GenericClass_$1, {T: Number});
       var success2 = ss.typeOf(newClass) === ss.typeOf(newClass);
+      var instance = ss.createGenericType(GenericClass_$1, {T : ss.getGenericConstructor(GenericClass_$1, {T : Number})}, 1);
     }
   };
 

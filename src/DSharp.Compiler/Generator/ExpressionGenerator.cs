@@ -1131,7 +1131,7 @@ namespace DSharp.Compiler.Generator
                     GenerateExpression(generator, symbol, expression.TypeExpression);
                 }
                 writer.Write(", ");
-                writer.GenerateGenericTypeArguments(expression.AssociatedType.GenericArguments, expression.AssociatedType.GenericParameters);
+                generator.GenerateGenericTypeArguments(expression.AssociatedType.GenericArguments, expression.AssociatedType.GenericParameters);
                 writer.Write(", ");
                 if (expression.Parameters != null)
                 {
