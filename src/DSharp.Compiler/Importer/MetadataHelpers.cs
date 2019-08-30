@@ -293,11 +293,6 @@ namespace DSharp.Compiler.Importer
             return false;
         }
 
-        internal static bool GetScriptIgnoreTypeArgumentsAttribute()
-        {
-            throw new NotImplementedException();
-        }
-
         public static bool ShouldIgnoreMethodGeneratedTypeArguments(MethodDefinition method)
         {
             foreach (CustomAttribute attribute in method.CustomAttributes)

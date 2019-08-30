@@ -180,7 +180,7 @@ namespace DSharp.Compiler.Compiler
             {
                 typeSymbol.SetParseContext(userTypeNode);
 
-                if(outerType is TypeSymbol)
+                if (outerType is TypeSymbol)
                 {
                     typeSymbol.SetParentSymbolTable(outerType);
                 }
@@ -221,7 +221,7 @@ namespace DSharp.Compiler.Compiler
                     ((ClassSymbol)typeSymbol).SetPrimaryPartialClass(partialTypeSymbol);
                 }
 
-                if(outerType is TypeSymbol)
+                if (outerType is TypeSymbol)
                 {
                     outerType.AddType(typeSymbol);
                 }
@@ -230,7 +230,7 @@ namespace DSharp.Compiler.Compiler
 
                 var nestedTypes = (typeNode as CustomTypeNode)?.Members.Where(m => m.NodeType == ParseNodeType.Type).Cast<TypeNode>() ?? Enumerable.Empty<TypeNode>();
 
-                foreach(var nestedTypeNode in nestedTypes)
+                foreach (var nestedTypeNode in nestedTypes)
                 {
                     TryAddType(symbols, types, namespaceSymbol, imports, aliases, nestedTypeNode, typeSymbol);
                 }
@@ -749,7 +749,7 @@ namespace DSharp.Compiler.Compiler
 
             CustomTypeNode typeNode = (CustomTypeNode)typeSymbol.ParseContext;
 
-            foreach (MemberNode member in typeNode.Members.Where(m=>m.NodeType != ParseNodeType.Type))
+            foreach (MemberNode member in typeNode.Members.Where(m => m.NodeType != ParseNodeType.Type))
             {
                 var nodeAttributes = member.Attributes.Cast<AttributeNode>();
 
@@ -954,21 +954,7 @@ namespace DSharp.Compiler.Compiler
 
         private TypeSymbol ResolveMethodReturnType(MethodDeclarationNode methodNode, TypeSymbol typeSymbol)
         {
-            TypeSymbol returnTypeSymbol;
-
-            if (methodNode.IsGenericReturnType())
-            {
-                //We should try and find the best resolved type here, or maybe have a marker type for a generic symbol?
-                returnTypeSymbol = typeSymbol.SymbolSet.ResolveType(methodNode.Type, symbolTable, typeSymbol);
-
-                //returnTypeSymbol = typeSymbol.SymbolSet.ResolveIntrinsicType(IntrinsicType.Object);
-            }
-            else
-            {
-                returnTypeSymbol = typeSymbol.SymbolSet.ResolveType(methodNode.Type, symbolTable, typeSymbol);
-            }
-
-            return returnTypeSymbol;
+            return typeSymbol.SymbolSet.ResolveType(methodNode.Type, symbolTable, typeSymbol);
         }
 
         private void BuildMethodGenericArguments(MethodSymbol method, MethodDeclarationNode methodNode, TypeSymbol typeSymbol)
