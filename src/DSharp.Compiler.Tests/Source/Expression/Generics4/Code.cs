@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace TypeTests
 {
-    public class Usages
+    class Usages
     {
         public void Use()
         {
@@ -14,11 +14,13 @@ namespace TypeTests
             genericClass.Register<IBase, ImplementsBase>();
 
             GenericClass<int> newClass = DoSomethingAwesome<int>(1);
-            var success1 = newClass.GetType() == typeof(GenericClass<int>);
-            var success2 = newClass.GetType() == newClass.GetType();
+            var success1 = newClass.GetType() == typeof(GenericClass<string>);
+            var success2 = genericClass.GetType() == newClass.GetType();
 
-            //Nested generic type arguments
-            var instance = new GenericClass<GenericClass<int>>(1);
+            GenericClass<GenericClass<int>> instance = new GenericClass<GenericClass<int>>(new GenericClass<int>(1));
+            var outInt = instance.Value.Value;
+
+            ParseTheList<int>(new List<int>() { 1, 2, 3 }).Add(4);
         }
 
         public interface IBase { }
@@ -28,6 +30,11 @@ namespace TypeTests
         public static GenericClass<T> DoSomethingAwesome<T>(T value)
         {
             return new GenericClass<T>(value);
+        }
+
+        public IList<T> ParseTheList<T>(IList<T> what)
+        {
+            return what;
         }
     }
 

@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using DSharp.Compiler.CodeModel;
+using DSharp.Compiler.CodeModel.Members;
 using DSharp.Compiler.CodeModel.Names;
 using DSharp.Compiler.CodeModel.Tokens;
 using DSharp.Compiler.CodeModel.Types;
@@ -903,6 +904,31 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                 Debug.Assert(itemTypeSymbol != null);
 
                 return CreateArrayTypeSymbol(itemTypeSymbol);
+            }
+
+            if (node is AtomicNameNode atomicNameNode)
+            {
+                if(atomicNameNode.Parent is GenericNameNode || atomicNameNode.Parent is ArrayTypeNode)
+                {
+                    var methodDeclaration = atomicNameNode.FindParent<MethodDeclarationNode>();
+                    if (methodDeclaration != null && (methodDeclaration?.TypeParameters?.Count ?? 0) > 0)
+                    {
+                        for (int i = 0; i < methodDeclaration.TypeParameters.Count; i++)
+                        {
+                            TypeParameterNode typeParameterNode = (TypeParameterNode)methodDeclaration.TypeParameters[i];
+                            if (typeParameterNode.NameNode.Equals(atomicNameNode))
+                            {
+                                return new GenericParameterSymbol(i, atomicNameNode.Name, true, GlobalNamespace);
+                            }
+                        }
+                    }
+                }
+                
+                if(atomicNameNode.Name == "var")
+                {
+                    //Hack to ensure we allow for var usages. We need some way to actually evaluate this later
+                    return ResolveIntrinsicType(IntrinsicType.Object);
+                }
             }
 
             if (node is GenericNameNode)

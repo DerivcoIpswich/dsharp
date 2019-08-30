@@ -959,7 +959,9 @@ namespace DSharp.Compiler.Compiler
             if (methodNode.IsGenericReturnType())
             {
                 //We should try and find the best resolved type here, or maybe have a marker type for a generic symbol?
-                returnTypeSymbol = typeSymbol.SymbolSet.ResolveIntrinsicType(IntrinsicType.Object);
+                returnTypeSymbol = typeSymbol.SymbolSet.ResolveType(methodNode.Type, symbolTable, typeSymbol);
+
+                //returnTypeSymbol = typeSymbol.SymbolSet.ResolveIntrinsicType(IntrinsicType.Object);
             }
             else
             {
