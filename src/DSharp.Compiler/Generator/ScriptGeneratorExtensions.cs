@@ -9,7 +9,7 @@ using System.Text;
 namespace DSharp.Compiler.Generator
 {
     //TODO: Make this class work with the current expression generation mechanism.
-    internal static class ScriptTextWriterExtensions
+    internal static class ScriptGeneratorExtensions
     {
         public static ScriptGenerator GenerateGenericTypeArguments(this ScriptGenerator generator, IList<TypeSymbol> typeArguments, IList<GenericParameterSymbol> typeParameters)
         {

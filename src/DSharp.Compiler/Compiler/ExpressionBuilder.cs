@@ -1903,7 +1903,7 @@ namespace DSharp.Compiler.Compiler
                 else if (genericParameterSymbol.Owner is MethodSymbol method)
                 {
                     var typeArgumentIndexer = new IndexerExpression(
-                        new LiteralExpression(objectSymbol, "TArgs"),
+                        new LiteralExpression(objectSymbol, DSharpStringResources.GeneratedScript.GENERIC_ARGS_PARAMETER_NAME),
                         new IndexerSymbol(objectSymbol, genericParameterSymbol));
                     typeArgumentIndexer.AddIndexParameterValue(new LiteralExpression(stringSymbol, genericParameterSymbol.GeneratedName));
                     return typeArgumentIndexer;

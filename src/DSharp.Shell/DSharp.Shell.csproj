@@ -28,11 +28,4 @@
   <ItemGroup>
     <ProjectReference Include="..\DSharp.Compiler\DSharp.Compiler.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="src\*.cs" />
-    <None Include="src\*.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
 </Project>

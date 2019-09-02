@@ -908,26 +908,10 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
             if (node is AtomicNameNode atomicNameNode)
             {
-                if(atomicNameNode.Parent is GenericNameNode || atomicNameNode.Parent is ArrayTypeNode)
+                TypeSymbol typeSymbol = ResolveAtomicNameNodeType(atomicNameNode);
+                if(typeSymbol != null)
                 {
-                    var methodDeclaration = atomicNameNode.FindParent<MethodDeclarationNode>();
-                    if (methodDeclaration != null && (methodDeclaration?.TypeParameters?.Count ?? 0) > 0)
-                    {
-                        for (int i = 0; i < methodDeclaration.TypeParameters.Count; i++)
-                        {
-                            TypeParameterNode typeParameterNode = (TypeParameterNode)methodDeclaration.TypeParameters[i];
-                            if (typeParameterNode.NameNode.Equals(atomicNameNode))
-                            {
-                                return new GenericParameterSymbol(i, atomicNameNode.Name, true, GlobalNamespace);
-                            }
-                        }
-                    }
-                }
-                
-                if(atomicNameNode.Name == "var")
-                {
-                    //Hack to ensure we allow for var usages. We need some way to actually evaluate this later
-                    return ResolveIntrinsicType(IntrinsicType.Object);
+                    return typeSymbol;
                 }
             }
 
@@ -957,6 +941,33 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             NameNode nameNode = (NameNode)node;
 
             return (TypeSymbol)symbolTable.FindSymbol(nameNode.Name, contextSymbol, SymbolFilter.Types);
+        }
+
+        private TypeSymbol ResolveAtomicNameNodeType(AtomicNameNode atomicNameNode)
+        {
+            if (atomicNameNode.Parent is GenericNameNode || atomicNameNode.Parent is ArrayTypeNode)
+            {
+                var methodDeclaration = atomicNameNode.FindParent<MethodDeclarationNode>();
+                if (methodDeclaration != null && (methodDeclaration?.TypeParameters?.Count ?? 0) > 0)
+                {
+                    for (int i = 0; i < methodDeclaration.TypeParameters.Count; i++)
+                    {
+                        TypeParameterNode typeParameterNode = (TypeParameterNode)methodDeclaration.TypeParameters[i];
+                        if (typeParameterNode.NameNode.Equals(atomicNameNode))
+                        {
+                            return new GenericParameterSymbol(i, atomicNameNode.Name, true, GlobalNamespace);
+                        }
+                    }
+                }
+            }
+
+            //TODO: Implement Var resolution mechanism here. Need to evaluate the right hand expression of the node, probably needs roslyn
+            if (atomicNameNode.Name == "var")
+            {
+                return ResolveIntrinsicType(IntrinsicType.Object);
+            }
+
+            return null;
         }
 
         public void AddExtensionType(string typeToExtend, string extensionMethodName, MethodSymbol methodSymbol)
