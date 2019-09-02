@@ -17,7 +17,6 @@ namespace DSharp.Compiler.CodeModel.Members
         private readonly NameNode interfaceType;
         private readonly AtomicNameNode name;
         private ParseNodeList constraints;
-        private ParseNodeList typeParameters;
 
         public MethodDeclarationNode(Token token,
                                      ParseNodeList attributes,
@@ -32,7 +31,7 @@ namespace DSharp.Compiler.CodeModel.Members
             : this(ParseNodeType.MethodDeclaration, token, attributes, modifiers, returnType, name, formals, body)
         {
             this.interfaceType = (NameNode) GetParentedNode(interfaceType);
-            this.typeParameters = GetParentedNodeList(typeParameters);
+            this.TypeParameters = GetParentedNodeList(typeParameters);
             this.constraints = GetParentedNodeList(constraints);
         }
 
@@ -69,7 +68,7 @@ namespace DSharp.Compiler.CodeModel.Members
 
         public bool IsExensionMethod => Parameters.FirstOrDefault()?.As<ParameterNode>().IsExtensionMethodTarget ?? false;
 
-        internal ParseNodeList TypeParameters => typeParameters;
+        public ParseNodeList TypeParameters { get; }
 
         internal ParseNodeList Constraints => constraints;
 

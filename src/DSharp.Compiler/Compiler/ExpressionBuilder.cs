@@ -1008,15 +1008,19 @@ namespace DSharp.Compiler.Compiler
         private TypeSymbol ResolveTypeNode(BinaryExpressionNode node)
         {
             MethodDeclarationNode parentMethod = FindParentNode<MethodDeclarationNode>(node);
-            var token = parentMethod?.Parameters?.FirstOrDefault()?.Token;
-            var typeNode = symbolSet.ResolveIntrinsicToken(token);
-            return typeNode;
+            ParameterNode parameterNode = (ParameterNode)parentMethod?.Parameters?.FirstOrDefault();
+            if(parameterNode == null)
+            {
+                return null;
+            }
+
+            return symbolSet.ResolveType(parameterNode.Type, symbolTable, symbolContext);
         }
 
         private Expression CreateExtensionMethodInvocationExpression(BinaryExpressionNode node, TypeSymbol typeToExtend)
         {
             string memberName = ((NameNode)node.RightChild).Name;
-            MethodSymbol methodSymbol = symbolSet.ResolveExtensionMethodSymbol(typeToExtend.FullName, memberName);
+            MethodSymbol methodSymbol = symbolSet.ResolveExtensionMethodSymbol(typeToExtend, memberName);
 
             if (methodSymbol == null)
             {
@@ -1921,7 +1925,6 @@ namespace DSharp.Compiler.Compiler
                 ObjectExpression typeInferenceMap = CreateTypeInterenceMap(referencedType);
                 methodExpression.AddParameterValue(typeInferenceMap);
 
-                //return an expression like: ss.getGenericConstructor(MyType, { T: ConstructorOfT })
                 return methodExpression;
             }
 

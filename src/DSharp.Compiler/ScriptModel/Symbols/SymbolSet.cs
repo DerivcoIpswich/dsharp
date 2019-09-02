@@ -945,7 +945,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         private TypeSymbol ResolveAtomicNameNodeType(AtomicNameNode atomicNameNode)
         {
-            if (atomicNameNode.Parent is GenericNameNode || atomicNameNode.Parent is ArrayTypeNode)
+            if (atomicNameNode.Parent is GenericNameNode || atomicNameNode.Parent is ArrayTypeNode || atomicNameNode.Parent is MethodDeclarationNode)
             {
                 var methodDeclaration = atomicNameNode.FindParent<MethodDeclarationNode>();
                 if (methodDeclaration != null && (methodDeclaration?.TypeParameters?.Count ?? 0) > 0)
@@ -986,9 +986,50 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             registrations.Add((extensionMethodName, methodSymbol));
         }
 
-        public MethodSymbol ResolveExtensionMethodSymbol(string typeName, string memberName)
+        //TODO: Migrate this to be on the symbol directly
+        public MethodSymbol ResolveExtensionMethodSymbol(TypeSymbol type, string memberName)
         {
-            if (!extensionMethods.TryGetValue(typeName, out HashSet<(string method, MethodSymbol methodSymbol)> registrations))
+            var extensionMethod = GetTypeExtensionMethod(type, memberName);
+            if(extensionMethod != null)
+            {
+                return extensionMethod;
+            }
+
+            var baseType = type.GetBaseType();
+            while (baseType != null )
+            {
+                extensionMethod = GetTypeExtensionMethod(baseType, memberName);
+                if(extensionMethod != null)
+                {
+                    return extensionMethod;
+                }
+
+                baseType = baseType.GetBaseType();
+            }
+
+            if(type is ClassSymbol classSymbol)
+            {
+                foreach (var interfaceSymbol in classSymbol.Interfaces)
+                {
+                    extensionMethod = GetTypeExtensionMethod(interfaceSymbol, memberName);
+                    if(extensionMethod != null)
+                    {
+                        return extensionMethod;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private MethodSymbol GetTypeExtensionMethod(TypeSymbol type, string memberName)
+        {
+            if(type == null)
+            {
+                return null;
+            }
+
+            if (!extensionMethods.TryGetValue(type.FullName, out HashSet<(string method, MethodSymbol methodSymbol)> registrations))
             {
                 return null;
             }
