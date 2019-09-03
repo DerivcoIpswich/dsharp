@@ -11,7 +11,7 @@ define('test', ['ss'], function(ss) {
 
   function Usages() {
   }
-  Usages.doSomethingAwesome = function(TArgs, value) {
+  Usages.doSomethingAwesome = function($TArgs, value) {
     return new GenericClass_$1(value);
   };
   var Usages$ = {
@@ -26,7 +26,7 @@ define('test', ['ss'], function(ss) {
       var outInt = instance.Value.Value;
       this.parseTheList({T: Number}, []).push(4);
     },
-    parseTheList: function(TArgs, what) {
+    parseTheList: function($TArgs, what) {
       return what;
     }
   };
@@ -53,16 +53,16 @@ define('test', ['ss'], function(ss) {
     $get_Type: function() {
       return ss.getTypeArgument(this, 'T');
     },
-    doSomethingWith: function(TArgs, n, o) {
-      var tnewType = TArgs['TNew'];
+    doSomethingWith: function($TArgs, n, o) {
+      var tnewType = $TArgs['TNew'];
       var oldType = ss.getTypeArgument(this, 'T');
       if (tnewType === oldType) {
         return;
       }
     },
-    register: function(TArgs) {
-      var baseT = TArgs['TBase'];
-      var implT = TArgs['TImplementation'];
+    register: function($TArgs) {
+      var baseT = $TArgs['TBase'];
+      var implT = $TArgs['TImplementation'];
     }
   };
 

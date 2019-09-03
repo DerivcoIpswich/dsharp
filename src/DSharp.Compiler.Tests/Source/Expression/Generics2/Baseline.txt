@@ -29,14 +29,14 @@ define('test', ['ss'], function(ss) {
       this.inParameterConstrained({T: ss.IDisposable}, new TestDisposableBase());
       this.complexInGenerics(new TestDisposableBase(), new TestDisposableBase());
     },
-    noParameters: function(TArgs) {
+    noParameters: function($TArgs) {
     },
-    noParametersConstrained: function(TArgs) {
+    noParametersConstrained: function($TArgs) {
     },
     inParameter: function(inGenericParameter) {
       return inGenericParameter;
     },
-    inParameterConstrained: function(TArgs, x) {
+    inParameterConstrained: function($TArgs, x) {
       var xType = ss.typeOf(x);
       x.dispose();
     },
