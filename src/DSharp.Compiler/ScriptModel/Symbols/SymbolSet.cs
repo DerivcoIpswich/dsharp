@@ -245,13 +245,13 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             foreach (TypeSymbol typeArgument in typeArguments)
             {
                 keyBuilder.Append("+");
-                if(typeArgument is GenericParameterSymbol genericParameterSymbol)
+                if (typeArgument is GenericParameterSymbol genericParameterSymbol)
                 {
-                    if(genericParameterSymbol.Owner is MethodSymbol ownerMethoSymbol)
+                    if (genericParameterSymbol.Owner is MethodSymbol ownerMethoSymbol)
                     {
                         keyBuilder.Append(ownerMethoSymbol.Name + "_" + typeArgument.FullName);
                     }
-                    else if(genericParameterSymbol.Owner is TypeSymbol ownerTypeSymbol)
+                    else if (genericParameterSymbol.Owner is TypeSymbol ownerTypeSymbol)
                     {
                         keyBuilder.Append(ownerTypeSymbol.FullName + "_" + typeArgument.FullName);
                     }
@@ -745,7 +745,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public TypeSymbol ResolveIntrinsicToken(Token token)
         {
-            if(token == null)
+            if (token == null)
             {
                 return null;
             }
@@ -909,7 +909,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             if (node is AtomicNameNode atomicNameNode)
             {
                 TypeSymbol typeSymbol = ResolveAtomicNameNodeType(atomicNameNode);
-                if(typeSymbol != null)
+                if (typeSymbol != null)
                 {
                     return typeSymbol;
                 }
@@ -990,16 +990,16 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         public MethodSymbol ResolveExtensionMethodSymbol(TypeSymbol type, string memberName)
         {
             var extensionMethod = GetTypeExtensionMethod(type, memberName);
-            if(extensionMethod != null)
+            if (extensionMethod != null)
             {
                 return extensionMethod;
             }
 
             var baseType = type.GetBaseType();
-            while (baseType != null )
+            while (baseType != null)
             {
                 extensionMethod = GetTypeExtensionMethod(baseType, memberName);
-                if(extensionMethod != null)
+                if (extensionMethod != null)
                 {
                     return extensionMethod;
                 }
@@ -1007,12 +1007,23 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                 baseType = baseType.GetBaseType();
             }
 
-            if(type is ClassSymbol classSymbol)
+            if (type is ClassSymbol classSymbol)
             {
-                foreach (var interfaceSymbol in classSymbol.Interfaces)
+                foreach (var inheritedInterface in classSymbol?.Interfaces ?? Enumerable.Empty<InterfaceSymbol>())
                 {
-                    extensionMethod = GetTypeExtensionMethod(interfaceSymbol, memberName);
-                    if(extensionMethod != null)
+                    extensionMethod = GetTypeExtensionMethod(inheritedInterface, memberName);
+                    if (extensionMethod != null)
+                    {
+                        return extensionMethod;
+                    }
+                }
+            }
+            else if (type is InterfaceSymbol interfaceSymbol)
+            {
+                foreach (var inheritedInterface in interfaceSymbol?.Interfaces ?? Enumerable.Empty<InterfaceSymbol>())
+                {
+                    extensionMethod = GetTypeExtensionMethod(inheritedInterface, memberName);
+                    if (extensionMethod != null)
                     {
                         return extensionMethod;
                     }
@@ -1024,7 +1035,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         private MethodSymbol GetTypeExtensionMethod(TypeSymbol type, string memberName)
         {
-            if(type == null)
+            if (type == null)
             {
                 return null;
             }
@@ -1225,7 +1236,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         {
             foreach (NamespaceSymbol namespaceSymbol in namespaces)
             {
-                if(namespaceSymbol.FindSymbol(typeName, /* context */ null, SymbolFilter.Types) is TypeSymbol foundType)
+                if (namespaceSymbol.FindSymbol(typeName, /* context */ null, SymbolFilter.Types) is TypeSymbol foundType)
                 {
                     if (IsNamespaceMatch(foundType, name, namespaceName, context))
                     {
@@ -1248,11 +1259,11 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         private IEnumerable<KeyValuePair<string, string>> GetAliasesFromContext(Symbol context)
         {
-            if(context is TypeSymbol typeContext)
+            if (context is TypeSymbol typeContext)
             {
                 return typeContext.Aliases ?? Enumerable.Empty<KeyValuePair<string, string>>();
             }
-            if(context is MemberSymbol memberContext && memberContext.Parent is TypeSymbol parentContext)
+            if (context is MemberSymbol memberContext && memberContext.Parent is TypeSymbol parentContext)
             {
                 return parentContext.Aliases ?? Enumerable.Empty<KeyValuePair<string, string>>();
             }

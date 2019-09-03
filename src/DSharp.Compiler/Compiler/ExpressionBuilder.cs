@@ -793,18 +793,30 @@ namespace DSharp.Compiler.Compiler
                 }
                 else if (node.LeftChild.Token is IdentifierToken identifier)
                 {
-                    TypeSymbol typeNode = ResolveTypeNode(node);
+                    TypeSymbol typeNode = null;
 
-                    if (typeNode == null)
+                    if(node.LeftChild is BinaryExpressionNode binaryExpressionNode)
+                    {
+                        var leftExpression = BuildExpression(node.LeftChild);
+                        typeNode = leftExpression.EvaluatedType;
+                    }
+
+                    if(typeNode == null)
                     {
                         var symbol = symbolTable.FindSymbol(
-                            identifier.Identifier,
-                            memberContext, SymbolFilter.AnyMember | SymbolFilter.Members | SymbolFilter.Locals);
+                        identifier.Identifier,
+                        memberContext, SymbolFilter.All);
 
                         if (symbol is LocalSymbol localSymbol)
                             typeNode = localSymbol.ValueType;
                         else if (symbol is MemberSymbol member)
                             typeNode = member.AssociatedType;
+                        else if (symbol is TypeSymbol typeSymbol)
+                            typeNode = typeSymbol;
+                        else
+                        {
+                            typeNode = ResolveTypeNode(node);
+                        }
                     }
 
                     Expression extensionMethodInvocation = CreateExtensionMethodInvocationExpression(node, typeNode);
