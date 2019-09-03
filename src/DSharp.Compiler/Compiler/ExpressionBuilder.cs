@@ -830,11 +830,6 @@ namespace DSharp.Compiler.Compiler
 
             if (objectExpression == null)
             {
-                Debugger.Launch();
-            }
-
-            if (objectExpression == null)
-            {
                 throw new InvalidOperationException($"Unable to resolve expression: {node.RightChild.Token.Location}");
             }
 
@@ -1816,7 +1811,6 @@ namespace DSharp.Compiler.Compiler
 
             if(memberExpression.Member is MethodSymbol methodSymbol && methodSymbol.IsGeneric)
             {
-
                 GenericNameNode genericNameNode = GetGenericNameNode(node);
                 if (genericNameNode != null)
                 {
