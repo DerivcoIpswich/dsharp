@@ -674,6 +674,14 @@ namespace DSharp.Compiler.Parser
                     Eat(TokenType.OpenParen);
                     Eat(TokenType.CloseParen);
                 }
+                else if (PeekType() == TokenType.Class)
+                {
+                    Eat(TokenType.Class);
+                }
+                else if(PeekType() == TokenType.Struct)
+                {
+                    Eat(TokenType.Struct);
+                }
                 else
                 {
                     if (hasConstructorConstraint)
