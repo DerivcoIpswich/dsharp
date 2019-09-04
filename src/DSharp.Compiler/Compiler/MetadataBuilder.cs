@@ -969,7 +969,6 @@ namespace DSharp.Compiler.Compiler
                     new GenericParameterSymbol(i, genericParameter.NameNode.Name,
                         /* typeArgument */ false,
                         symbols.GlobalNamespace);
-                arg.Owner = method;
 
                 var constraints = methodNode.Constraints
                     .Cast<TypeParameterConstraintNode>()
@@ -1205,7 +1204,7 @@ namespace DSharp.Compiler.Compiler
 
                     GenericParameterSymbol typeParameterSymbol
                         = new GenericParameterSymbol(i, typeParameter.NameNode.Name, true, symbols.GlobalNamespace);
-                    typeParameterSymbol.Owner = typeSymbol;
+
                     genericParameterSymbols.Add(typeParameterSymbol);
                 }
 
