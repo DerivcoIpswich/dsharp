@@ -119,6 +119,15 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             Debug.Assert(genericArguments.Count != 0);
 
             GenericArguments = genericArguments;
+            AssignGenericArgumentOwner(genericArguments);
+        }
+
+        protected void AssignGenericArgumentOwner(ICollection<GenericParameterSymbol> genericArguments)
+        {
+            foreach (var argument in genericArguments)
+            {
+                argument.Owner = this;
+            }
         }
 
         public void AddImplementation(SymbolImplementation implementation)

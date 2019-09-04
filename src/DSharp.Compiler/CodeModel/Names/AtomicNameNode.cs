@@ -27,7 +27,8 @@ namespace DSharp.Compiler.CodeModel.Names
 
         public bool Equals(AtomicNameNode other)
         {
-            return other.Identifier.Type == Identifier.Type
+            return other != null
+                && other.Identifier.Type == Identifier.Type
                 && other.Identifier.Identifier == Identifier.Identifier;
         }
     }

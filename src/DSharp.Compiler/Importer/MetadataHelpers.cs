@@ -299,7 +299,7 @@ namespace DSharp.Compiler.Importer
             {
                 string typeName = attribute.Constructor.DeclaringType.FullName;
 
-                if (string.CompareOrdinal(typeName, "System.Runtime.CompilerServices.ScriptIgnoreGenericArgumentsAttribute") == 0)
+                if (string.Equals(typeName, DSharpStringResources.Mscorlib.SCRIPT_IGNORE_GENERIC_ARGUMENTS_ATTRIBUTE_FULLNAME, StringComparison.InvariantCulture))
                 {
                     return true;
                 }

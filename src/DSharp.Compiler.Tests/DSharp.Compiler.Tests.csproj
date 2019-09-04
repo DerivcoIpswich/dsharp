@@ -795,7 +795,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Source\Expression\Generics4\Code.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Source\Type\GenericClasses\Code.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

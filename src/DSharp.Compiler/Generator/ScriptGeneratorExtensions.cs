@@ -11,32 +11,29 @@ namespace DSharp.Compiler.Generator
     //TODO: Make this class work with the current expression generation mechanism.
     internal static class ScriptGeneratorExtensions
     {
-        public static ScriptGenerator GenerateGenericTypeArguments(this ScriptGenerator generator, IList<TypeSymbol> typeArguments, IList<GenericParameterSymbol> typeParameters)
+        public static ScriptGenerator WriteGenericTypeArgumentsMap(this ScriptGenerator generator, IList<TypeSymbol> typeArguments, IList<GenericParameterSymbol> typeParameters)
         {
             ScriptTextWriter writer = generator.Writer;
 
-            if (typeArguments.Count == 0 || typeArguments.Count != typeParameters.Count)
+            if (typeArguments.Count > 0 && typeArguments.Count == typeParameters.Count)
             {
-                Debug.Fail($"Unable to generate generic type map as the arguments don't match the parameters");
-                return generator;
+                WriteGenericTypeArguments(writer.Write, typeArguments, typeParameters);
             }
-
-            GenerateGenericTypeArguments(writer.Write, typeArguments, typeParameters);
 
             return generator;
         }
 
-        private static void GenerateObject(Action<string> writeFunc, IDictionary<string, string> properties)
+        private static void WriteObject(Action<string> write, IDictionary<string, string> properties)
         {
-            writeFunc("{");
+            write("{");
             foreach (var property in properties)
             {
-                writeFunc($"{property.Key} : {property.Value}");
+                write($"{property.Key} : {property.Value}");
             }
-            writeFunc("}");
+            write("}");
         }
 
-        private static void GenerateGenericTypeArguments(Action<string> write, IList<TypeSymbol> typeArguments, IList<GenericParameterSymbol> typeParameters)
+        private static void WriteGenericTypeArguments(Action<string> write, IList<TypeSymbol> typeArguments, IList<GenericParameterSymbol> typeParameters)
         {
             var dictionary = new Dictionary<string, string>();
             for (int i = 0; i < typeArguments.Count; i++)
@@ -48,7 +45,7 @@ namespace DSharp.Compiler.Generator
                 dictionary.Add(typeParameter.FullName, typeExpression);
             }
 
-            GenerateObject(write, dictionary);
+            WriteObject(write, dictionary);
         }
 
         private static string CreateTypeArgumentName(TypeSymbol typeArgument)
@@ -69,7 +66,7 @@ namespace DSharp.Compiler.Generator
                 stringBuilder.Append("(");
                 stringBuilder.Append(typeArgument.FullGeneratedName);
                 stringBuilder.Append(", ");
-                GenerateGenericTypeArguments(Write, typeArgument.GenericArguments, typeArgument.GenericParameters);
+                WriteGenericTypeArguments(Write, typeArgument.GenericArguments, typeArgument.GenericParameters);
                 stringBuilder.Append(")");
                 return stringBuilder.ToString();
             }

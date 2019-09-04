@@ -34,7 +34,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         private XmlDocument docComments;
 
-        private Dictionary<string, TypeSymbol> genericTypeTable;
+        private Dictionary<string, TypeSymbol> genericTypeTable = new Dictionary<string, TypeSymbol>();
 
         public SymbolSet()
         {
@@ -240,6 +240,21 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                     return templateType;
                 }
 
+            string key = CreateGenericTypeKey(templateType, typeArguments);
+
+            if(!genericTypeTable.TryGetValue(key, out TypeSymbol instanceTypeSymbol))
+            {
+                // Prepopulate with a placeholder ... if a generic type's member refers to its
+                // parent type it will use the type being created when the return value is null.
+                genericTypeTable[key] = null;
+                instanceTypeSymbol = CreateGenericTypeCore(templateType, typeArguments);
+                genericTypeTable[key] = instanceTypeSymbol;
+            }
+            return instanceTypeSymbol;
+        }
+
+        private static string CreateGenericTypeKey(TypeSymbol templateType, IList<TypeSymbol> typeArguments)
+        {
             StringBuilder keyBuilder = new StringBuilder(templateType.FullName);
 
             foreach (TypeSymbol typeArgument in typeArguments)
@@ -266,26 +281,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                 }
             }
 
-            string key = keyBuilder.ToString();
-
-            if (genericTypeTable != null && genericTypeTable.ContainsKey(key))
-            {
-                return genericTypeTable[key];
-            }
-
-            if (genericTypeTable == null)
-            {
-                genericTypeTable = new Dictionary<string, TypeSymbol>();
-            }
-
-            // Prepopulate with a placeholder ... if a generic type's member refers to its
-            // parent type it will use the type being created when the return value is null.
-            genericTypeTable[key] = null;
-
-            TypeSymbol instanceTypeSymbol = CreateGenericTypeCore(templateType, typeArguments);
-            genericTypeTable[key] = instanceTypeSymbol;
-
-            return instanceTypeSymbol;
+            return keyBuilder.ToString();
         }
 
         private TypeSymbol CreateGenericTypeCore(TypeSymbol templateType, IList<TypeSymbol> typeArguments)

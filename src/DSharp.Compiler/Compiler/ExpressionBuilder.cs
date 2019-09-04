@@ -793,31 +793,7 @@ namespace DSharp.Compiler.Compiler
                 }
                 else if (node.LeftChild.Token is IdentifierToken identifier)
                 {
-                    TypeSymbol typeNode = null;
-
-                    if(node.LeftChild is BinaryExpressionNode binaryExpressionNode)
-                    {
-                        var leftExpression = BuildExpression(node.LeftChild);
-                        typeNode = leftExpression.EvaluatedType;
-                    }
-
-                    if(typeNode == null)
-                    {
-                        var symbol = symbolTable.FindSymbol(
-                        identifier.Identifier,
-                        memberContext, SymbolFilter.All);
-
-                        if (symbol is LocalSymbol localSymbol)
-                            typeNode = localSymbol.ValueType;
-                        else if (symbol is MemberSymbol member)
-                            typeNode = member.AssociatedType;
-                        else if (symbol is TypeSymbol typeSymbol)
-                            typeNode = typeSymbol;
-                        else
-                        {
-                            typeNode = ResolveTypeNode(node);
-                        }
-                    }
+                    TypeSymbol typeNode = ParseExtensionTypeNode(node, identifier);
 
                     Expression extensionMethodInvocation = CreateExtensionMethodInvocationExpression(node, typeNode);
 
@@ -1012,11 +988,43 @@ namespace DSharp.Compiler.Compiler
             return expression;
         }
 
+        private TypeSymbol ParseExtensionTypeNode(BinaryExpressionNode node, IdentifierToken identifier)
+        {
+            TypeSymbol typeNode = null;
+
+            if (node.LeftChild is BinaryExpressionNode)
+            {
+                var leftExpression = BuildExpression(node.LeftChild);
+                typeNode = leftExpression.EvaluatedType;
+            }
+
+            if (typeNode != null)
+            {
+                return typeNode;
+            }
+
+            var symbol = symbolTable.FindSymbol(
+                identifier.Identifier,
+                memberContext, SymbolFilter.All);
+
+            switch (symbol)
+            {
+                case LocalSymbol localSymbol:
+                    return localSymbol.ValueType;
+                case MemberSymbol member:
+                    return member.AssociatedType;
+                case TypeSymbol typeSymbol:
+                    return typeSymbol;
+                default:
+                    return ResolveTypeNode(node);
+            }
+        }
+
         private TypeSymbol ResolveTypeNode(BinaryExpressionNode node)
         {
             MethodDeclarationNode parentMethod = FindParentNode<MethodDeclarationNode>(node);
             ParameterNode parameterNode = (ParameterNode)parentMethod?.Parameters?.FirstOrDefault();
-            if(parameterNode == null)
+            if (parameterNode == null)
             {
                 return null;
             }
@@ -1799,28 +1807,29 @@ namespace DSharp.Compiler.Compiler
 
         private (ExpressionListNode argumentNodes, List<Expression> argumentExpressions) ParseArguments(BinaryExpressionNode node, MemberExpression memberExpression)
         {
-            ExpressionListNode argumentNodes = null;
             List<Expression> argumentExpressions = new List<Expression>();
 
             if (node.RightChild == null)
             {
-                return (argumentNodes, argumentExpressions);
+                return (null, argumentExpressions);
             }
 
-            Debug.Assert(node.RightChild is ExpressionListNode);
+            if(!(node.RightChild is ExpressionListNode argumentNodes))
+            {
+                throw new ExpressionBuildException($"Expected Arguments as right child of binary expression, instead got {node?.RightChild?.GetType()?.Name}");
+            }
 
-            if(memberExpression.Member is MethodSymbol methodSymbol && methodSymbol.IsGeneric)
+            if (memberExpression.Member is MethodSymbol methodSymbol && methodSymbol.IsGeneric)
             {
                 GenericNameNode genericNameNode = GetGenericNameNode(node);
                 if (genericNameNode != null)
                 {
                     var genericArgsMap = ParseTypeMap(methodSymbol, genericNameNode);
-                    if(genericArgsMap != null)
+                    if (genericArgsMap != null)
                         argumentExpressions.Add(genericArgsMap);
                 }
             }
 
-            argumentNodes = (ExpressionListNode)node.RightChild;
             argumentExpressions.AddRange(BuildExpressionList(argumentNodes));
 
             return (argumentNodes, argumentExpressions);
@@ -1832,7 +1841,7 @@ namespace DSharp.Compiler.Compiler
             {
                 return GetGenericNameNode(binaryExpressionNode);
             }
-            else if(node.LeftChild is GenericNameNode)
+            else if (node.LeftChild is GenericNameNode)
             {
                 return (GenericNameNode)node.LeftChild;
             }
@@ -1846,7 +1855,7 @@ namespace DSharp.Compiler.Compiler
 
         private ObjectExpression ParseTypeMap(MethodSymbol methodSymbol, GenericNameNode genericNameNode)
         {
-            if(methodSymbol == null || genericNameNode == null || methodSymbol.IgnoreGeneratedTypeArguments)
+            if (methodSymbol == null || genericNameNode == null || methodSymbol.IgnoreGeneratedTypeArguments)
             {
                 return null;
             }

@@ -5,7 +5,7 @@
         public static T As<T>(this ParseNode self)
             where T : ParseNode
         {
-            return (T)self;
+            return self as T;
         }
 
         public static T FindParent<T>(this ParseNode self)
@@ -17,7 +17,7 @@
             {
                 if(current is T)
                 {
-                    return (T)current;
+                    return current.As<T>();
                 }
 
                 current = current.Parent;
