@@ -31,7 +31,7 @@ namespace ExpressionTests
 
     internal static class IServiceCollectionExtension
     {
-        public static IServiceCollection AddSingleton<T>(this IServiceCollection services, int value)
+        public static IServiceCollection AddSingleton<T>(this IServiceCollection services)
         {
 
         }
@@ -58,7 +58,7 @@ namespace ExpressionTests
                 .PadRightC(10, 'F');
 
             IServiceCollection services = null;
-            services.AddSingleton<Temp>(1);
+            services.AddSingleton<Temp>();
             services.AddSingletonMany<ITemp, Temp>(1);
             services.AddSpecialSingleton<Temp>();
             services.AddSpecialSingleton2<Temp>(1);

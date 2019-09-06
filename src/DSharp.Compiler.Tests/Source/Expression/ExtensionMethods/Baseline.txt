@@ -43,7 +43,7 @@ define('ExpressionTests.ExtensionMethods', ['ss'], function(ss) {
 
   function IServiceCollectionExtension() {
   }
-  IServiceCollectionExtension.addSingleton = function($TArgs, services, value) {
+  IServiceCollectionExtension.addSingleton = function($TArgs, services) {
   };
   IServiceCollectionExtension.addSingletonMany = function($TArgs, services, value) {
   };
@@ -56,7 +56,7 @@ define('ExpressionTests.ExtensionMethods', ['ss'], function(ss) {
   Program.main = function(args) {
     var value = StringExtensions.padRightC(StringExtensions.padRightC(StringExtensions.padRightC('', 10, 'F'), 10, 'F'), 10, 'F');
     var services = null;
-    IServiceCollectionExtension.addSingleton({T: Temp}, services, 1);
+    IServiceCollectionExtension.addSingleton({T: Temp}, services);
     IServiceCollectionExtension.addSingletonMany({TBase: ITemp, TImp: Temp}, services, 1);
     services.addSpecialSingleton({T: Temp});
     services.addSpecialSingleton2({T: Temp}, 1);

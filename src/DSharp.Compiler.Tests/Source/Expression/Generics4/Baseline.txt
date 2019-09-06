@@ -26,7 +26,7 @@ define('test', ['ss'], function(ss) {
       var outInt = instance.Value.Value;
       this.parseTheList({T: Number}, []).push(4);
       var wrapper = new Wrapper();
-      var newWrapper = wrapper.Invokee.invoke({T: Wrapper}, '');
+      wrapper.Invokee.invoke({T: ss.getGenericConstructor(GenericClass_$1, {T: Number})}, '').doSomethingWith({TNew: Boolean}, true, 0);
     },
     parseTheList: function($TArgs, what) {
       return what;
