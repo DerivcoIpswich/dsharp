@@ -2,6 +2,16 @@
 
 define('ExpressionTests.ExtensionMethods', ['ss'], function(ss) {
   var $global = this;
+  // ExpressionTests.IServiceCollection
+
+  function IServiceCollection() { }
+
+
+  // ExpressionTests.ITemp
+
+  function ITemp() { }
+
+
   // ExpressionTests.StringExtensions
 
   function StringExtensions() {
@@ -29,12 +39,27 @@ define('ExpressionTests.ExtensionMethods', ['ss'], function(ss) {
   };
 
 
+  // ExpressionTests.IServiceCollectionExtension
+
+  function IServiceCollectionExtension() {
+  }
+  IServiceCollectionExtension.addSingleton = function($TArgs, services, value) {
+  };
+  IServiceCollectionExtension.addSingletonMany = function($TArgs, services, value) {
+  };
+
+
   // ExpressionTests.Program
 
   function Program() {
   }
   Program.main = function(args) {
     var value = StringExtensions.padRightC(StringExtensions.padRightC(StringExtensions.padRightC('', 10, 'F'), 10, 'F'), 10, 'F');
+    var services = null;
+    IServiceCollectionExtension.addSingleton({T: Temp}, services, 1);
+    IServiceCollectionExtension.addSingletonMany({TBase: ITemp, TImp: Temp}, services, 1);
+    services.addSpecialSingleton({T: Temp});
+    services.addSpecialSingleton2({T: Temp}, 1);
     return IntExtensions.increment(0);
   };
   var Program$ = {
@@ -42,14 +67,27 @@ define('ExpressionTests.ExtensionMethods', ['ss'], function(ss) {
   };
 
 
+  // ExpressionTests.Temp
+
+  function Temp() {
+  }
+  var Temp$ = {
+
+  };
+
+
   var $exports = ss.module('ExpressionTests.ExtensionMethods',
     {
-      InternalIntExtensions: ss.defineClass(InternalIntExtensions, null, [], null)
+      InternalIntExtensions: ss.defineClass(InternalIntExtensions, null, [], null),
+      IServiceCollectionExtension: ss.defineClass(IServiceCollectionExtension, null, [], null)
     },
     {
+      IServiceCollection: ss.defineInterface(IServiceCollection),
+      ITemp: ss.defineInterface(ITemp),
       StringExtensions: ss.defineClass(StringExtensions, null, [], null),
       IntExtensions: ss.defineClass(IntExtensions, null, [], null),
-      Program: ss.defineClass(Program, Program$, [], null)
+      Program: ss.defineClass(Program, Program$, [], null),
+      Temp: ss.defineClass(Temp, Temp$, [], null, [ITemp])
     });
 
 

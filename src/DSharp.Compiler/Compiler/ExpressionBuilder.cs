@@ -1003,7 +1003,7 @@ namespace DSharp.Compiler.Compiler
             }
         }
 
-        private TypeSymbol ResolveTypeNode(BinaryExpressionNode node)
+        private TypeSymbol ResolveTypeNode(ParseNode node)
         {
             MethodDeclarationNode parentMethod = FindParentNode<MethodDeclarationNode>(node);
             ParameterNode parameterNode = (ParameterNode)parentMethod?.Parameters?.FirstOrDefault();
@@ -1017,7 +1017,8 @@ namespace DSharp.Compiler.Compiler
 
         private Expression CreateExtensionMethodInvocationExpression(BinaryExpressionNode node, TypeSymbol typeToExtend)
         {
-            string memberName = ((NameNode)node.RightChild).Name;
+            NameNode nameNode = (NameNode)node.RightChild;
+            string memberName = nameNode.Name;
             MethodSymbol methodSymbol = symbolSet.ResolveExtensionMethodSymbol(typeToExtend, memberName);
 
             if (methodSymbol == null)
@@ -1029,6 +1030,14 @@ namespace DSharp.Compiler.Compiler
                         new TypeExpression((TypeSymbol)methodSymbol.Parent, SymbolFilter.Public | SymbolFilter.StaticMembers),
                         methodSymbol);
             Expression accessorExpression = BuildExpression(node.LeftChild);
+
+            if(methodSymbol.IsGeneric)
+            {
+                GenericNameNode genericNameNode = (GenericNameNode)nameNode;
+                Expression typeMapExpression = ParseTypeMap(methodSymbol, genericNameNode);
+                methodExpression.AddParameterValue(typeMapExpression);
+            }
+
             methodExpression.AddParameterValue(accessorExpression);
             methodExpression.IsExtensionMethod = true;
 
@@ -1820,17 +1829,17 @@ namespace DSharp.Compiler.Compiler
 
         private GenericNameNode GetGenericNameNode(BinaryExpressionNode node)
         {
-            if (node.LeftChild is BinaryExpressionNode binaryExpressionNode)
+            if (node.RightChild is GenericNameNode)
+            {
+                return (GenericNameNode)node.RightChild;
+            }
+            else if (node.LeftChild is BinaryExpressionNode binaryExpressionNode)
             {
                 return GetGenericNameNode(binaryExpressionNode);
             }
             else if (node.LeftChild is GenericNameNode)
             {
                 return (GenericNameNode)node.LeftChild;
-            }
-            else if (node.RightChild is GenericNameNode)
-            {
-                return (GenericNameNode)node.RightChild;
             }
 
             return null;
@@ -1849,7 +1858,8 @@ namespace DSharp.Compiler.Compiler
             {
                 int argIndex = genericArgument.Index;
                 var parameterNode = genericNameNode.TypeArguments[argIndex];
-                var expression = BuildExpression(parameterNode);
+                TypeSymbol typeSymbol = symbolSet.ResolveType(parameterNode, symbolTable, memberContext);
+                var expression = CreateTypeOfExpression(typeSymbol);
 
                 properties.Add(genericArgument.GeneratedName, expression);
             }

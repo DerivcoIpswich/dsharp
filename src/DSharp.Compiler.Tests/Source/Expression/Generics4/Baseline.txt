@@ -25,6 +25,8 @@ define('test', ['ss'], function(ss) {
       var instance = ss.createGenericType(GenericClass_$1, {T : ss.getGenericConstructor(GenericClass_$1, {T : Number})}, ss.createGenericType(GenericClass_$1, {T : Number}, 1));
       var outInt = instance.Value.Value;
       this.parseTheList({T: Number}, []).push(4);
+      var wrapper = new Wrapper();
+      var newWrapper = wrapper.Invokee.invoke({T: Wrapper}, '');
     },
     parseTheList: function($TArgs, what) {
       return what;
@@ -67,6 +69,26 @@ define('test', ['ss'], function(ss) {
   };
 
 
+  // TypeTests.Wrapper
+
+  function Wrapper() {
+  }
+  var Wrapper$ = {
+
+  };
+
+
+  // TypeTests.Invoker
+
+  function Invoker() {
+  }
+  var Invoker$ = {
+    invoke: function($TArgs, value) {
+      return null;
+    }
+  };
+
+
   var $exports = ss.module('test',
     {
       Usages: ss.defineClass(Usages, Usages$, [], null)
@@ -74,7 +96,9 @@ define('test', ['ss'], function(ss) {
     {
       Usages$IBase: ss.defineInterface(Usages$IBase),
       Usages$ImplementsBase: ss.defineClass(Usages$ImplementsBase, Usages$ImplementsBase$, [], null, [Usages$IBase]),
-      GenericClass_$1: ss.defineClass(GenericClass_$1, GenericClass_$1$, [Object], null)
+      GenericClass_$1: ss.defineClass(GenericClass_$1, GenericClass_$1$, [Object], null),
+      Wrapper: ss.defineClass(Wrapper, Wrapper$, [], null),
+      Invoker: ss.defineClass(Invoker, Invoker$, [], null)
     });
 
 

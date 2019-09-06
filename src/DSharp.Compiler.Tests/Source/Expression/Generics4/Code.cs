@@ -21,6 +21,9 @@ namespace TypeTests
             var outInt = instance.Value.Value;
 
             ParseTheList<int>(new List<int>() { 1, 2, 3 }).Add(4);
+
+            Wrapper wrapper = new Wrapper();
+            wrapper.Invokee.Invoke<GenericClass<int>>("").DoSomethingWith<bool>(true, 0);
         }
 
         public interface IBase { }
@@ -73,6 +76,20 @@ namespace TypeTests
         {
             Type baseT = typeof(TBase);
             Type implT = typeof(TImplementation);
+        }
+    }
+
+    public class Wrapper
+    {
+        public Invoker Invokee { get; }
+    }
+
+    public class Invoker
+    {
+        public T Invoke<T>(string value)
+            where T : class
+        {
+            return null;
         }
     }
 }
