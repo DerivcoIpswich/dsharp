@@ -25,10 +25,16 @@ namespace DSharp.Compiler.Generator
 
         private static void WriteObject(Action<string> write, IDictionary<string, string> properties)
         {
+            bool commaNeeded = false;
             write("{");
             foreach (var property in properties)
             {
+                if(commaNeeded)
+                {
+                    write(", ");
+                }
                 write($"{property.Key} : {property.Value}");
+                commaNeeded = true;
             }
             write("}");
         }
