@@ -33,6 +33,8 @@ define('test', ['ss'], function(ss) {
     }
     if (ss.canAssign(ss.getGenericConstructor(IBulkAsyncExecutionManager_$1, {T: String}), ss.typeOf(bem))) {
     }
+    var genericWithMultipleParams = ss.createGenericType(GenericWithMultipleParams_$3, {T1 : Number, T2 : Boolean, T3 : String}, );
+    var str = genericWithMultipleParams.toString();
   };
   Program.copy = function($TArgs, source, startIndex, count) {
     var destination = new Array(source.length);
@@ -97,6 +99,15 @@ define('test', ['ss'], function(ss) {
   };
 
 
+  // DSharp.Compiler.Tests.Source.Type.GenericClasses.GenericWithMultipleParams`3
+
+  function GenericWithMultipleParams_$3() {
+  }
+  var GenericWithMultipleParams_$3$ = {
+
+  };
+
+
   // DSharp.Compiler.Tests.Source.Type.GenericClasses.GenericClass`1
 
   function GenericClass_$1(value, mutator) {
@@ -124,6 +135,7 @@ define('test', ['ss'], function(ss) {
       MyType: ss.defineClass(MyType, MyType$, [], null),
       BaseGenericClass_$1: ss.defineClass(BaseGenericClass_$1, BaseGenericClass_$1$, [Object], null),
       BulkAsyncExecutionManager_$1: ss.defineClass(BulkAsyncExecutionManager_$1, BulkAsyncExecutionManager_$1$, [], null, [IBulkAsyncExecutionManager_$1]),
+      GenericWithMultipleParams_$3: ss.defineClass(GenericWithMultipleParams_$3, GenericWithMultipleParams_$3$, [], null),
       GenericClass_$1: ss.defineClass(GenericClass_$1, GenericClass_$1$, [Object, Function], BaseGenericClass_$1)
     });
 

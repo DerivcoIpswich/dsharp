@@ -43,6 +43,9 @@ namespace DSharp.Compiler.Tests.Source.Type.GenericClasses
             {
 
             }
+
+            GenericWithMultipleParams<int, bool, string> genericWithMultipleParams = new GenericWithMultipleParams<int, bool, string>();
+            string str = genericWithMultipleParams.ToString();
         }
 
         public static T[] Copy<T>(T[] source, int startIndex, int count)
@@ -147,5 +150,10 @@ namespace DSharp.Compiler.Tests.Source.Type.GenericClasses
         public void StartExecution()
         {
         }
+    }
+
+    public class GenericWithMultipleParams<T1, T2, T3>
+    {
+
     }
 }
