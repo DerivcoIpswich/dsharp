@@ -475,7 +475,7 @@ namespace DSharp.Compiler.Generator
                 case ExpressionType.Object:
                     GenerateObjectExpression(generator, symbol, ((ObjectExpression)expression).Properties);
                     break;
-                case ExpressionType.ObjectInitilizer:
+                case ExpressionType.ObjectInitializer:
                     GenerateObjectInitializerExpression(generator, symbol, (ObjectInitializerExpression)expression);
                     break;
                 default:

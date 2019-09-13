@@ -32,6 +32,6 @@ namespace DSharp.Compiler.ScriptModel.Expressions
         InlineScript = 22,
         NewDelegate = 23,
         Object = 24,
-        ObjectInitilizer = 25
+        ObjectInitializer = 25
     }
 }
