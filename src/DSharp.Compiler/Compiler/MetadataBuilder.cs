@@ -1357,13 +1357,15 @@ namespace DSharp.Compiler.Compiler
                 {
                     string nodeName = node.Name;
 
+                    TypeSymbol baseTypeSymbol = null;
                     if (node is GenericNameNode genericNameNode)
                     {
-                        nodeName += $"`{genericNameNode.TypeArguments.Count}";
+                        baseTypeSymbol = symbols.ResolveType(node, classSymbol, classSymbol);
                     }
-
-                    TypeSymbol baseTypeSymbol =
-                        (TypeSymbol)symbolTable.FindSymbol(nodeName, classSymbol, SymbolFilter.Types);
+                    else
+                    {
+                        baseTypeSymbol = (TypeSymbol)symbolTable.FindSymbol(nodeName, classSymbol, SymbolFilter.Types);
+                    }
 
                     Debug.Assert(baseTypeSymbol != null);
 

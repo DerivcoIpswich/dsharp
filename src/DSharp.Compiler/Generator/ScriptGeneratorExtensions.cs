@@ -56,8 +56,13 @@ namespace DSharp.Compiler.Generator
 
         private static string CreateTypeArgumentName(TypeSymbol typeArgument)
         {
-            if(typeArgument is GenericParameterSymbol)
+            if(typeArgument is GenericParameterSymbol parameterSymbol)
             {
+                if(parameterSymbol.Owner is ClassSymbol)
+                {
+                    return $"{DSharpStringResources.ScriptExportMember("getTypeArgument")}(this, '{typeArgument.FullGeneratedName}')";
+                }
+
                 return $"{DSharpStringResources.GeneratedScript.GENERIC_ARGS_PARAMETER_NAME}['{typeArgument.FullGeneratedName}']";
             }
 

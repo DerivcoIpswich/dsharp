@@ -121,8 +121,6 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             Debug.Assert(arrayTypeSymbol != null);
 
             TypeSymbol specificArrayTypeSymbol = new ClassSymbol("Array", SystemNamespace);
-            foreach (MemberSymbol memberSymbol in arrayTypeSymbol.Members)
-                specificArrayTypeSymbol.AddMember(memberSymbol);
 
             IndexerSymbol indexerSymbol = new IndexerSymbol(specificArrayTypeSymbol, itemTypeSymbol,
                 MemberVisibility.Public);
@@ -241,9 +239,10 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                     return templateType;
                 }
 
-            string key = CreateGenericTypeKey(templateType, typeArguments);
+            //string key = CreateGenericTypeKey(templateType, typeArguments);
+            string key = CreateTypeName(templateType, typeArguments);
 
-            if(!genericTypeTable.TryGetValue(key, out TypeSymbol instanceTypeSymbol))
+            if (!genericTypeTable.TryGetValue(key, out TypeSymbol instanceTypeSymbol))
             {
                 // Prepopulate with a placeholder ... if a generic type's member refers to its
                 // parent type it will use the type being created when the return value is null.
@@ -263,9 +262,9 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                 keyBuilder.Append("+");
                 if (typeArgument is GenericParameterSymbol genericParameterSymbol)
                 {
-                    if (genericParameterSymbol.Owner is MethodSymbol ownerMethoSymbol)
+                    if (genericParameterSymbol.Owner is MethodSymbol ownerMethodSymbol)
                     {
-                        keyBuilder.Append(ownerMethoSymbol.Name + "_" + typeArgument.FullName);
+                        keyBuilder.Append(ownerMethodSymbol.Name + "_" + typeArgument.FullName);
                     }
                     else if (genericParameterSymbol.Owner is TypeSymbol ownerTypeSymbol)
                     {
@@ -283,6 +282,16 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             }
 
             return keyBuilder.ToString();
+        }
+
+        private static string CreateTypeName(TypeSymbol symbol, IEnumerable<TypeSymbol> arguments)
+        {
+            if (arguments?.Any() ?? false)
+            {
+                return $"{symbol.FullName}<{string.Join(",", arguments.Select(s => CreateTypeName(s, s.GenericArguments)))}>";
+            }
+
+            return symbol.FullName;
         }
 
         private TypeSymbol CreateGenericTypeCore(TypeSymbol templateType, IList<TypeSymbol> typeArguments)

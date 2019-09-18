@@ -46,6 +46,11 @@ namespace DSharp.Compiler.Tests.Source.Type.GenericClasses
 
             GenericWithMultipleParams<int, bool, string> genericWithMultipleParams = new GenericWithMultipleParams<int, bool, string>();
             string str = genericWithMultipleParams.ToString();
+
+            SpecificClassOfGeneric specificClassOfGeneric = new SpecificClassOfGeneric();
+            bool isInt = specificClassOfGeneric.Type == typeof(int);
+            GenericClass<int> myContainer = specificClassOfGeneric.CreateContainer();
+            isInt = myContainer.Type == typeof(int);
         }
 
         public static T[] Copy<T>(T[] source, int startIndex, int count)
@@ -109,9 +114,14 @@ namespace DSharp.Compiler.Tests.Source.Type.GenericClasses
         {
             value = mutator.Invoke(value);
         }
+
+        public GenericClass<T> CreateContainer()
+        {
+            return new GenericClass<T>(value, mutator);
+        }
     }
 
-    public class BaseGenericClass<T>
+    public abstract class BaseGenericClass<T>
     {
         protected T baseField;
 
@@ -155,5 +165,23 @@ namespace DSharp.Compiler.Tests.Source.Type.GenericClasses
     public class GenericWithMultipleParams<T1, T2, T3>
     {
 
+    }
+
+    public class SpecificClassOfGeneric : GenericClass<int>
+    {
+        public SpecificClassOfGeneric(int value)
+            : base(value, MyMutator)
+        {
+        }
+
+        public int ReturnMyField()
+        {
+            return BaseField;
+        }
+
+        private static int MyMutator(int valIn)
+        {
+            return valIn + 1;
+        }
     }
 }

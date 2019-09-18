@@ -1035,7 +1035,7 @@ namespace DSharp.Compiler.Importer
             }
         }
 
-        private TypeSymbol ResolveType(TypeReference type)
+        private TypeSymbol ResolveType(TypeReference type, TypeSymbol parentSymbol = null)
         {
             int arrayDimensions = 0;
 
@@ -1066,6 +1066,10 @@ namespace DSharp.Compiler.Importer
                 typeSymbol = new GenericParameterSymbol(genericParameter.Position, genericParameter.Name,
                     genericParameter.Owner.GenericParameterType == GenericParameterType.Type,
                     symbols.GlobalNamespace);
+                if(parentSymbol != null)
+                {
+                    ((GenericParameterSymbol)typeSymbol).Owner = parentSymbol;
+                }
             }
             else
             {
@@ -1085,7 +1089,7 @@ namespace DSharp.Compiler.Importer
 
                 foreach (TypeReference argTypeRef in genericType.GenericArguments)
                 {
-                    TypeSymbol argType = ResolveType(argTypeRef);
+                    TypeSymbol argType = ResolveType(argTypeRef, typeSymbol);
                     typeArgs.Add(argType);
                 }
 
