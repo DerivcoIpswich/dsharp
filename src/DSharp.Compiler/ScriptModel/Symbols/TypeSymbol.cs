@@ -5,7 +5,6 @@
 
 using System;
 using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -14,75 +13,10 @@ using DSharp.Compiler.Extensions;
 
 namespace DSharp.Compiler.ScriptModel.Symbols
 {
-    internal class TypeScopeMap
-    {
-        private readonly ConcurrentDictionary<string, List<MemberSymbol>> memberMap 
-            = new ConcurrentDictionary<string, List<MemberSymbol>>();
-        private readonly ConcurrentDictionary<string, Dictionary<string, MemberSymbol>> memberTableMap 
-            = new ConcurrentDictionary<string, Dictionary<string, MemberSymbol>>();
-
-        public ScopedTypeScopeMap GetScopedMap(TypeSymbol ownerSymbol)
-        {
-            return new ScopedTypeScopeMap(this, ownerSymbol);
-        }
-
-        public class ScopedTypeScopeMap
-        {
-            private readonly TypeScopeMap rootMap;
-            private readonly TypeSymbol ownerType;
-
-            public List<MemberSymbol> Members => GetMembers();
-
-            public Dictionary<string, MemberSymbol> MemberTable => GetMemberTable();
-
-            private string FullName => CreateTypeName(ownerType);
-
-            public ScopedTypeScopeMap(TypeScopeMap rootMap, TypeSymbol ownerType)
-            {
-                this.rootMap = rootMap;
-                this.ownerType = ownerType;
-            }
-
-            private List<MemberSymbol> GetMembers()
-            {
-                if(!rootMap.memberMap.TryGetValue(FullName, out var list))
-                {
-                    list = new List<MemberSymbol>();
-                    rootMap.memberMap.TryAdd(FullName, list);
-
-                }
-
-                return list;
-            }
-
-            private Dictionary<string, MemberSymbol> GetMemberTable()
-            {
-                if (!rootMap.memberTableMap.TryGetValue(FullName, out var memberTable))
-                {
-                    memberTable = new Dictionary<string, MemberSymbol>();
-                    rootMap.memberTableMap.TryAdd(FullName, memberTable);
-                }
-
-                return memberTable;
-            }
-
-            private static string CreateTypeName(TypeSymbol symbol)
-            {
-                if(symbol.GenericArguments?.Any() ?? false)
-                {
-                    return $"{symbol.FullName}<{string.Join(",", symbol.GenericArguments.Select(s => CreateTypeName(s)))}>";
-                }
-
-                return symbol.FullName;
-            }
-        }
-    }
-
     internal abstract class TypeSymbol : Symbol, ISymbolTable
     {
-        private readonly static TypeScopeMap typeScopeMap = new TypeScopeMap();
-
-        private readonly TypeScopeMap.ScopedTypeScopeMap typeScope;
+        private readonly List<MemberSymbol> members;
+        private readonly Dictionary<string, MemberSymbol> memberTable;
 
         private readonly Dictionary<string, TypeSymbol> typeMap;
         private readonly List<TypeSymbol> types;
@@ -96,18 +30,14 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         {
             Debug.Assert(parent != null);
 
+            memberTable = new Dictionary<string, MemberSymbol>();
+            members = new List<MemberSymbol>();
+
             types = new List<TypeSymbol>();
             typeMap = new Dictionary<string, TypeSymbol>();
 
             IsApplicationType = true;
-
-            typeScope = typeScopeMap.GetScopedMap(this);
         }
-
-        private List<MemberSymbol> InternalMembers
-            => typeScope.Members;
-        private Dictionary<string, MemberSymbol> InternalMemberTable
-            => typeScope.MemberTable;
 
         public IDictionary<string, string> Aliases { get; private set; }
 
@@ -220,7 +150,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public bool IsInternal { get; set; }
 
-        public ICollection<MemberSymbol> Members => InternalMembers;
+        public ICollection<MemberSymbol> Members => members;
 
         public object MetadataReference
         {
@@ -244,16 +174,16 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public string ScriptNamespace { get; set; }
 
-        public ICollection Symbols => InternalMembers;
+        public ICollection Symbols => members;
 
         public virtual void AddMember(MemberSymbol memberSymbol)
         {
             Debug.Assert(memberSymbol != null);
             Debug.Assert(string.IsNullOrEmpty(memberSymbol.Name) == false);
-            Debug.Assert(!InternalMemberTable.ContainsKey(memberSymbol.Name), $"{FullName} already contains the member {memberSymbol?.Name}");
+            Debug.Assert(memberTable.ContainsKey(memberSymbol.Name) == false);
 
-            InternalMembers.Add(memberSymbol);
-            InternalMemberTable[memberSymbol.Name] = memberSymbol;
+            members.Add(memberSymbol);
+            memberTable[memberSymbol.Name] = memberSymbol;
         }
 
         public void AddGenericArguments(TypeSymbol genericType, IList<TypeSymbol> genericArguments)
@@ -296,14 +226,14 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public virtual MemberSymbol GetMember(string name)
         {
-            if (InternalMemberTable.ContainsKey(name))
+            if (memberTable.ContainsKey(name))
             {
-                return InternalMemberTable[name];
+                return memberTable[name];
             }
 
-            if(GenericType?.InternalMemberTable.ContainsKey(name) ?? false)
+            if(GenericType?.memberTable.ContainsKey(name) ?? false)
             {
-                return GenericType.InternalMemberTable[name];
+                return GenericType.memberTable[name];
             }
 
             return null;

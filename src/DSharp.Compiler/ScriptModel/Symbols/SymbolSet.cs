@@ -121,6 +121,8 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             Debug.Assert(arrayTypeSymbol != null);
 
             TypeSymbol specificArrayTypeSymbol = new ClassSymbol("Array", SystemNamespace);
+            foreach (MemberSymbol memberSymbol in arrayTypeSymbol.Members)
+                specificArrayTypeSymbol.AddMember(memberSymbol);
 
             IndexerSymbol indexerSymbol = new IndexerSymbol(specificArrayTypeSymbol, itemTypeSymbol,
                 MemberVisibility.Public);

@@ -2,12 +2,12 @@
 
 define('test', ['ss'], function(ss) {
   var $global = this;
-  // DSharp.Shell.src.IBulkAsyncExecutionManager`1
+  // DSharp.Compiler.Tests.Source.Type.GenericClasses.IBulkAsyncExecutionManager`1
 
   function IBulkAsyncExecutionManager_$1() { }
 
 
-  // DSharp.Shell.src.Program
+  // DSharp.Compiler.Tests.Source.Type.GenericClasses.Program
 
   function Program() {
   }
@@ -66,7 +66,7 @@ define('test', ['ss'], function(ss) {
   };
 
 
-  // DSharp.Shell.src.MyType
+  // DSharp.Compiler.Tests.Source.Type.GenericClasses.MyType
 
   function MyType() {
   }
@@ -75,7 +75,7 @@ define('test', ['ss'], function(ss) {
   };
 
 
-  // DSharp.Shell.src.BaseGenericClass`1
+  // DSharp.Compiler.Tests.Source.Type.GenericClasses.BaseGenericClass`1
 
   function BaseGenericClass_$1(baseField) {
     this.baseField = baseField;
@@ -87,7 +87,7 @@ define('test', ['ss'], function(ss) {
   };
 
 
-  // DSharp.Shell.src.BulkAsyncExecutionManager`1
+  // DSharp.Compiler.Tests.Source.Type.GenericClasses.BulkAsyncExecutionManager`1
 
   function BulkAsyncExecutionManager_$1() {
   }
@@ -103,7 +103,7 @@ define('test', ['ss'], function(ss) {
   };
 
 
-  // DSharp.Shell.src.GenericWithMultipleParams`3
+  // DSharp.Compiler.Tests.Source.Type.GenericClasses.GenericWithMultipleParams`3
 
   function GenericWithMultipleParams_$3() {
   }
@@ -112,7 +112,7 @@ define('test', ['ss'], function(ss) {
   };
 
 
-  // DSharp.Shell.src.GenericClass`1
+  // DSharp.Compiler.Tests.Source.Type.GenericClasses.GenericClass`1
 
   function GenericClass_$1(value, mutator) {
     ss.getGenericConstructor(BaseGenericClass_$1, {T : ss.getTypeArgument(this, 'T')}).call(this, value);
@@ -135,7 +135,7 @@ define('test', ['ss'], function(ss) {
   };
 
 
-  // DSharp.Shell.src.SpecificClassOfGeneric
+  // DSharp.Compiler.Tests.Source.Type.GenericClasses.SpecificClassOfGeneric
 
   function SpecificClassOfGeneric(value) {
     ss.getGenericConstructor(GenericClass_$1, {T : Number}).call(this, value, SpecificClassOfGeneric._myMutator$2);
@@ -150,7 +150,7 @@ define('test', ['ss'], function(ss) {
   };
 
 
-  var $exports = ss.module('g_96d4d77832f5444cb3d9d8e9a52e4263', null,
+  var $exports = ss.module('test', null,
     {
       IBulkAsyncExecutionManager_$1: ss.defineInterface(IBulkAsyncExecutionManager_$1),
       Program: ss.defineClass(Program, Program$, [], null),
