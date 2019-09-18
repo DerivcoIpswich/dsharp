@@ -241,7 +241,6 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                     return templateType;
                 }
 
-            //string key = CreateGenericTypeKey(templateType, typeArguments);
             string key = CreateTypeName(templateType, typeArguments);
 
             if (!genericTypeTable.TryGetValue(key, out TypeSymbol instanceTypeSymbol))
@@ -253,37 +252,6 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                 genericTypeTable[key] = instanceTypeSymbol;
             }
             return instanceTypeSymbol;
-        }
-
-        private static string CreateGenericTypeKey(TypeSymbol templateType, IList<TypeSymbol> typeArguments)
-        {
-            StringBuilder keyBuilder = new StringBuilder(templateType.FullName);
-
-            foreach (TypeSymbol typeArgument in typeArguments)
-            {
-                keyBuilder.Append("+");
-                if (typeArgument is GenericParameterSymbol genericParameterSymbol)
-                {
-                    if (genericParameterSymbol.Owner is MethodSymbol ownerMethodSymbol)
-                    {
-                        keyBuilder.Append(ownerMethodSymbol.Name + "_" + typeArgument.FullName);
-                    }
-                    else if (genericParameterSymbol.Owner is TypeSymbol ownerTypeSymbol)
-                    {
-                        keyBuilder.Append(ownerTypeSymbol.FullName + "_" + typeArgument.FullName);
-                    }
-                    else
-                    {
-                        keyBuilder.Append(typeArgument.FullName);
-                    }
-                }
-                else
-                {
-                    keyBuilder.Append(typeArgument.FullName);
-                }
-            }
-
-            return keyBuilder.ToString();
         }
 
         private static string CreateTypeName(TypeSymbol symbol, IEnumerable<TypeSymbol> arguments)
