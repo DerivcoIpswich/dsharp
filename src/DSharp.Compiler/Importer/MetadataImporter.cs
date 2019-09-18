@@ -73,26 +73,26 @@ namespace DSharp.Compiler.Importer
                         // The Script class contains additional pseudo global methods that cannot
                         // be referenced at compile-time by the app author, but can be
                         // referenced by generated code during compilation.
-                        ImportPseudoMembers(PseudoClassMembers.Script, (ClassSymbol) typeSymbol);
+                        ImportPseudoMembers(PseudoClassMembers.Script, (ClassSymbol)typeSymbol);
                     }
                     else if (typeSymbol.Name.Equals(nameof(Object), StringComparison.Ordinal))
                     {
                         // We need to add a static GetType method
 
-                        ImportPseudoMembers(PseudoClassMembers.Object, (ClassSymbol) typeSymbol);
+                        ImportPseudoMembers(PseudoClassMembers.Object, (ClassSymbol)typeSymbol);
                     }
                     else if (typeSymbol.Name.Equals(typeof(Dictionary<,>).Name, StringComparison.Ordinal))
                     {
                         // The Dictionary class contains static methods at runtime, rather
                         // than instance methods.
 
-                        ImportPseudoMembers(PseudoClassMembers.Dictionary, (ClassSymbol) typeSymbol);
+                        ImportPseudoMembers(PseudoClassMembers.Dictionary, (ClassSymbol)typeSymbol);
                     }
                     else if (typeSymbol.Name.Equals("Arguments", StringComparison.Ordinal))
                     {
                         // We need to add a static indexer, which isn't allowed in C#
 
-                        ImportPseudoMembers(PseudoClassMembers.Arguments, (ClassSymbol) typeSymbol);
+                        ImportPseudoMembers(PseudoClassMembers.Arguments, (ClassSymbol)typeSymbol);
                     }
                 }
             }
@@ -105,13 +105,14 @@ namespace DSharp.Compiler.Importer
 
             // Resolve Base Types
             foreach (TypeSymbol typeSymbol in importedTypes)
-                if (typeSymbol.Type == SymbolType.Class)
+                if (typeSymbol is ClassSymbol classSymbol)
                 {
-                    ImportBaseType((ClassSymbol) typeSymbol);
+                    ImportBaseType(classSymbol);
+                    BuildInterfaceAssociations(classSymbol);
                 }
                 else if (typeSymbol.Type == SymbolType.Interface)
                 {
-                    ImportInterfaces((InterfaceSymbol) typeSymbol);
+                    ImportInterfaces((InterfaceSymbol)typeSymbol);
                 }
 
             // Import members
@@ -128,9 +129,9 @@ namespace DSharp.Compiler.Importer
 
             foreach (TypeSymbol typeSymbol in importedTypes)
             {
-                if(typeSymbol is ClassSymbol classSymbol && classSymbol.IsPublic)
+                if (typeSymbol is ClassSymbol classSymbol && classSymbol.IsPublic)
                 {
-                    foreach(var method in GetExtensionMethods(typeSymbol.Members))
+                    foreach (var method in GetExtensionMethods(typeSymbol.Members))
                     {
                         ParameterDefinition parameter = ((MethodDefinition)method.ParseContext).Parameters.First();
                         string typeToExtend = parameter.ParameterType.FullName;
@@ -142,6 +143,61 @@ namespace DSharp.Compiler.Importer
             return importedTypes;
         }
 
+        public static void BuildInterfaceAssociations(ClassSymbol classSymbol)
+        {
+            if (classSymbol.PrimaryPartialClass != classSymbol)
+            {
+                // Don't build interface associations for non-primary partial classes.
+                return;
+            }
+
+            Dictionary<string, MemberSymbol> interfaceMemberSymbols = new Dictionary<string, MemberSymbol>();
+            AggregateInterfaceMembers(classSymbol.Interfaces, interfaceMemberSymbols);
+
+            if (interfaceMemberSymbols.Count > 0)
+            {
+                foreach (MemberSymbol memberSymbol in interfaceMemberSymbols.Values)
+                {
+                    MemberSymbol associatedSymbol = classSymbol.GetMember(memberSymbol.Name);
+
+                    if (associatedSymbol != null)
+                    {
+                        associatedSymbol.SetInterfaceMember(memberSymbol);
+                    }
+                }
+            }
+        }
+
+        public static void AggregateInterfaceMembers(ICollection<InterfaceSymbol> subInterfaceCollection,
+                                               Dictionary<string, MemberSymbol> aggregateMemberCollection)
+        {
+            if (subInterfaceCollection == null)
+            {
+                return;
+            }
+
+            foreach (InterfaceSymbol newInterfaceSymbol in subInterfaceCollection)
+            {
+                AddInterfaceMembers(newInterfaceSymbol.Members, aggregateMemberCollection);
+                AggregateInterfaceMembers(newInterfaceSymbol.Interfaces, aggregateMemberCollection);
+            }
+        }
+
+        public static void AddInterfaceMembers(ICollection<MemberSymbol> newMemberSymbols,
+                                         Dictionary<string, MemberSymbol> aggregateMemberCollection)
+        {
+            if (newMemberSymbols == null)
+            {
+                return;
+            }
+
+            foreach (MemberSymbol newMemberSymbol in newMemberSymbols)
+                if (!aggregateMemberCollection.ContainsKey(newMemberSymbol.Name))
+                {
+                    aggregateMemberCollection[newMemberSymbol.Name] = newMemberSymbol;
+                }
+        }
+
         public IEnumerable<MethodSymbol> GetExtensionMethods(IEnumerable<MemberSymbol> memberSymbols)
         {
             return memberSymbols.Where(member => member is MethodSymbol method && method.IsExtensionMethod && method.IsPublic)
@@ -150,7 +206,7 @@ namespace DSharp.Compiler.Importer
 
         private void ImportBaseType(ClassSymbol classSymbol)
         {
-            TypeDefinition type = (TypeDefinition) classSymbol.MetadataReference;
+            TypeDefinition type = (TypeDefinition)classSymbol.MetadataReference;
             ICollection<InterfaceSymbol> interfaces = GetInterfaceSymbols(type.Interfaces);
             TypeReference baseType = type.BaseType;
 
@@ -170,7 +226,7 @@ namespace DSharp.Compiler.Importer
 
         private void ImportInterfaces(InterfaceSymbol interfaceSymbol)
         {
-            TypeDefinition type = (TypeDefinition) interfaceSymbol.MetadataReference;
+            TypeDefinition type = (TypeDefinition)interfaceSymbol.MetadataReference;
             ICollection<InterfaceSymbol> interfaces = GetInterfaceSymbols(type.Interfaces);
             interfaceSymbol.SetInheritance(interfaces);
         }
@@ -183,12 +239,12 @@ namespace DSharp.Compiler.Importer
                 return null;
             }
 
-            return interfaceReferences.Select(i => (InterfaceSymbol) ResolveType(i.InterfaceType)).ToList();
+            return interfaceReferences.Select(i => (InterfaceSymbol)ResolveType(i.InterfaceType)).ToList();
         }
 
         private void ImportDelegateInvoke(TypeSymbol delegateTypeSymbol)
         {
-            TypeDefinition type = (TypeDefinition) delegateTypeSymbol.MetadataReference;
+            TypeDefinition type = (TypeDefinition)delegateTypeSymbol.MetadataReference;
 
             foreach (MethodDefinition method in type.Methods)
             {
@@ -216,7 +272,7 @@ namespace DSharp.Compiler.Importer
 
         private void ImportEnumFields(TypeSymbol enumTypeSymbol)
         {
-            TypeDefinition type = (TypeDefinition) enumTypeSymbol.MetadataReference;
+            TypeDefinition type = (TypeDefinition)enumTypeSymbol.MetadataReference;
 
             foreach (FieldDefinition field in type.Fields)
             {
@@ -226,7 +282,7 @@ namespace DSharp.Compiler.Importer
                 }
 
                 Debug.Assert(enumTypeSymbol is EnumerationSymbol);
-                EnumerationSymbol enumSymbol = (EnumerationSymbol) enumTypeSymbol;
+                EnumerationSymbol enumSymbol = (EnumerationSymbol)enumTypeSymbol;
 
                 TypeSymbol fieldType;
 
@@ -251,7 +307,7 @@ namespace DSharp.Compiler.Importer
 
         private void ImportEvents(TypeSymbol typeSymbol)
         {
-            TypeDefinition type = (TypeDefinition) typeSymbol.MetadataReference;
+            TypeDefinition type = (TypeDefinition)typeSymbol.MetadataReference;
 
             foreach (EventDefinition eventDef in type.Events)
             {
@@ -294,7 +350,7 @@ namespace DSharp.Compiler.Importer
 
         private void ImportFields(TypeSymbol typeSymbol)
         {
-            TypeDefinition type = (TypeDefinition) typeSymbol.MetadataReference;
+            TypeDefinition type = (TypeDefinition)typeSymbol.MetadataReference;
 
             foreach (FieldDefinition field in type.Fields)
             {
@@ -401,7 +457,6 @@ namespace DSharp.Compiler.Importer
                     ImportProperties(typeSymbol);
                     ImportMethods(typeSymbol);
                     ImportEvents(typeSymbol);
-
                     break;
                 case SymbolType.Enumeration:
                     ImportEnumFields(typeSymbol);
@@ -446,7 +501,7 @@ namespace DSharp.Compiler.Importer
             //       Parameters are used in the script model generation phase to populate
             //       symbol tables, which is not done for imported methods.
 
-            TypeDefinition type = (TypeDefinition) typeSymbol.MetadataReference;
+            TypeDefinition type = (TypeDefinition)typeSymbol.MetadataReference;
 
             foreach (MethodDefinition method in type.Methods)
             {
@@ -490,6 +545,11 @@ namespace DSharp.Compiler.Importer
                     returnType,
                     MetadataHelpers.IsExtensionMethod(method));
 
+                if(MetadataHelpers.ShouldIgnoreMethodGeneratedTypeArguments(method))
+                {
+                    methodSymbol.IgnoreGeneratedTypeArguments = true;
+                }
+
                 methodSymbol.SetParseContext(method);
                 ImportMemberDetails(methodSymbol, method, method);
 
@@ -528,6 +588,13 @@ namespace DSharp.Compiler.Importer
                     methodSymbol.SetTransformName(transformedName);
                 }
 
+                string scriptName = MetadataHelpers.GetScriptName(method, out _, out _);
+
+                if (string.IsNullOrEmpty(scriptName) == false && !methodSymbol.IsTransformed)
+                {
+                    methodSymbol.SetTransformedName(scriptName);
+                }
+
                 string selector = MetadataHelpers.GetScriptMethodSelector(method);
 
                 if (string.IsNullOrEmpty(selector) == false)
@@ -546,7 +613,7 @@ namespace DSharp.Compiler.Importer
 
         private void ImportProperties(TypeSymbol typeSymbol)
         {
-            TypeDefinition type = (TypeDefinition) typeSymbol.MetadataReference;
+            TypeDefinition type = (TypeDefinition)typeSymbol.MetadataReference;
 
             foreach (PropertyDefinition property in type.Properties)
             {
@@ -662,51 +729,7 @@ namespace DSharp.Compiler.Importer
 
             if (memberSet == PseudoClassMembers.Script)
             {
-                TypeSymbol objectType =
-                    (TypeSymbol) ((ISymbolTable) symbols.SystemNamespace).FindSymbol("Object", null,
-                        SymbolFilter.Types);
-                Debug.Assert(objectType != null);
-
-                TypeSymbol stringType =
-                    (TypeSymbol) ((ISymbolTable) symbols.SystemNamespace).FindSymbol("String", null,
-                        SymbolFilter.Types);
-                Debug.Assert(stringType != null);
-
-                TypeSymbol boolType =
-                    (TypeSymbol) ((ISymbolTable) symbols.SystemNamespace).FindSymbol("Boolean", null,
-                        SymbolFilter.Types);
-                Debug.Assert(boolType != null);
-
-                TypeSymbol dateType =
-                    (TypeSymbol) ((ISymbolTable) symbols.SystemNamespace).FindSymbol("Date", null, SymbolFilter.Types);
-                Debug.Assert(dateType != null);
-
-                // Enumerate - IEnumerable.GetEnumerator gets mapped to this
-
-                MethodSymbol enumerateMethod = new MethodSymbol("Enumerate", classSymbol, objectType,
-                    MemberVisibility.Public | MemberVisibility.Static);
-                enumerateMethod.SetTransformName(DSharpStringResources.ScriptExportMember("enumerate"));
-                enumerateMethod.AddParameter(new ParameterSymbol("obj", enumerateMethod, objectType, ParameterMode.In));
-                classSymbol.AddMember(enumerateMethod);
-
-                // TypeName - Type.Name gets mapped to this
-
-                MethodSymbol typeNameMethod = new MethodSymbol("GetTypeName", classSymbol, stringType,
-                    MemberVisibility.Public | MemberVisibility.Static);
-                typeNameMethod.SetTransformName(DSharpStringResources.ScriptExportMember("typeName"));
-                typeNameMethod.AddParameter(new ParameterSymbol("obj", typeNameMethod, objectType, ParameterMode.In));
-                classSymbol.AddMember(typeNameMethod);
-
-                // CompareDates - Date equality checks get converted to call to compareDates
-
-                MethodSymbol compareDatesMethod = new MethodSymbol("CompareDates", classSymbol, boolType,
-                    MemberVisibility.Public | MemberVisibility.Static);
-                compareDatesMethod.SetTransformName(DSharpStringResources.ScriptExportMember("compareDates"));
-                compareDatesMethod.AddParameter(new ParameterSymbol("d1", compareDatesMethod, dateType,
-                    ParameterMode.In));
-                compareDatesMethod.AddParameter(new ParameterSymbol("d2", compareDatesMethod, dateType,
-                    ParameterMode.In));
-                classSymbol.AddMember(compareDatesMethod);
+                AddScriptSymbolPseudoMembers(classSymbol);
 
                 return;
             }
@@ -714,7 +737,7 @@ namespace DSharp.Compiler.Importer
             if (memberSet == PseudoClassMembers.Arguments)
             {
                 TypeSymbol objectType =
-                    (TypeSymbol) ((ISymbolTable) symbols.SystemNamespace).FindSymbol(nameof(Object), null,
+                    (TypeSymbol)((ISymbolTable)symbols.SystemNamespace).FindSymbol(nameof(Object), null,
                         SymbolFilter.Types);
                 Debug.Assert(objectType != null);
 
@@ -729,11 +752,11 @@ namespace DSharp.Compiler.Importer
             if (memberSet == PseudoClassMembers.Dictionary)
             {
                 TypeSymbol intType =
-                    (TypeSymbol) ((ISymbolTable) symbols.SystemNamespace).FindSymbol(nameof(Int32), null, SymbolFilter.Types);
+                    (TypeSymbol)((ISymbolTable)symbols.SystemNamespace).FindSymbol(nameof(Int32), null, SymbolFilter.Types);
                 Debug.Assert(intType != null);
 
                 TypeSymbol stringType =
-                    (TypeSymbol) ((ISymbolTable) symbols.SystemNamespace).FindSymbol(nameof(String), null,
+                    (TypeSymbol)((ISymbolTable)symbols.SystemNamespace).FindSymbol(nameof(String), null,
                         SymbolFilter.Types);
                 Debug.Assert(stringType != null);
 
@@ -755,6 +778,93 @@ namespace DSharp.Compiler.Importer
                 countMethod.SetTransformName(DSharpStringResources.ScriptExportMember("keyCount"));
                 classSymbol.AddMember(countMethod);
             }
+        }
+
+        private void AddScriptSymbolPseudoMembers(ClassSymbol classSymbol)
+        {
+            var symbolTable = symbols.SystemNamespace;
+
+            TypeSymbol objectType = symbolTable.FindSymbol<TypeSymbol>(nameof(Object), null, SymbolFilter.Types);
+            TypeSymbol stringType = symbolTable.FindSymbol<TypeSymbol>(nameof(String), null, SymbolFilter.Types);
+            TypeSymbol boolType = symbolTable.FindSymbol<TypeSymbol>(nameof(Boolean), null, SymbolFilter.Types);
+            TypeSymbol dateType = symbolTable.FindSymbol<TypeSymbol>("Date", null, SymbolFilter.Types);
+            TypeSymbol voidType = symbols.ResolveIntrinsicType(IntrinsicType.Void);
+            TypeSymbol typeSymbol = symbols.ResolveIntrinsicType(IntrinsicType.Type);
+
+            Debug.Assert(objectType != null);
+            Debug.Assert(stringType != null);
+            Debug.Assert(boolType != null);
+            Debug.Assert(dateType != null);
+            Debug.Assert(voidType != null);
+
+            // Enumerate - IEnumerable.GetEnumerator gets mapped to this
+
+            MethodSymbol enumerateMethod = new MethodSymbol("Enumerate", classSymbol, objectType,
+                MemberVisibility.Public | MemberVisibility.Static);
+            enumerateMethod.SetTransformName(DSharpStringResources.ScriptExportMember("enumerate"));
+            enumerateMethod.AddParameter(new ParameterSymbol("obj", enumerateMethod, objectType, ParameterMode.In));
+            classSymbol.AddMember(enumerateMethod);
+
+            // TypeName - Type.Name gets mapped to this
+
+            MethodSymbol typeNameMethod = new MethodSymbol("GetTypeName", classSymbol, stringType,
+                MemberVisibility.Public | MemberVisibility.Static);
+            typeNameMethod.SetTransformName(DSharpStringResources.ScriptExportMember("typeName"));
+            typeNameMethod.AddParameter(new ParameterSymbol("obj", typeNameMethod, objectType, ParameterMode.In));
+            classSymbol.AddMember(typeNameMethod);
+
+            // CompareDates - Date equality checks get converted to call to compareDates
+
+            MethodSymbol compareDatesMethod = new MethodSymbol("CompareDates", classSymbol, boolType,
+                MemberVisibility.Public | MemberVisibility.Static);
+            compareDatesMethod.SetTransformName(DSharpStringResources.ScriptExportMember("compareDates"));
+            compareDatesMethod.AddParameter(new ParameterSymbol("d1", compareDatesMethod, dateType,
+                ParameterMode.In));
+            compareDatesMethod.AddParameter(new ParameterSymbol("d2", compareDatesMethod, dateType,
+                ParameterMode.In));
+            classSymbol.AddMember(compareDatesMethod);
+
+            //createReadonlyPropertyMethod - setups a replacement for readonly assignment expressions to generate readonly properties.
+
+            MethodSymbol createReadonlyPropertyMethod
+                = new MethodSymbol("CreateReadonlyProperty", classSymbol, objectType, MemberVisibility.Public | MemberVisibility.Static);
+
+            createReadonlyPropertyMethod.SetTransformName(DSharpStringResources.ScriptExportMember("createReadonlyProperty"));
+
+            createReadonlyPropertyMethod.AddParameter(new ParameterSymbol("instance", createReadonlyPropertyMethod, objectType, ParameterMode.In));
+            createReadonlyPropertyMethod.AddParameter(new ParameterSymbol("propertyName", createReadonlyPropertyMethod, stringType, ParameterMode.In));
+            createReadonlyPropertyMethod.AddParameter(new ParameterSymbol("value", createReadonlyPropertyMethod, objectType, ParameterMode.In));
+
+            classSymbol.AddMember(createReadonlyPropertyMethod);
+
+            MethodSymbol definePropertyMethod = new MethodSymbol("DefineMethod", classSymbol, voidType, MemberVisibility.Public | MemberVisibility.Static);
+
+            definePropertyMethod.SetTransformName(DSharpStringResources.ScriptExportMember("defineProperty"));
+
+            definePropertyMethod.AddParameter(new ParameterSymbol("instance", definePropertyMethod, objectType, ParameterMode.In));
+            definePropertyMethod.AddParameter(new ParameterSymbol("propertyName", definePropertyMethod, stringType, ParameterMode.In));
+
+            classSymbol.AddMember(definePropertyMethod);
+
+            MethodSymbol getGenericConstructorMethod
+                = new MethodSymbol("getGenericConstructor", classSymbol, typeSymbol, MemberVisibility.Public | MemberVisibility.Static);
+            getGenericConstructorMethod.SetTransformName(DSharpStringResources.ScriptExportMember("getGenericConstructor"));
+            getGenericConstructorMethod.AddParameter(
+                new ParameterSymbol("ctorMethod", getGenericConstructorMethod, typeSymbol, ParameterMode.In));
+            getGenericConstructorMethod.AddParameter(
+                new ParameterSymbol("typeArguments", getGenericConstructorMethod, objectType, ParameterMode.In));
+
+            classSymbol.AddMember(getGenericConstructorMethod);
+
+            MethodSymbol getTypeArgument
+                = new MethodSymbol("getTypeArgument", classSymbol, typeSymbol, MemberVisibility.Public | MemberVisibility.Static);
+            getTypeArgument.SetTransformName(DSharpStringResources.ScriptExportMember("getTypeArgument"));
+            getTypeArgument.AddParameter(
+                new ParameterSymbol("instance", getTypeArgument, objectType, ParameterMode.In));
+            getTypeArgument.AddParameter(
+                new ParameterSymbol("typeArgumentName", getTypeArgument, stringType, ParameterMode.In));
+
+            classSymbol.AddMember(getTypeArgument);
         }
 
         private void ImportScriptAssembly(MetadataSource mdSource, string assemblyPath, bool coreAssembly)
@@ -798,9 +908,9 @@ namespace DSharp.Compiler.Importer
         }
 
         private void ImportType(MetadataSource mdSource, TypeDefinition type, bool inScriptCoreAssembly,
-                                ScriptReference dependency)
+                                ScriptReference dependency, TypeSymbol outerType = null)
         {
-            if (type.IsPublic == false)
+            if (!type.IsPublic && !type.IsNestedPublic)
             {
                 return;
             }
@@ -810,8 +920,8 @@ namespace DSharp.Compiler.Importer
                 return;
             }
 
-            string name = type.Name;
-            string namespaceName = type.Namespace;
+            string name = outerType is TypeSymbol ? $"{outerType.Name}${type.Name}" : type.Name;
+            string namespaceName = outerType is TypeSymbol ? outerType.Namespace : type.Namespace;
 
             bool dummy;
             string scriptName = MetadataHelpers.GetScriptName(type, out dummy, out dummy);
@@ -831,11 +941,11 @@ namespace DSharp.Compiler.Importer
 
                 if (MetadataHelpers.ShouldUseEnumNames(type))
                 {
-                    ((EnumerationSymbol) typeSymbol).SetNamedValues();
+                    ((EnumerationSymbol)typeSymbol).SetNamedValues();
                 }
                 else if (MetadataHelpers.ShouldUseEnumValues(type))
                 {
-                    ((EnumerationSymbol) typeSymbol).SetNumericValues();
+                    ((EnumerationSymbol)typeSymbol).SetNumericValues();
                 }
             }
             else if (MetadataHelpers.IsDelegate(type))
@@ -853,11 +963,6 @@ namespace DSharp.Compiler.Importer
                 else
                 {
                     typeSymbol = new ClassSymbol(name, namespaceSymbol);
-
-                    if (MetadataHelpers.IsScriptExtension(type, out string extendee))
-                    {
-                        ((ClassSymbol) typeSymbol).SetExtenderClass(extendee);
-                    }
                 }
             }
 
@@ -870,9 +975,8 @@ namespace DSharp.Compiler.Importer
                     foreach (GenericParameter genericParameter in type.GenericParameters)
                     {
                         GenericParameterSymbol arg =
-                            new GenericParameterSymbol(genericParameter.Position, genericParameter.Name,
-                                /* typeArgument */ true,
-                                symbols.GlobalNamespace);
+                            new GenericParameterSymbol(genericParameter.Position, genericParameter.Name, true, symbols.GlobalNamespace);
+
                         genericArguments.Add(arg);
                     }
 
@@ -912,14 +1016,27 @@ namespace DSharp.Compiler.Importer
                 typeSymbol.SetSource(dependency);
                 namespaceSymbol.AddType(typeSymbol);
                 importedTypes.Add(typeSymbol);
+
+                if(outerType is TypeSymbol)
+                {
+                    outerType.AddType(typeSymbol);
+                }
+
+                if(type.HasNestedTypes)
+                {
+                    foreach (TypeDefinition nestedType in type.NestedTypes)
+                    {
+                        ImportType(mdSource, nestedType, inScriptCoreAssembly, dependency, typeSymbol);
+                    }
+                }
             }
         }
 
         private void SetArrayTypeMetadata(TypeDefinition type, TypeSymbol symbol, string scriptName)
         {
-            if (scriptName == nameof(Array))
+            if (scriptName == nameof(Array) || scriptName == nameof(Object))
             {
-                symbol.SetArray();
+                symbol.SetNativeArray();
             }
         }
 
@@ -938,8 +1055,7 @@ namespace DSharp.Compiler.Importer
             {
                 type = genericType.ElementType;
             }
-
-            string name = type.FullName;
+            string name = ProcessNestedTypeName(type);
 
             if (string.CompareOrdinal(name, MscorlibTypeNames.System_ValueType) == 0)
             {
@@ -958,7 +1074,7 @@ namespace DSharp.Compiler.Importer
             }
             else
             {
-                typeSymbol = (TypeSymbol) ((ISymbolTable) symbols).FindSymbol(name, null, SymbolFilter.Types);
+                typeSymbol = (TypeSymbol)((ISymbolTable)symbols).FindSymbol(name, null, SymbolFilter.Types);
 
                 if (typeSymbol == null)
                 {
@@ -988,6 +1104,11 @@ namespace DSharp.Compiler.Importer
             }
 
             return typeSymbol;
+        }
+
+        private static string ProcessNestedTypeName(TypeReference type)
+        {
+            return type.FullName.Replace('/', '$');
         }
 
         private enum PseudoClassMembers

@@ -34,12 +34,6 @@ namespace System
         public extern void ForEach(ArrayItemCallback itemCallback);
 
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
-        public extern Array GetRange(int index);
-
-        [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
-        public extern Array GetRange(int index, int count);
-
-        [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
         public extern int IndexOf(object item, int startIndex);
 
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]

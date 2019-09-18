@@ -2,8 +2,6 @@
 
 namespace System.Collections.Generic
 {
-    [ScriptImport]
-    [ScriptName("IList")]
     public interface IList<T> : ICollection<T>
     {
         [ScriptField]
@@ -15,8 +13,10 @@ namespace System.Collections.Generic
 
         int IndexOf(T item);
 
+        [DSharpScriptMemberName("insert")]
         void Insert(int index, T item);
 
+        [DSharpScriptMemberName("removeAt")]
         void RemoveAt(int index);
     }
 }

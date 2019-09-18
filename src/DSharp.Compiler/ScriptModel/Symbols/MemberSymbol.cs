@@ -20,6 +20,36 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public TypeSymbol AssociatedType { get; }
 
+        public string GeneratedMemberName
+        {
+            get
+            {
+                if (InterfaceMember != null)
+                {
+                    return InterfaceMember.GeneratedMemberName;
+                }
+
+                // ScriptName
+                if (this is MethodSymbol methodSymbol
+                    && methodSymbol.TransformName == null
+                    && IsTransformed)
+                {
+                    return base.GeneratedName;
+                }
+
+                if (IsCasePreserved)
+                {
+                    generatedName = Name;
+                }
+                else
+                {
+                    generatedName = Utility.CreateCamelCaseName(Name);
+                }
+
+                return generatedName;
+            }
+        }
+
         public override string GeneratedName
         {
             get

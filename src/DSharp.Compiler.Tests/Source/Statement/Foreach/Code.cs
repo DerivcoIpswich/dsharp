@@ -28,7 +28,7 @@ namespace StatementTests {
 
             sum = 0;
 
-            foreach (int i in (ICollection<int>)items)
+            foreach (int i in (IList<int>)items)
             {
                 sum += i;
             }

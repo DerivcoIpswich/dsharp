@@ -13,6 +13,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
     {
         private SymbolImplementation implementation;
         private string selector;
+        private string transformName;
 
         public MethodSymbol(string name, TypeSymbol parent, TypeSymbol returnType, bool isExtensionMethod = false)
             : this(SymbolType.Method, name, parent, returnType, isExtensionMethod)
@@ -31,7 +32,11 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             IsExtensionMethod = isExtensionMethod;
         }
 
-        public string TransformName { get; private set; }
+        public string TransformName
+        {
+            get => this.transformName ?? (InterfaceMember as MethodSymbol)?.TransformName;
+            private set => this.transformName = value;
+        }
 
         public ICollection<string> Conditions { get; private set; }
 
@@ -39,7 +44,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         {
             get
             {
-                TypeSymbol parent = (TypeSymbol) Parent;
+                TypeSymbol parent = (TypeSymbol)Parent;
 
                 StringBuilder sb = new StringBuilder();
                 sb.Append("M:");
@@ -84,20 +89,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             }
         }
 
-        public bool IsAliased => string.IsNullOrEmpty(TransformName) == false;
-
-        public bool IsExtension
-        {
-            get
-            {
-                if (Parent.Type == SymbolType.Class)
-                {
-                    return ((ClassSymbol) Parent).IsExtenderClass;
-                }
-
-                return false;
-            }
-        }
+        public bool IsAliased => !string.IsNullOrEmpty(TransformName);
 
         public bool IsGeneric => GenericArguments != null &&
                                  GenericArguments.Count != 0;
@@ -116,6 +108,10 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public bool IsExtensionMethod { get; } = false;
 
+        public new TypeSymbol Parent => base.Parent as TypeSymbol;
+
+        public bool IgnoreGeneratedTypeArguments { get; set; }
+
         public void AddGenericArguments(ICollection<GenericParameterSymbol> genericArguments)
         {
             Debug.Assert(GenericArguments == null);
@@ -123,6 +119,15 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             Debug.Assert(genericArguments.Count != 0);
 
             GenericArguments = genericArguments;
+            AssignGenericArgumentOwner(genericArguments);
+        }
+
+        protected void AssignGenericArgumentOwner(ICollection<GenericParameterSymbol> genericArguments)
+        {
+            foreach (var argument in genericArguments)
+            {
+                argument.Owner = this;
+            }
         }
 
         public void AddImplementation(SymbolImplementation implementation)

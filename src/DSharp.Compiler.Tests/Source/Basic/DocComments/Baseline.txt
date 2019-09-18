@@ -2,7 +2,6 @@
 
 define('test', ['ss'], function(ss) {
   var $global = this;
-
   // BasicTests.Suit
 
   var Suit = {
@@ -211,15 +210,6 @@ define('test', ['ss'], function(ss) {
   }
   var InternalClassWithNoComments$ = {
 
-  };
-
-
-  // BasicTests.GlobalMethodsClass
-
-  $global.run = function() {
-    /// <summary>
-    /// Runs.
-    /// </summary>
   };
 
 

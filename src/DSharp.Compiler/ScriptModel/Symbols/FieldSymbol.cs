@@ -48,8 +48,6 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         {
             get
             {
-                Debug.Assert(implementation != null);
-
                 return implementation;
             }
         }
@@ -84,8 +82,6 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public void SetTransformName(string transformName)
         {
-            Debug.Assert((Visibility & MemberVisibility.Static) != 0);
-
             SetTransformedName(transformName);
             IsGlobalField = true;
         }

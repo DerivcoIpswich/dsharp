@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 [assembly: ScriptAssembly("test")]
@@ -52,13 +53,12 @@ namespace ExpressionTests {
             int[] items2 = new int[] { 1, 2 };
             int[] items3 = { 4, 5 };
             int[] items4 = new int[5];
-            ArrayList list = new ArrayList();
-            ArrayList list2 = new ArrayList(5);
-            ArrayList list3 = new ArrayList("abc", "def", "ghi");
-            ArrayList list4 = new ArrayList(1, 2, 3);
-            Date[] dates = new Date[] {
-                             new Date("1/1/2006"),
-                             new Date("1/1/2005") };
+            int[] list = new int[3];
+            List<string> list3 = new List<string>("abc", "def", "ghi");
+            List<int> list4 = new List<string>(1, 2, 3);
+            DateTime[] dates = new DateTime[] {
+                             new DateTime("1/1/2006"),
+                             new DateTime("1/1/2005") };
 
             Point p = new Point(0, 0);
 

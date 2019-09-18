@@ -7,7 +7,7 @@ define('test', ['ss'], function(ss) {
 
   function MyClass() {
     var body = document.body;
-    var head = document.getElementsByTagName('head')[0];
+    var head = ss.getItem(document.getElementsByTagName('head'), 0);
     head.appendChild(body);
   }
   var MyClass$ = {

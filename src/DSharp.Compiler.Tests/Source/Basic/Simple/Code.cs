@@ -25,8 +25,6 @@ define('{name}', [{requires}], function({dependencies}) {
   {script}
   return $exports;
 });
-
-// Generated with Script# 1.0.0.0
 ")]
 #endif
 

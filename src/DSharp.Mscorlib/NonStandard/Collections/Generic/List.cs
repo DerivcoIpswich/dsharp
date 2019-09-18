@@ -1,4 +1,5 @@
-﻿using NonStandard;
+﻿using System.Runtime.CompilerServices;
+using NonStandard;
 
 namespace System.Collections.Generic
 {
@@ -7,9 +8,9 @@ namespace System.Collections.Generic
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
         public extern void ForEach(ListCallback<T> callback);
 
-        [ScriptName("push")]
+        [DSharpScriptMemberName("addRangeParams")]
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
-        public extern void AddRange(params T[] items);
+        public extern void AddRangeParams(params T[] items);
 
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
         public extern List<T> Concat(params T[] objects);
@@ -25,12 +26,6 @@ namespace System.Collections.Generic
 
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
         public extern List<T> Filter(ListItemFilterCallback<T> itemFilterCallback);
-
-        [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
-        public extern List<T> GetRange(int index);
-
-        [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
-        public extern List<T> GetRange(int index, int count);
 
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
         public extern void InsertRange(int index, params T[] items);
@@ -50,41 +45,47 @@ namespace System.Collections.Generic
         public extern int LastIndexOf(object item, int fromIndex);
 
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
+        [ScriptIgnoreGenericArguments]
         public extern List<TTarget> Map<TTarget>(ListMapCallback<T, TTarget> mapCallback);
 
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
+        [ScriptIgnoreGenericArguments]
         public extern List<TTarget> Map<TTarget>(ListItemMapCallback<T, TTarget> mapItemCallback);
 
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
         public extern static List<T> Parse(string s);
 
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
+        [ScriptIgnoreGenericArguments]
         public extern TReduced Reduce<TReduced>(ListReduceCallback<TReduced, T> callback);
 
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
+        [ScriptIgnoreGenericArguments]
         public extern TReduced Reduce<TReduced>(ListReduceCallback<TReduced, T> callback, TReduced initialValue);
 
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
+        [ScriptIgnoreGenericArguments]
         public extern TReduced Reduce<TReduced>(ListItemReduceCallback<TReduced, T> callback);
 
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
+        [ScriptIgnoreGenericArguments]
         public extern TReduced Reduce<TReduced>(ListItemReduceCallback<TReduced, T> callback, TReduced initialValue);
 
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
+        [ScriptIgnoreGenericArguments]
         public extern TReduced ReduceRight<TReduced>(ListReduceCallback<TReduced, T> callback);
 
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
+        [ScriptIgnoreGenericArguments]
         public extern TReduced ReduceRight<TReduced>(ListReduceCallback<TReduced, T> callback, TReduced initialValue);
 
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
+        [ScriptIgnoreGenericArguments]
         public extern TReduced ReduceRight<TReduced>(ListItemReduceCallback<TReduced, T> callback);
 
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
+        [ScriptIgnoreGenericArguments]
         public extern TReduced ReduceRight<TReduced>(ListItemReduceCallback<TReduced, T> callback, TReduced initialValue);
-
-        [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
-        // Modified to return void. Check implementation
-        public extern void RemoveRange(int index, int count);
 
         [Obsolete(ObsoleteConsts.MESSAGE_ON_OBSOLETE, ObsoleteConsts.ERROR_ON_OBSOLETE)]
         public extern void Reverse();

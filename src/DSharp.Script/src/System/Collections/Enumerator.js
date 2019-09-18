@@ -1,22 +1,31 @@
-﻿function Enumerator(obj, keys) {
+﻿function ArrayEnumerator(obj) {
     var index = -1;
-    var length = keys
-        ? keys.length
-        : obj.length;
-    var lookup = keys
-        ? function () {
-            return { key: keys[index], value: obj[keys[index]] };
-        }
-        : function () {
-            return obj[index];
-        };
-
+    var length = obj.length;
     this.current = null;
+
     this.moveNext = function () {
         index++;
-        this.current = lookup();
+        this.current = getItem(obj, index);
         return index < length;
     };
+
+    this.reset = function () {
+        index = -1;
+        this.current = null;
+    };
+}
+
+function KeyedEnumerator(obj, keys) {
+    var index = -1;
+    var length = keys.length;
+    this.current = null;
+
+    this.moveNext = function () {
+        index++;
+        this.current = { key: keys[index], value: getItem(obj, keys[index]), };
+        return index < length;
+    };
+
     this.reset = function () {
         index = -1;
         this.current = null;
@@ -32,14 +41,18 @@ var _nopEnumerator = {
 };
 
 function enumerate(o) {
+
     if (!isValue(o)) {
         return _nopEnumerator;
     }
-    if (o.getEnumerator) {
+
+    if (typeof o.getEnumerator === "function") {
         return o.getEnumerator();
     }
+
     if (o.length !== undefined) {
-        return new Enumerator(o);
+        return new ArrayEnumerator(o);
     }
-    return new Enumerator(o, keys(o));
+
+    return new KeyedEnumerator(o, keys(o));
 }

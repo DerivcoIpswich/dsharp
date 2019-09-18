@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 [assembly: ScriptAssembly("test")]
@@ -19,7 +20,7 @@ namespace TypeTests {
         
         public void Test(int arg) {
             Array a;
-            ArrayList b;
+            List<int> b;
             string[] s = new string[5];
             IEnumerable a1 = a.GetEnumerator();
             a1 = b.GetEnumerator();

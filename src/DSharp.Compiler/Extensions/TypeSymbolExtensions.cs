@@ -7,6 +7,8 @@ namespace DSharp.Compiler.Extensions
 {
     public static class TypeSymbolExtensions
     {
+        private static readonly StringComparer stringComparer = StringComparer.InvariantCultureIgnoreCase;
+
         internal static ICollection<InterfaceSymbol> GetInterfaces(this TypeSymbol symbol)
         {
             if (symbol is ClassSymbol classSymbol)
@@ -29,7 +31,7 @@ namespace DSharp.Compiler.Extensions
             return null;
         }
 
-        internal static bool IsCollectionType(this TypeSymbol symbol)
+        internal static bool ImplementsListType(this TypeSymbol symbol)
         {
             var interfaces = symbol.GetInterfaces();
 
@@ -38,12 +40,34 @@ namespace DSharp.Compiler.Extensions
                 return false;
             }
 
-            if (interfaces.Any(i => i.FullName.StartsWith("System.Collections") && i.FullGeneratedName.EndsWith("ICollection")))
-            {
-                return true;
-            }
+            return interfaces.Any(i => IsSpecifiedType(i, "System.Collections", "IList", "IList`1"));
+        }
 
-            return false;
+        internal static bool IsDictionary(this TypeSymbol symbol)
+            => IsSpecifiedType(symbol, "System.Collections.Generic", "Dictionary`2");
+
+        internal static bool IsList(this TypeSymbol symbol)
+            => IsSpecifiedType(symbol, "System.Collections", "List", "List`1");
+
+        internal static bool IsArgumentsType(this TypeSymbol symbol)
+        {
+            return symbol.FullName == "System.Arguments";
+        }
+
+        internal static bool IsNativeObject(this TypeSymbol typeSymbol)
+        {
+            return stringComparer.Equals(typeSymbol.FullGeneratedName, nameof(Object));
+        }
+
+        internal static bool IsReservedType(this TypeSymbol typeSymbol)
+        {
+            return typeSymbol.IsList() || typeSymbol.IsDictionary();
+        }
+
+        private static bool IsSpecifiedType(TypeSymbol typeSymbol, string ns, params string[] typeAliases)
+        {
+            return typeSymbol.FullName.StartsWith(ns)
+                && typeAliases.Any(alias => typeSymbol.FullName.EndsWith(alias));
         }
     }
 }

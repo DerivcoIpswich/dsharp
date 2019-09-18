@@ -46,9 +46,7 @@ namespace DSharp.Compiler.Generator
 
                     break;
                 default:
-                    Debug.Fail("Unexpected symbol type");
-
-                    break;
+                    throw new ScriptGeneratorException(symbol, "Unexpected symbol type");
             }
         }
 
@@ -212,7 +210,7 @@ namespace DSharp.Compiler.Generator
                 writer.Write(" integer=\"true\"");
             }
 
-            if (typeSymbol.IsArray)
+            if (typeSymbol.IsNativeArray)
             {
                 ClassSymbol classSymbol = (ClassSymbol) typeSymbol;
 

@@ -31,25 +31,9 @@ define('test', ['ss'], function(ss) {
       this.do5();
     },
     toString: function() {
-      window.m1();
       var x = new X();
-      $.fn.extend(x, 10);
       return null;
     }
-  };
-
-
-  // MemberTests.Foo
-
-  $global.doStuff = function() {
-  };
-
-
-  // MemberTests.Bar
-
-  window.m1 = function() {
-  };
-  window.m2 = function() {
   };
 
 
@@ -60,14 +44,6 @@ define('test', ['ss'], function(ss) {
   var X$ = {
     update: function(i) {
     }
-  };
-
-
-  // MemberTests.Plugin
-
-  $.fn.extend = function(x, i) {
-    x.update(i);
-    return x;
   };
 
 

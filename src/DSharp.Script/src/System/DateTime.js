@@ -1,11 +1,11 @@
 ﻿function DateTime() { }
 
-ss.createPropertyGet(DateTime, 'Now', function()
+createPropertyGet(DateTime, 'Now', function()
 {
     return new Date();
 });
 
-ss.createPropertyGet(DateTime, 'Today', function()
+createPropertyGet(DateTime, 'Today', function()
 {
     var today = DateTime.Now;
     today.setHours(0, 0, 0, 0);
@@ -20,11 +20,15 @@ DateTime.Equals = function (d1, d2)
 
     if (parsedDate1 == null || parsedDate2 == null)
     {
-        return ss.compareDates(parsedDate1, parsedDate2);
+        return compareDates(parsedDate1, parsedDate2);
     }
 
     return parsedDate1.getTime() === parsedDate2.getTime();
 };
+
+createPropertyGet(Date, 'DayOfWeek', function () {
+    return DateTime.GetDayOfWeek(this);
+});
 
 DateTime.GetDayOfWeek = function(date)
 {
@@ -67,22 +71,22 @@ DateTime.AddDays = function(date, value)
 
 DateTime.ToLongDateString = function(date)
 {
-    return DateTime.ToStringFormatted(date, DateTime._getFormatter(ss.culture.current.dtf.ld));
+    return DateTime.ToStringFormatted(date, DateTime._getFormatter(culture.current.dtf.ld));
 };
 
 DateTime.ToLongTimeString = function(date)
 {
-    return DateTime.ToStringFormatted(date, DateTime._getFormatter(ss.culture.current.dtf.lt));
+    return DateTime.ToStringFormatted(date, DateTime._getFormatter(culture.current.dtf.lt));
 };
 
 DateTime.ToShortDateString = function(date)
 {
-    return DateTime.ToStringFormatted(date, DateTime._getFormatter(ss.culture.current.dtf.sd));
+    return DateTime.ToStringFormatted(date, DateTime._getFormatter(culture.current.dtf.sd));
 };
 
 DateTime.ToShortTimeString = function(date)
 {
-    return DateTime.ToStringFormatted(date, DateTime._getFormatter(ss.culture.current.dtf.st));
+    return DateTime.ToStringFormatted(date, DateTime._getFormatter(culture.current.dtf.st));
 };
 
 DateTime.ToStringFormatted = function(date, formatter)
@@ -94,7 +98,7 @@ DateTime.ToStringFormatted = function(date, formatter)
 
     date = DateTime._parseIfString(date);
 
-    return ss.format(ss.culture.current, formatter, date);
+    return format(culture.current, formatter, date);
 };
 
 DateTime.ToString = function(date)
@@ -114,16 +118,16 @@ DateTime._getFormatter = function(pattern)
 
 DateTime._parseIfString = function(obj)
 {
-    if (ss.typeOf(obj) === Date)
+    if (typeOf(obj) === Date)
     {
         return obj;
     }
 
-    if (ss.typeOf(obj) === String)
+    if (typeOf(obj) === String)
     {
         var dateString = obj;
 
-        if (!(ss.endsWith(dateString, 'z') || ss.endsWith(dateString, 'Z')))
+        if (!(endsWith(dateString, 'z') || endsWith(dateString, 'Z')))
         {
             dateString += 'Z';
         }

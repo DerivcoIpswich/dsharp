@@ -1,9 +1,10 @@
 <Project>
   <PropertyGroup Label="SetDefaults">
     <GenerateScript Condition="'$(GenerateScript)' == ''">true</GenerateScript>
-    <LangVersion Condition="'$(GenerateScript)' == 'True'">ISO-2</LangVersion>
+    <LangVersion Condition="'$(GenerateScript)' == 'True'">3</LangVersion>
     <ExcludeCoreLib Condition="'$(ExcludeCoreLib)' == ''">false</ExcludeCoreLib>
     <SkipScriptCopy Condition="'$(SkipScriptCopy)' == ''">false</SkipScriptCopy>
+    <DSharpCompilerDebugMode Condition="'$(DSharpCompilerDebugMode)' == ''">false</DSharpCompilerDebugMode>
     <DefineConstants>DSHARP;@(DefineConstants)</DefineConstants>
     <GenerateScriptAssemblyAttribute Condition="'$(GenerateScriptAssemblyAttributeCondition)' == ''">true</GenerateScriptAssemblyAttribute>
   </PropertyGroup>
@@ -17,18 +18,20 @@
     <AutoUnifyAssemblyReferences>false</AutoUnifyAssemblyReferences>
     <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
   </PropertyGroup>
-  <!--<PropertyGroup Label="OutputPaths">
-    <OutputPath>bin\$(Configuration)\dsharp\</OutputPath>
-    <IntermediateOutputPath>obj\$(Configuration)\dsharp\</IntermediateOutputPath>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-  </PropertyGroup>-->
+  <ItemGroup Label="ScriptIncludes">
+    <Content Include="ss.js">
+      <Visible>false</Visible>
+    </Content>
+    <Content Include="ss.min.js">
+      <Visible>false</Visible>
+    </Content>
+  </ItemGroup>
   <ItemGroup>
     <AssemblyAttribute Include="System.ScriptAssemblyAttribute" Condition="'$(GenerateScriptAssemblyAttribute)' == 'true'">
       <_Parameter1>$(ScriptName)</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
   <ItemGroup Condition="'$(ExcludeCoreLib)' == 'false'">
-    <PackageReference Include="DSharp.Mscorlib" Version="1.0.0-dev.137" IsImplicitlyDefined="true" PrivateAssets="All" />
+    <PackageReference Include="DSharp.Mscorlib" Version="2.0.0-dev.0" IsImplicitlyDefined="true" PrivateAssets="All" />
   </ItemGroup>
 </Project>
