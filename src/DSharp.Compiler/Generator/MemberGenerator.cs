@@ -295,7 +295,7 @@ namespace DSharp.Compiler.Generator
             if (hasParams)
             {
                 writer.Write($"{DSharpStringResources.ScriptExportMember("paramsGenerator")}(");
-                writer.Write("{0}, ", methodSymbol.Parameters.Count - 1 +(methodSymbol.IsGeneric ? 1 : 0));
+                writer.Write("{0}, ", methodSymbol.GetGeneratedParamsCount());
             }
 
             writer.Write("function(");
