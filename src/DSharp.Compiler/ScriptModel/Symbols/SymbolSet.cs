@@ -877,7 +877,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
             if (node is AtomicNameNode atomicNameNode)
             {
-                TypeSymbol typeSymbol = ResolveAtomicNameNodeType(atomicNameNode);
+                TypeSymbol typeSymbol = ResolveAtomicNameNodeType(atomicNameNode, symbolTable, contextSymbol);
                 if (typeSymbol != null)
                 {
                     return typeSymbol;
@@ -900,10 +900,13 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                     typeArguments.Add(argType);
                 }
 
-                TypeSymbol resolvedSymbol = CreateGenericTypeSymbol(templateType, typeArguments);
-                Debug.Assert(resolvedSymbol != null);
+                if(templateType != null)
+                {
+                    TypeSymbol resolvedSymbol = CreateGenericTypeSymbol(templateType, typeArguments);
+                    Debug.Assert(resolvedSymbol != null);
 
-                return resolvedSymbol;
+                    return resolvedSymbol;
+                }
             }
 
             Debug.Assert(node is NameNode);
@@ -912,13 +915,22 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             return (TypeSymbol)symbolTable.FindSymbol(nameNode.Name, contextSymbol, SymbolFilter.Types);
         }
 
-        private TypeSymbol ResolveAtomicNameNodeType(AtomicNameNode atomicNameNode)
+        private TypeSymbol ResolveAtomicNameNodeType(AtomicNameNode atomicNameNode, ISymbolTable symbolTable, Symbol contextSymbol)
         {
             if (atomicNameNode.Parent is GenericNameNode || atomicNameNode.Parent is ArrayTypeNode || atomicNameNode.Parent is MethodDeclarationNode)
             {
                 var methodDeclaration = atomicNameNode.FindParent<MethodDeclarationNode>();
                 if (methodDeclaration != null && (methodDeclaration?.TypeParameters?.Count ?? 0) > 0)
                 {
+                    if(contextSymbol is MethodSymbol methodSymbol && methodSymbol.Name == methodDeclaration.Name)
+                    {
+                        var genericArgument = methodSymbol.GenericArguments.FirstOrDefault(arg => arg.Name == atomicNameNode.Name);
+                        if(genericArgument != null)
+                        {
+                            return genericArgument;
+                        }
+                    }
+
                     for (int i = 0; i < methodDeclaration.TypeParameters.Count; i++)
                     {
                         TypeParameterNode typeParameterNode = (TypeParameterNode)methodDeclaration.TypeParameters[i];

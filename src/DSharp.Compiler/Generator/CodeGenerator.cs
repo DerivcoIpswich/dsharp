@@ -52,6 +52,10 @@ namespace DSharp.Compiler.Generator
                 foreach (Statement statement in implementation.Statements)
                     StatementGenerator.GenerateStatement(generator, symbol, statement);
             }
+            catch(Exception e)
+            {
+                throw;
+            }
             finally
             {
                 generator.EndImplementation();

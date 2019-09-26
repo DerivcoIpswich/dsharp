@@ -12,7 +12,7 @@ define('test', ['ss'], function(ss) {
   function Usages() {
   }
   Usages.doSomethingAwesome = function($TArgs, value) {
-    return new GenericClass_$1(value);
+    return ss.createGenericType(GenericClass_$1, {T : $TArgs['T']}, value);
   };
   var Usages$ = {
     use: function() {

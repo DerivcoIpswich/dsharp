@@ -252,7 +252,7 @@ namespace DSharp.Compiler.Compiler
 
         private void ImportTypeMembers(List<TypeSymbol> types)
         {
-            foreach (TypeSymbol typeSymbol in types.OrderByDescending(type => type.IsGeneric))
+            foreach (TypeSymbol typeSymbol in types.OrderByDescending(type => type is InterfaceSymbol).ThenByDescending(type => type.IsGeneric))
                 BuildMembers(typeSymbol);
         }
 
@@ -954,7 +954,18 @@ namespace DSharp.Compiler.Compiler
 
         private TypeSymbol ResolveMethodReturnType(MethodDeclarationNode methodNode, TypeSymbol typeSymbol)
         {
-            return typeSymbol.SymbolSet.ResolveType(methodNode.Type, symbolTable, typeSymbol);
+            var resolvedType = typeSymbol.SymbolSet.ResolveType(methodNode.Type, symbolTable, typeSymbol);
+            if(resolvedType == null)
+            {
+                return null;
+            }
+
+            if(resolvedType is GenericParameterSymbol genericParameterSymbol && genericParameterSymbol.Owner == null)
+            {
+                genericParameterSymbol.Owner = typeSymbol;
+            }
+
+            return resolvedType;
         }
 
         private void BuildMethodGenericArguments(MethodSymbol method, MethodDeclarationNode methodNode, TypeSymbol typeSymbol)

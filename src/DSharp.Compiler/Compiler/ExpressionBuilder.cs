@@ -566,23 +566,6 @@ namespace DSharp.Compiler.Compiler
                     }
                 }
 
-                if (leftExpression is PropertyExpression propertyExpression && (propertyExpression.Property.GetPropertyNode()?.IsReadonlyProperty ?? false))
-                {
-                    var scriptType = symbolSet.ResolveIntrinsicType(IntrinsicType.Script);
-                    var stringType = symbolSet.ResolveIntrinsicType(IntrinsicType.String);
-                    MethodSymbol createReadonlyPropertySymbol = (MethodSymbol)scriptType.GetMember("CreateReadonlyProperty");
-                    Debug.Assert(createReadonlyPropertySymbol != null);
-
-                    var methodExpression = new MethodExpression(
-                        new TypeExpression(scriptType, SymbolFilter.Public | SymbolFilter.StaticMembers),
-                        createReadonlyPropertySymbol);
-                    methodExpression.AddParameterValue(new ThisExpression(null, false));
-                    methodExpression.AddParameterValue(new LiteralExpression(stringType, propertyExpression.Property.GeneratedName));
-                    methodExpression.AddParameterValue(rightExpression);
-
-                    return methodExpression;
-                }
-
                 if (resultType == null)
                 {
                     return new BinaryExpression(operatorType, leftExpression, rightExpression);
