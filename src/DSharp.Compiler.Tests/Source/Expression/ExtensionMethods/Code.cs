@@ -103,6 +103,8 @@ namespace ExpressionTests
 
     public class Program
     {
+        private static IContext context;
+
         public static int Main(string[] args)
         {
             string value = "".PadRightC(10, 'F')
@@ -133,6 +135,10 @@ namespace ExpressionTests
             myOtherServiceColection.AddSpecialSingleton<Temp>();
             myOtherServiceColection.AddSpecialSingleton2<Temp>(1);
 
+            context.Context.Context.Context.Context.Services.GetService<int>();
+            object value2 = context.Context.Services.GetService(typeof(int));
+            context.Context.Services.GetService(typeof(int));
+
             int i = Resolve().GetService<int>().Add(1);
             ITemp temp = Resolve().GetService<Temp>().MyAwesomeExtension();
             ITemp temp2 = Resolve().GetT3<int, bool, Temp>()
@@ -158,5 +164,12 @@ namespace ExpressionTests
 
     public interface ITemp
     {
+    }
+
+    public interface IContext
+    {
+        IServiceProvider Services { get; }
+
+        IContext Context { get; }
     }
 }
