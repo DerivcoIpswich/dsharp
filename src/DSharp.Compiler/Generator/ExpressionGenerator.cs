@@ -505,11 +505,8 @@ namespace DSharp.Compiler.Generator
         {
             ScriptTextWriter writer = generator.Writer;
 
-            if (expression.RequiresThisContext)
-            {
-                writer.Write("this.");
-            }
-
+            GenerateExpression(generator, symbol, expression.ObjectReference);
+            writer.Write(".");
             writer.Write(expression.Member.GeneratedName);
         }
 
