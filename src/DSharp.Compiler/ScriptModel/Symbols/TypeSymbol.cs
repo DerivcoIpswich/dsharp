@@ -279,16 +279,13 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         {
             if (isNativeArray)
             {
-                ((ClassSymbol)this).Indexer?.AssociatedType.IncrementReferenceCount();
+                IncrementReferenceCountForNativeArray();
                 return;
             }
 
-            if (IsGeneric && GenericArguments != null)
+            if (IsGeneric)
             {
-                foreach (TypeSymbol genericArgument in GenericArguments)
-                {
-                    genericArgument.IncrementReferenceCount();
-                }
+                IncrementReferenceCountForGenericType();
             }
 
             if (Source == null)
@@ -419,6 +416,31 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
             types.Add(typeSymbol);
             typeMap[nestedName] = typeSymbol;
+        }
+
+        private void IncrementReferenceCountForNativeArray()
+        {
+            if (this is ClassSymbol classType)
+            {
+                classType.Indexer?.AssociatedType.IncrementReferenceCount();
+            }
+            else if (this is InterfaceSymbol interfaceType)
+            {
+                interfaceType.Indexer?.AssociatedType.IncrementReferenceCount();
+            }
+        }
+
+        private void IncrementReferenceCountForGenericType()
+        {
+            if (GenericArguments == null)
+            {
+                return;
+            }
+
+            foreach (TypeSymbol genericArgument in GenericArguments)
+            {
+                genericArgument.IncrementReferenceCount();
+            }
         }
     }
 }
