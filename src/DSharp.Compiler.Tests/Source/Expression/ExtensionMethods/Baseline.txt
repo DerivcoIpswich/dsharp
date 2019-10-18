@@ -183,7 +183,7 @@ define('ExpressionTests.ExtensionMethods', ['ss'], function(ss) {
       IServiceCollectionExtension: ss.defineClass(IServiceCollectionExtension, null, [], null)
     },
     {
-      MyNumbers: MyNumbers,
+      MyNumbers: new ss.Enum('MyNumbers', MyNumbers),
       IServiceCollection: ss.defineInterface(IServiceCollection),
       ITemp: ss.defineInterface(ITemp),
       IContext: ss.defineInterface(IContext),
