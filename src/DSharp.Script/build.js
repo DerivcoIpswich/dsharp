@@ -24,7 +24,7 @@ getFiles(concatFilesDir).forEach(file => {
 buildify()
     .concat(
         getFiles(concatFilesDir, [
-            './src/Shims.js',
+            './src/Shims/ObjectAssign.js',
             './src/TypeSystem.js'
         ]), '\r\n')
     .wrap('src/Loader.js', {
