@@ -30,27 +30,15 @@ Enum.prototype.valueOf = function () {
 Enum.map = {};
 Enum.getValues = function (enumeration) {
     var map = Enum.map[enumeration._name];
-    if (!map) {
-        return null;
-    }
-
-    return Object.values(map.Keys);
+    return map && Object.values(map.Keys);
 };
 Enum.getNames = function (enumeration) {
     var map = Enum.map[enumeration._name];
-    if (!map) {
-        return null;
-    }
-
-    return Object.keys(map.Keys);
+    return map && Object.keys(map.Keys);
 };
 Enum.getName = function (enumeration, value) {
     var map = Enum.map[enumeration._name];
-    if (!map) {
-        return null;
-    }
-
-    return map.Values[value];
+    return map && map.Values[value];
 };
 Enum.hasFlag = function (enumValue, flag) {
     return (enumValue | flag) === enumValue;
