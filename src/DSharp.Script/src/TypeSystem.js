@@ -35,6 +35,9 @@ function createType(typeName, typeInfo, typeRegistry) {
         type.$name = typeName;
         return typeRegistry[typeName] = type;
     }
+    else if (typeInfo.constructor === Enum) {
+        return typeRegistry[typeName] = typeInfo;
+    }
 
     return typeInfo;
 }

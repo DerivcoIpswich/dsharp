@@ -325,15 +325,15 @@ namespace DSharp.Compiler.Generator
             {
                 case SymbolType.Class:
                     GenerateClassRegistrationScript(generator, (ClassSymbol)typeSymbol);
-
                     break;
                 case SymbolType.Interface:
                     GenerateInterfaceRegistrationScript(generator, (InterfaceSymbol)typeSymbol);
-
+                    break;
+                case SymbolType.Enumeration:
+                    GenerateEnumerationRegistrationScript(generator, (EnumerationSymbol)typeSymbol);
                     break;
                 case SymbolType.Record:
                 case SymbolType.Resources:
-                case SymbolType.Enumeration:
                     writer.Write(typeSymbol.FullGeneratedName);
 
                     break;
@@ -488,6 +488,19 @@ namespace DSharp.Compiler.Generator
                 writer.Write("]");
             }
 
+            writer.Write(")");
+        }
+
+        private static void GenerateEnumerationRegistrationScript(
+            ScriptGenerator generator, 
+            EnumerationSymbol enumerationSymbol)
+        {
+            ScriptTextWriter writer = generator.Writer;
+
+            writer.Write($"new {DSharpStringResources.ScriptExportMember("Enum")}(");
+            writer.Write($"'{enumerationSymbol.FullGeneratedName}'");
+            writer.Write(", ");
+            writer.Write(enumerationSymbol.FullGeneratedName);
             writer.Write(")");
         }
 

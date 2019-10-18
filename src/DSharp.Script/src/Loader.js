@@ -30,6 +30,7 @@
         Guid: defineClass(Guid, Guid$, [], null),
         DateTime: defineClass(DateTime, {}, [], null),
         Nullable: defineClass(Nullable, Nullable$, [], null),
+        Enum: defineClass(Enum, {}, [], null)
     }),
     {
         version: '{{version}}',
@@ -119,7 +120,7 @@
 
   function _export() {
     var ss = _ss();
-    typeof exports == 'object' ? ss.extend(exports, ss) : global.ss = ss;
+    typeof exports === 'object' ? ss.extend(exports, ss) : global.ss = ss;
   }
 
   global.define ? global.define('ss', [], _ss) : _export();
