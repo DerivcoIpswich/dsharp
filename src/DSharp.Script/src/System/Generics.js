@@ -24,11 +24,11 @@ function getGenericConstructor(ctorMethod, typeArguments) {
             genericInstance = function () {
                 ctorMethod.apply(this, Array.prototype.slice.call(arguments));
                 this.__proto__.constructor.$typeArguments = typeArguments || {};
-                this.__proto__.constructor.$base = ctorMethod.$base;
-                this.__proto__.constructor.$interfaces = ctorMethod.$interfaces;
-                this.__proto__.constructor.$type = ctorMethod.$type;
-                this.__proto__.constructor.$name = ctorMethod.$name;
-                this.__proto__.constructor.$constructorParams = ctorMethod.$constructorParams;
+                this.__proto__.constructor.$base = this.__proto__.constructor.$base || ctorMethod.$base;
+                this.__proto__.constructor.$interfaces = this.__proto__.constructor.$interfaces  || ctorMethod.$interfaces;
+                this.__proto__.constructor.$type = this.__proto__.constructor.$type || ctorMethod.$type;
+                this.__proto__.constructor.$name = this.__proto__.constructor.$name || ctorMethod.$name;
+                this.__proto__.constructor.$constructorParams = this.__proto__.constructor.$constructorParams || ctorMethod.$constructorParams;
             };
             genericInstance.prototype = Object.create(ctorMethod.prototype);
             genericInstance.prototype.constructor = genericInstance;
