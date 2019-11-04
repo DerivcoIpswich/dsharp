@@ -411,6 +411,11 @@
         "ComparisonFile": "Baseline.txt"
       },
       {
+        "Name": "GenericExtensionMethods",
+        "SourceFiles": [ "Code.cs" ],
+        "ComparisonFile": "Baseline.txt"
+      },
+      {
         "Name": "Generics",
         "SourceFiles": [ "Code.cs" ],
         "ComparisonFile": "Baseline.txt",

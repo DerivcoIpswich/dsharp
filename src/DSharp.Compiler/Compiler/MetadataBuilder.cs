@@ -276,8 +276,7 @@ namespace DSharp.Compiler.Compiler
             {
                 foreach (var method in methods)
                 {
-                    string typeToExtend = method.Parameters[0].ValueType.FullName;
-                    symbols.AddExtensionType(typeToExtend, method.Name, method);
+                    symbols.AddExtensionMethod(method);
                 }
             }
         }
@@ -974,12 +973,12 @@ namespace DSharp.Compiler.Compiler
         private TypeSymbol ResolveMethodReturnType(MethodDeclarationNode methodNode, TypeSymbol typeSymbol)
         {
             var resolvedType = typeSymbol.SymbolSet.ResolveType(methodNode.Type, symbolTable, typeSymbol);
-            if(resolvedType == null)
+            if (resolvedType == null)
             {
                 return null;
             }
 
-            if(resolvedType is GenericParameterSymbol genericParameterSymbol && genericParameterSymbol.Owner == null)
+            if (resolvedType is GenericParameterSymbol genericParameterSymbol && genericParameterSymbol.Owner == null)
             {
                 genericParameterSymbol.Owner = typeSymbol;
             }

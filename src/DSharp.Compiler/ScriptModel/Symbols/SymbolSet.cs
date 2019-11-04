@@ -22,11 +22,10 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 {
     internal sealed class SymbolSet : ISymbolTable
     {
-        private readonly Dictionary<string, HashSet<(string method, MethodSymbol relatedType)>>
-            extensionMethods = new Dictionary<string, HashSet<(string method, MethodSymbol relatedType)>>();
         private readonly List<ScriptReference> dependencies;
         private readonly Dictionary<string, ScriptReference> dependencySet;
         private readonly Dictionary<string, NamespaceSymbol> namespaceMap;
+        private readonly Dictionary<string, List<MethodSymbol>> extensionMethods;
 
         private readonly List<NamespaceSymbol> namespaces;
 
@@ -42,6 +41,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         {
             namespaces = new List<NamespaceSymbol>();
             namespaceMap = new Dictionary<string, NamespaceSymbol>();
+            extensionMethods = new Dictionary<string, List<MethodSymbol>>();
 
             GlobalNamespace = new NamespaceSymbol(string.Empty, this);
             GlobalNamespace.SetTransformedName(string.Empty);
@@ -901,7 +901,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                     typeArguments.Add(argType);
                 }
 
-                if(templateType != null)
+                if (templateType != null)
                 {
                     TypeSymbol resolvedSymbol = CreateGenericTypeSymbol(templateType, typeArguments);
                     Debug.Assert(resolvedSymbol != null);
@@ -923,10 +923,10 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                 var methodDeclaration = atomicNameNode.FindParent<MethodDeclarationNode>();
                 if (methodDeclaration != null && (methodDeclaration?.TypeParameters?.Count ?? 0) > 0)
                 {
-                    if(contextSymbol is MethodSymbol methodSymbol && methodSymbol.Name == methodDeclaration.Name)
+                    if (contextSymbol is MethodSymbol methodSymbol && methodSymbol.Name == methodDeclaration.Name)
                     {
                         var genericArgument = methodSymbol.GenericArguments.FirstOrDefault(arg => arg.Name == atomicNameNode.Name);
-                        if(genericArgument != null)
+                        if (genericArgument != null)
                         {
                             return genericArgument;
                         }
@@ -952,48 +952,92 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             return null;
         }
 
-        public void AddExtensionType(string typeToExtend, string extensionMethodName, MethodSymbol methodSymbol)
+        public void AddExtensionMethod(MethodSymbol extensionMethod)
         {
-            if (string.IsNullOrWhiteSpace(typeToExtend) || string.IsNullOrWhiteSpace(extensionMethodName))
+            if (!extensionMethods.ContainsKey(extensionMethod.Name))
             {
-                return;
+                extensionMethods[extensionMethod.Name] = new List<MethodSymbol>();
             }
 
-            if (!extensionMethods.TryGetValue(typeToExtend, out HashSet<(string method, MethodSymbol relatedType)> registrations))
-            {
-                registrations = new HashSet<(string method, MethodSymbol relatedType)>();
-                extensionMethods.Add(typeToExtend, registrations);
-            }
-
-            registrations.Add((extensionMethodName, methodSymbol));
+            extensionMethods[extensionMethod.Name].Add(extensionMethod);
         }
 
         //TODO: Migrate this to be on the symbol directly
         public MethodSymbol ResolveExtensionMethodSymbol(TypeSymbol type, string memberName)
         {
-            var extensionMethods = TypeSymbolVisitor.Visit(type, t => GetTypeExtensionMethod(t, memberName))
+            //Check none generic version
+            var extensionMethods = TypeSymbolVisitor.Visit(type, t => FindExtensionMethodWithNoneGenericTarget(t, memberName))
                 .Where(i => i != null)
                 .Distinct()
                 .ToList();
 
-            return extensionMethods.Count == 1
-                ? extensionMethods.First()
-                : null;
+            if (extensionMethods.Any())
+            {
+                return extensionMethods.First();
+            }
+
+            //Check none constraint generic version
+            extensionMethods = TypeSymbolVisitor.Visit(type, t => FindExtensionMethodWithGenericTarget(t, memberName))
+                .Where(i => i != null)
+                .Distinct()
+                .ToList();
+
+            if (extensionMethods.Any())
+            {
+                return extensionMethods.First();
+            }
+
+            var objectType = new ClassSymbol("System.Object", SystemNamespace);
+            return FindExtensionMethodWithNoneGenericTarget(objectType, memberName) ?? FindExtensionMethodWithGenericTarget(objectType, memberName);
         }
 
-        private MethodSymbol GetTypeExtensionMethod(TypeSymbol type, string memberName)
+        private MethodSymbol FindExtensionMethodWithNoneGenericTarget(TypeSymbol type, string name)
         {
-            if (type == null)
+            if (type == null || this.extensionMethods.TryGetValue(name, out var extensionMethods))
             {
                 return null;
             }
 
-            if (!extensionMethods.TryGetValue(type.FullName, out HashSet<(string method, MethodSymbol methodSymbol)> registrations))
+            foreach (MethodSymbol extensionMethod in extensionMethods)
+            {
+                ParameterSymbol targetParameter = extensionMethod.Parameters[0];
+
+                if (!(targetParameter.ValueType is GenericParameterSymbol))
+                {
+                    // If the input parameter is a generic parameter we will match any target parameter and rely on the C#
+                    // compiler to detect reference errors
+                    if (type is GenericParameterSymbol genericType)
+                    {
+                        return extensionMethod;
+                    }
+                    else if (targetParameter.ValueType.FullName == type.FullName)
+                    {
+                        return extensionMethod;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private MethodSymbol FindExtensionMethodWithGenericTarget(TypeSymbol type, string name)
+        {
+            if (type == null || this.extensionMethods.TryGetValue(name, out var extensionMethods))
             {
                 return null;
             }
 
-            return registrations.FirstOrDefault(reg => StringComparer.InvariantCultureIgnoreCase.Equals(reg.method, memberName)).methodSymbol;
+            foreach (MethodSymbol methodSymbol in extensionMethods)
+            {
+                ParameterSymbol targetParameter = methodSymbol.Parameters[0];
+
+                if (targetParameter.ValueType is GenericParameterSymbol genericParameterSymbol)
+                {
+                    return methodSymbol;
+                }
+            }
+
+            return null;
         }
 
         public void SetComments(XmlDocument docComments)

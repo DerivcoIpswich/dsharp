@@ -679,10 +679,10 @@ namespace DSharp.Compiler.Compiler
             Debug.Assert(objectExpression.EvaluatedType is ISymbolTable table);
 
             TypeSymbol evaluatedType = objectExpression.EvaluatedType;
-            if(objectExpression is MethodExpression methodExpression && methodExpression.IsExtensionMethod)
+            if (objectExpression is MethodExpression methodExpression && methodExpression.IsExtensionMethod)
             {
                 evaluatedType = methodExpression.Method.AssociatedType;
-                if(evaluatedType is GenericParameterSymbol genericParameterSymbol)
+                if (evaluatedType is GenericParameterSymbol genericParameterSymbol)
                 {
                     evaluatedType = ResolveGenericNameNode(node);
                 }
@@ -690,7 +690,7 @@ namespace DSharp.Compiler.Compiler
             NameNode memberName = node.RightChild as NameNode;
 
             MethodSymbol extensionSymbol = symbolSet.ResolveExtensionMethodSymbol(evaluatedType, memberName?.Name);
-            if((memberName is GenericNameNode && (extensionSymbol?.IsGeneric ?? false)) || (!(memberName is GenericNameNode) && (!extensionSymbol?.IsGeneric ?? false)))
+            if ((memberName is GenericNameNode && (extensionSymbol?.IsGeneric ?? false)) || (!(memberName is GenericNameNode) && (!extensionSymbol?.IsGeneric ?? false)))
             {
                 return null;
             }
@@ -1057,8 +1057,18 @@ namespace DSharp.Compiler.Compiler
 
             if (methodSymbol.IsGeneric)
             {
-                GenericNameNode genericNameNode = (GenericNameNode)nameNode;
-                Expression typeMapExpression = ParseTypeMap(methodSymbol, genericNameNode);
+                Expression typeMapExpression;
+
+                if (nameNode is GenericNameNode genericNameNode)
+                {
+                    typeMapExpression = ParseTypeMap(methodSymbol, genericNameNode);
+                }
+                else
+                {
+                    TypeSymbol objectSymbol = symbolSet.ResolveIntrinsicType(IntrinsicType.Object);
+                    typeMapExpression = new ObjectExpression(objectSymbol, new Dictionary<string, Expression>());
+                }
+
                 methodExpression.AddParameterValue(typeMapExpression);
             }
 
