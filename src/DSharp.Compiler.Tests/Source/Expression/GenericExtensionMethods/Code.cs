@@ -29,26 +29,6 @@ namespace TypeTests
         {
             return value;
         }
-
-        //public static ITestData GenericExtension2(this ITestData value, string a)
-        //{
-        //    return value;
-        //}
-
-        //public static ITestData GenericExtension3(this ITestData value, string a)
-        //{
-        //    return value;
-        //}
-
-        //public static TValue GenericExtensionWithConstraint<TValue>(this TValue value, string a)
-        //{
-        //    return value;
-        //}
-
-        //public static TValue GenericExtensionWithConstraint<TValue>(this TValue value, string a) where TValue : ITestData
-        //{
-        //    return value;
-        //}
     }
 
     public class Test
