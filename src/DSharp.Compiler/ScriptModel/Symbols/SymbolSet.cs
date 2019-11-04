@@ -993,7 +993,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         private MethodSymbol FindExtensionMethodWithNoneGenericTarget(TypeSymbol type, string name)
         {
-            if (type == null || this.extensionMethods.TryGetValue(name, out var extensionMethods))
+            if (type == null || !this.extensionMethods.TryGetValue(name, out var extensionMethods))
             {
                 return null;
             }
@@ -1022,7 +1022,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         private MethodSymbol FindExtensionMethodWithGenericTarget(TypeSymbol type, string name)
         {
-            if (type == null || this.extensionMethods.TryGetValue(name, out var extensionMethods))
+            if (type == null || !this.extensionMethods.TryGetValue(name, out var extensionMethods))
             {
                 return null;
             }
