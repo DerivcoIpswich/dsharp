@@ -15,6 +15,7 @@ using DSharp.Compiler.CodeModel.Members;
 using DSharp.Compiler.CodeModel.Names;
 using DSharp.Compiler.CodeModel.Tokens;
 using DSharp.Compiler.CodeModel.Types;
+using DSharp.Compiler.Extensions;
 using DSharp.Compiler.References;
 using DSharp.Compiler.ScriptModel.Visitors;
 
@@ -22,10 +23,16 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 {
     internal sealed class SymbolSet : ISymbolTable
     {
+        private class ExtensionMethodInfo
+        {
+            public string MethodNamespace { get; set; }
+            public MethodSymbol MethodSymbol { get; set; }
+        }
+
         private readonly List<ScriptReference> dependencies;
         private readonly Dictionary<string, ScriptReference> dependencySet;
         private readonly Dictionary<string, NamespaceSymbol> namespaceMap;
-        private readonly Dictionary<string, List<MethodSymbol>> extensionMethods;
+        private readonly Dictionary<string, List<ExtensionMethodInfo>> extensionMethods;
 
         private readonly List<NamespaceSymbol> namespaces;
 
@@ -41,7 +48,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         {
             namespaces = new List<NamespaceSymbol>();
             namespaceMap = new Dictionary<string, NamespaceSymbol>();
-            extensionMethods = new Dictionary<string, List<MethodSymbol>>();
+            extensionMethods = new Dictionary<string, List<ExtensionMethodInfo>>();
 
             GlobalNamespace = new NamespaceSymbol(string.Empty, this);
             GlobalNamespace.SetTransformedName(string.Empty);
@@ -956,17 +963,21 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         {
             if (!extensionMethods.ContainsKey(extensionMethod.Name))
             {
-                extensionMethods[extensionMethod.Name] = new List<MethodSymbol>();
+                extensionMethods[extensionMethod.Name] = new List<ExtensionMethodInfo>();
             }
 
-            extensionMethods[extensionMethod.Name].Add(extensionMethod);
+            extensionMethods[extensionMethod.Name].Add(new ExtensionMethodInfo()
+            { 
+                MethodSymbol = extensionMethod, 
+                MethodNamespace = extensionMethod.GetFirstClassSymbolParent()?.Namespace
+            });
         }
 
         //TODO: Migrate this to be on the symbol directly
-        public MethodSymbol ResolveExtensionMethodSymbol(TypeSymbol type, string memberName)
+        public MethodSymbol ResolveExtensionMethodSymbol(TypeSymbol type, string memberName, IEnumerable<string> visibleNamespaces)
         {
-            //Check none generic version
-            var extensionMethods = TypeSymbolVisitor.Visit(type, t => FindExtensionMethodWithNoneGenericTarget(t, memberName))
+            //Try to find none generic extension method
+            var extensionMethods = TypeSymbolVisitor.Visit(type, t => FindExtensionMethodWithNonGenericTarget(t, memberName, visibleNamespaces))
                 .Where(i => i != null)
                 .Distinct()
                 .ToList();
@@ -976,8 +987,8 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                 return extensionMethods.First();
             }
 
-            //Check none constraint generic version
-            extensionMethods = TypeSymbolVisitor.Visit(type, t => FindExtensionMethodWithGenericTarget(t, memberName))
+            //Try finding none constraint generic version
+            extensionMethods = TypeSymbolVisitor.Visit(type, t => FindExtensionMethodWithGenericTarget(t, memberName, visibleNamespaces))
                 .Where(i => i != null)
                 .Distinct()
                 .ToList();
@@ -987,20 +998,25 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                 return extensionMethods.First();
             }
 
-            var objectType = new ClassSymbol("System.Object", SystemNamespace);
-            return FindExtensionMethodWithNoneGenericTarget(objectType, memberName) ?? FindExtensionMethodWithGenericTarget(objectType, memberName);
+            var objectType = ResolveIntrinsicType(IntrinsicType.Object);
+            return FindExtensionMethodWithNonGenericTarget(objectType, memberName, visibleNamespaces) ?? FindExtensionMethodWithGenericTarget(objectType, memberName, visibleNamespaces);
         }
 
-        private MethodSymbol FindExtensionMethodWithNoneGenericTarget(TypeSymbol type, string name)
+        private MethodSymbol FindExtensionMethodWithNonGenericTarget(TypeSymbol type, string name, IEnumerable<string> visibleNamespaces)
         {
             if (type == null || !this.extensionMethods.TryGetValue(name, out var extensionMethods))
             {
                 return null;
             }
 
-            foreach (MethodSymbol extensionMethod in extensionMethods)
+            foreach (ExtensionMethodInfo extensionMethod in extensionMethods)
             {
-                ParameterSymbol targetParameter = extensionMethod.Parameters[0];
+                if (!visibleNamespaces.Any(ns => ns == extensionMethod.MethodNamespace))
+                {
+                    continue;
+                }
+
+                ParameterSymbol targetParameter = extensionMethod.MethodSymbol.Parameters[0];
 
                 if (!(targetParameter.ValueType is GenericParameterSymbol))
                 {
@@ -1008,11 +1024,11 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                     // compiler to detect reference errors
                     if (type is GenericParameterSymbol genericType)
                     {
-                        return extensionMethod;
+                        return extensionMethod.MethodSymbol;
                     }
                     else if (targetParameter.ValueType.FullName == type.FullName)
                     {
-                        return extensionMethod;
+                        return extensionMethod.MethodSymbol;
                     }
                 }
             }
@@ -1020,20 +1036,25 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             return null;
         }
 
-        private MethodSymbol FindExtensionMethodWithGenericTarget(TypeSymbol type, string name)
+        private MethodSymbol FindExtensionMethodWithGenericTarget(TypeSymbol type, string name, IEnumerable<string> visibleNamespaces)
         {
             if (type == null || !this.extensionMethods.TryGetValue(name, out var extensionMethods))
             {
                 return null;
             }
 
-            foreach (MethodSymbol methodSymbol in extensionMethods)
+            foreach (ExtensionMethodInfo extensionMethod in extensionMethods)
             {
-                ParameterSymbol targetParameter = methodSymbol.Parameters[0];
+                if (!visibleNamespaces.Any(ns => ns == extensionMethod.MethodNamespace))
+                {
+                    continue;
+                }
+
+                ParameterSymbol targetParameter = extensionMethod.MethodSymbol.Parameters[0];
 
                 if (targetParameter.ValueType is GenericParameterSymbol genericParameterSymbol)
                 {
-                    return methodSymbol;
+                    return extensionMethod.MethodSymbol;
                 }
             }
 
@@ -1206,6 +1227,11 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             }
 
             return genericType;
+        }
+
+        private string FindNamespaceForSymbol(Symbol symbol)
+        {
+            return "";
         }
 
         private Symbol FindSymbolFromNamespace(string name, Symbol context)

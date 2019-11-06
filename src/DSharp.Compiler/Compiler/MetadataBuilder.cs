@@ -272,6 +272,7 @@ namespace DSharp.Compiler.Compiler
             {
                 return (type, type.Members.Where(m => IsExtensionMethod(m)).Cast<MethodSymbol>());
             });
+
             foreach ((TypeSymbol type, IEnumerable<MethodSymbol> methods) in typesWithExtensionMethods)
             {
                 foreach (var method in methods)
