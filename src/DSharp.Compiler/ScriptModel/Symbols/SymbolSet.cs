@@ -1229,11 +1229,6 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             return genericType;
         }
 
-        private string FindNamespaceForSymbol(Symbol symbol)
-        {
-            return "";
-        }
-
         private Symbol FindSymbolFromNamespace(string name, Symbol context)
         {
             int nameIndex = name.LastIndexOf('.');
