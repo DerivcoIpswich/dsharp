@@ -1,4 +1,4 @@
-// Token.cs
+﻿// Token.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -98,6 +98,7 @@ namespace DSharp.Compiler.CodeModel.Tokens
                 new TokenInfo("void", TokenFlags.PredefinedType),
                 new TokenInfo("volatile", TokenFlags.None),
                 new TokenInfo("while", TokenFlags.None),
+                new TokenInfo("async", TokenFlags.None),
                 new TokenInfo("Identifier", TokenFlags.None),
                 new TokenInfo("Literal", TokenFlags.None),
                 new TokenInfo(";", TokenFlags.None),
@@ -151,7 +152,7 @@ namespace DSharp.Compiler.CodeModel.Tokens
                 new TokenInfo("EOF", TokenFlags.None),
                 new TokenInfo("Comment", TokenFlags.None),
                 new TokenInfo("Error", TokenFlags.None),
-                new TokenInfo("Invalid", TokenFlags.None)
+                new TokenInfo("Invalid", TokenFlags.None),
             };
 
             Debug.Assert((int) TokenType.Invalid + 1 == Infos.Length);

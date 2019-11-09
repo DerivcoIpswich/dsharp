@@ -34,7 +34,8 @@ namespace DSharp.Compiler.Parser
             "readonly",
             "extern",
             "override",
-            "unsafe"
+            "unsafe",
+            "async",
         };
 
         private readonly Name addName;
@@ -860,6 +861,7 @@ namespace DSharp.Compiler.Parser
                 case TokenType.Override: return Modifiers.Override;
                 case TokenType.Unsafe:   return Modifiers.Unsafe;
                 case TokenType.Volatile: return Modifiers.Volatile;
+                case TokenType.Async:    return Modifiers.Async;
 
                 default: return Modifiers.None;
             }

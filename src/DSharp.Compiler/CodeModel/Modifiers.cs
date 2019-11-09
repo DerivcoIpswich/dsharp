@@ -1,4 +1,4 @@
-// Modifiers.cs
+﻿// Modifiers.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -33,12 +33,13 @@ namespace DSharp.Compiler.CodeModel
         Unsafe = 0x1000,
         Volatile = 0x2000,
         Partial = 0x4000,
+        Async = 0x8000,
 
         // valid flags by member type
         ClassModifiers = New | AccessMask | Abstract | Sealed | Static | Unsafe | Partial,
         ConstantModifiers = New | AccessMask | Unsafe,
         FieldModifiers = New | AccessMask | Static | Readonly | Unsafe | Volatile,
-        MethodModifiers = New | AccessMask | Static | Virtual | Sealed | Override | Abstract | Extern | Unsafe,
+        MethodModifiers = New | AccessMask | Static | Virtual | Sealed | Override | Abstract | Extern | Unsafe | Async,
         PropertyModifiers = New | AccessMask | Static | Virtual | Sealed | Override | Abstract | Extern | Unsafe,
         EventModifiers = New | AccessMask | Static | Virtual | Sealed | Override | Abstract | Extern | Unsafe,
         IndexerModifiers = New | AccessMask | Static | Virtual | Sealed | Override | Abstract | Extern | Unsafe,
