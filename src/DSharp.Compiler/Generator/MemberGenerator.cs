@@ -318,6 +318,11 @@ namespace DSharp.Compiler.Generator
                 writer.Write("{0}, ", methodSymbol.Parameters.Count - 1);
             }
 
+            if (methodSymbol is AsyncMethodSymbol)
+            {
+                writer.Write("async ");
+            }
+
             writer.Write("function(");
             WriteParameters(methodSymbol, writer);
 

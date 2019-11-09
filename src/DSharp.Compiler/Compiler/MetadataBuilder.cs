@@ -809,8 +809,14 @@ namespace DSharp.Compiler.Compiler
 
                 if (returnType != null)
                 {
-                    method = new MethodSymbol(methodNode.Name, typeSymbol, returnType, methodNode.IsExensionMethod);
-
+                    if (methodNode.Modifiers.HasFlag(Modifiers.Async))
+                    {
+                        method = new AsyncMethodSymbol(methodNode.Name, typeSymbol, returnType, methodNode.IsExensionMethod);
+                    }
+                    else
+                    {
+                        method = new MethodSymbol(methodNode.Name, typeSymbol, returnType, methodNode.IsExensionMethod);
+                    }
                     if (methodNode.TypeParameters.Any())
                     {
                         BuildMethodGenericArguments(method, methodNode, typeSymbol);
