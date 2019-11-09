@@ -117,6 +117,12 @@ namespace DSharp.Compiler.Compiler
                     expression = ProcessAnonymousMethodNode((AnonymousMethodNode)node);
 
                     break;
+
+                case ParseNodeType.Await:
+                    expression = ProcessAwaitTypeNode((AwaitNode)node);
+
+                    break;
+
                 default:
                     Debug.Fail("Unhandled Expression Node: " + node.NodeType);
 
@@ -630,6 +636,13 @@ namespace DSharp.Compiler.Compiler
             }
 
             return new UnaryExpression(Operator.Cast, childExpression, typeSymbol, childExpression.MemberMask);
+        }
+
+        private Expression ProcessAwaitTypeNode(AwaitNode node)
+        {
+            Expression targetExpression = BuildExpression(node.TargetExpression);
+
+            return new AwaitExpression(targetExpression);
         }
 
         private Expression ProcessConditionalNode(ConditionalNode node)

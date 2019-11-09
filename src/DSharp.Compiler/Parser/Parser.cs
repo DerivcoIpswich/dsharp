@@ -3036,6 +3036,9 @@ namespace DSharp.Compiler.Parser
                     }
 
                     break;
+
+                case TokenType.Await:
+                    return ParseAwaitExpression();
             }
 
             // must be a primary expression
@@ -3124,7 +3127,10 @@ namespace DSharp.Compiler.Parser
                 case TokenType.False:
                 case TokenType.Literal:
                     expr = new LiteralNode(NextToken());
+                    break;
 
+                case TokenType.Await:
+                    expr = new AwaitNode(NextToken(), ParsePrimaryExpression());
                     break;
 
                 case TokenType.OpenParen:
@@ -3391,6 +3397,11 @@ namespace DSharp.Compiler.Parser
                 Eat(TokenType.Delegate),
                 PeekType() == TokenType.OpenParen ? ParseParensFormalParameterList(false) : new ParseNodeList(),
                 ParseBlock());
+        }
+
+        private AwaitNode ParseAwaitExpression()
+        {
+            return new AwaitNode(Eat(TokenType.Await), ParseExpression());
         }
 
         private enum TypeArgumentListScan

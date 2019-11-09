@@ -1,4 +1,4 @@
-// ExpressionType.cs
+﻿// ExpressionType.cs
 // Script#/Core/Compiler
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
@@ -53,6 +53,8 @@ namespace DSharp.Compiler.ScriptModel.Expressions
 
         InlineScript = 22,
 
-        NewDelegate = 23
+        NewDelegate = 23,
+
+        Await = 24,
     }
 }

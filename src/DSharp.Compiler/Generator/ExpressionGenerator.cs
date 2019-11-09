@@ -270,6 +270,13 @@ namespace DSharp.Compiler.Generator
             GenerateExpression(generator, symbol, expression.FalseValue);
         }
 
+        private static void GenerateAwaitExpression(ScriptGenerator generator, MemberSymbol symbol,
+                                                    AwaitExpression expression)
+        {
+            generator.Writer.Write("await ");
+            GenerateExpression(generator, symbol, expression.TargetExpression);
+        }
+
         private static void GenerateDelegateExpression(ScriptGenerator generator, MemberSymbol symbol,
                                                        DelegateExpression expression)
         {
@@ -503,6 +510,12 @@ namespace DSharp.Compiler.Generator
                     GenerateExpression(generator, symbol, ((NewDelegateExpression)expression).TypeExpression);
 
                     break;
+
+                case ExpressionType.Await:
+                    GenerateAwaitExpression(generator, symbol, (AwaitExpression)expression);
+
+                    break;
+
                 default:
                     throw new ScriptGeneratorException(symbol, "Unexpected expression type: " + expression.Type);
             }

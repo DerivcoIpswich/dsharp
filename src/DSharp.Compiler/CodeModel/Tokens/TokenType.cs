@@ -89,6 +89,7 @@ namespace DSharp.Compiler.CodeModel.Tokens
         Volatile,
         While,
         Async,
+        Await,
 
         Identifier,
         Literal,

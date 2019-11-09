@@ -99,6 +99,7 @@ namespace DSharp.Compiler.CodeModel.Tokens
                 new TokenInfo("volatile", TokenFlags.None),
                 new TokenInfo("while", TokenFlags.None),
                 new TokenInfo("async", TokenFlags.None),
+                new TokenInfo("await", TokenFlags.None),
                 new TokenInfo("Identifier", TokenFlags.None),
                 new TokenInfo("Literal", TokenFlags.None),
                 new TokenInfo(";", TokenFlags.None),
