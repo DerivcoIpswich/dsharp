@@ -30,9 +30,6 @@ namespace DSharp.Compiler.ScriptModel.Expressions
         Delegate = 20,
         LateBound = 21,
         InlineScript = 22,
-
-        NewDelegate = 23,
-
         NewDelegate = 23,
         Object = 24,
         ObjectInitializer = 25
