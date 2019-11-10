@@ -515,12 +515,9 @@ namespace DSharp.Compiler.Generator
                 case ExpressionType.ObjectInitializer:
                     GenerateObjectInitializerExpression(generator, symbol, (ObjectInitializerExpression)expression);
                     break;
-
                 case ExpressionType.Await:
                     GenerateAwaitExpression(generator, symbol, (AwaitExpression)expression);
-
                     break;
-
                 default:
                     throw new ScriptGeneratorException(symbol, "Unexpected expression type: " + expression.Type);
             }
