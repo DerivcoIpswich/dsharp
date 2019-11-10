@@ -1,0 +1,48 @@
+"use strict";
+
+define('AsyncAwait', ['ss'], function(ss) {
+  var $global = this;
+  // ExpressionTests.ResultClass
+
+  function ResultClass() {
+  }
+  var ResultClass$ = {
+    $get_Task1: function() {
+      return this._test;
+    }
+  };
+
+
+  // ExpressionTests.TestClass
+
+  function TestClass() {
+  }
+  var TestClass$ = {
+    test: async function() {
+      var r1 = (await this.doIt());
+      var r2 = (await this.doIt2());
+      var r3 = (await this.doIt());
+      var r4 = (await this.doIt2());
+      var r5 = (await this.doIt());
+      var r6 = (await this.doIt2());
+      var r13 = (await this.doIt()).toString();
+      return null;
+    },
+    doIt: function() {
+      return new promise();
+    },
+    doIt2: function() {
+      return new promise();
+    }
+  };
+
+
+  var $exports = ss.module('AsyncAwait', null,
+    {
+      ResultClass: ss.defineClass(ResultClass, ResultClass$, [], null),
+      TestClass: ss.defineClass(TestClass, TestClass$, [], null)
+    });
+
+
+  return $exports;
+});

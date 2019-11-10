@@ -3,7 +3,8 @@
 namespace System.Threading.Tasks
 {
     [ScriptImport]
-    [ScriptName("Promise")]
+    [ScriptName("promise")]
+    [ScriptIgnoreNamespace]
     public sealed class Task
     {
         public TaskAwaiter GetAwaiter()
@@ -13,7 +14,8 @@ namespace System.Threading.Tasks
     }
 
     [ScriptImport]
-    [ScriptName("Promise")]
+    [ScriptName("promise")]
+    [ScriptIgnoreNamespace]
     public sealed class Task<TResult>
     {
         public TaskAwaiter<TResult> GetAwaiter()

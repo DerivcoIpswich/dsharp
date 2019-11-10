@@ -2589,6 +2589,7 @@ namespace DSharp.Compiler.Parser
 
                         break;
                     case ParseNodeType.New:
+                    case ParseNodeType.Await:
                     case ParseNodeType.ArrayNew:
 
                         break;

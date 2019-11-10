@@ -273,8 +273,20 @@ namespace DSharp.Compiler.Generator
         private static void GenerateAwaitExpression(ScriptGenerator generator, MemberSymbol symbol,
                                                     AwaitExpression expression)
         {
-            generator.Writer.Write("await ");
+            ScriptTextWriter writer = generator.Writer;
+
+            if (expression.TargetExpression.Parenthesized == false)
+            {
+                writer.Write("(");
+            }
+
+            writer.Write("await ");
             GenerateExpression(generator, symbol, expression.TargetExpression);
+
+            if (expression.TargetExpression.Parenthesized == false)
+            {
+                writer.Write(")");
+            }
         }
 
         private static void GenerateDelegateExpression(ScriptGenerator generator, MemberSymbol symbol,

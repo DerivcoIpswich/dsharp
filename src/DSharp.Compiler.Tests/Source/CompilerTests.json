@@ -210,6 +210,16 @@
         "ComparisonFile": "Baseline.txt"
       },
       {
+        "Name": "AsyncAwait",
+        "SourceFiles": [ "Code.cs" ],
+        "ComparisonFile": "Baseline.txt"
+      },
+      {
+        "Name": "AsyncAwait2",
+        "SourceFiles": [ "Code.cs" ],
+        "ComparisonFile": "Baseline.txt"
+      },
+      {
         "Name": "Generics",
         "SourceFiles": [ "Code.cs" ],
         "ComparisonFile": "Baseline.txt",
