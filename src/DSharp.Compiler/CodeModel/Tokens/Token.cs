@@ -233,5 +233,11 @@ namespace DSharp.Compiler.CodeModel.Tokens
         {
             return GetString(Type);
         }
+
+        public T As<T>()
+            where T : Token
+        {
+            return (T)this;
+        }
     }
 }

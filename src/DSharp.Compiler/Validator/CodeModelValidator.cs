@@ -115,6 +115,8 @@ namespace DSharp.Compiler.Validator
                 case ParseNodeType.AnonymousMethod:
                 case ParseNodeType.BinaryExpression:
                 case ParseNodeType.Using:
+                case ParseNodeType.ObjectInitializer:
+                case ParseNodeType.TypeParameter:
                 case ParseNodeType.Await:
 
                     // No validation required
@@ -136,7 +138,6 @@ namespace DSharp.Compiler.Validator
                 case ParseNodeType.DefaultValueExpression:
                 case ParseNodeType.ExternAlias:
                 case ParseNodeType.AliasQualifiedName:
-                case ParseNodeType.TypeParameter:
                 case ParseNodeType.ConstraintClause:
 
                     return typeof(UnsupportedParseNodeValidator);
