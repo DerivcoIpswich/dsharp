@@ -629,7 +629,6 @@ namespace DSharp.Compiler.Compiler
         private Expression ProcessAwaitTypeNode(AwaitNode node)
         {
             Expression targetExpression = BuildExpression(node.TargetExpression);
-
             return new AwaitExpression(targetExpression);
         }
 
