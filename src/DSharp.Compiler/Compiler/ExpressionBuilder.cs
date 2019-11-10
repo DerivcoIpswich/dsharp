@@ -105,12 +105,9 @@ namespace DSharp.Compiler.Compiler
                 case ParseNodeType.AnonymousMethod:
                     expression = ProcessAnonymousMethodNode((AnonymousMethodNode)node);
                     break;
-
                 case ParseNodeType.Await:
                     expression = ProcessAwaitTypeNode((AwaitNode)node);
-
                     break;
-
                 default:
                     Debug.Fail("Unhandled Expression Node: " + node.NodeType);
                     break;
