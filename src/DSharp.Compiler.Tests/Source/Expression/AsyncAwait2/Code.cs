@@ -2,18 +2,18 @@
 using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
 
-[assembly: ScriptAssembly("AsyncAwait")]
+[assembly: ScriptAssembly("test")]
 
 namespace ExpressionTests
 {
-    public class TestClass
+    public class TestClass2
     {
-        public void Test1()
+        public async void Test1()
         {
             await DoIt1();
         }
 
-        public void Test2()
+        public async void Test2()
         {
             int result = (int)await DoIt1();
         }
@@ -30,7 +30,7 @@ namespace ExpressionTests
     [ScriptImport]
     [ScriptName("promise")]
     [ScriptIgnoreNamespace]
-    public class Promise
+    public class Promise 
     {
         public Promise(Action<Action<object>, Action<object>> promise)
         {
@@ -49,9 +49,9 @@ namespace ExpressionTests
         {
         }
 
-        public TaskAwaiter GetAwaiter()
+        public TaskAwaiter<object> GetAwaiter()
         {
-            return null;
+            return new TaskAwaiter<object>();
         }
 
         private void OnResolved(object result)

@@ -1,16 +1,16 @@
 "use strict";
 
-define('AsyncAwait', ['ss'], function(ss) {
+define('test', ['ss'], function(ss) {
   var $global = this;
-  // ExpressionTests.TestClass
+  // ExpressionTests.TestClass2
 
-  function TestClass() {
+  function TestClass2() {
   }
-  var TestClass$ = {
-    test1: function() {
+  var TestClass2$ = {
+    test1: async function() {
       (await this._doIt1());
     },
-    test2: function() {
+    test2: async function() {
       var result = (await this._doIt1());
     },
     _doIt1: function() {
@@ -21,9 +21,9 @@ define('AsyncAwait', ['ss'], function(ss) {
   };
 
 
-  var $exports = ss.module('AsyncAwait', null,
+  var $exports = ss.module('test', null,
     {
-      TestClass: ss.defineClass(TestClass, TestClass$, [], null)
+      TestClass2: ss.defineClass(TestClass2, TestClass2$, [], null)
     });
 
 

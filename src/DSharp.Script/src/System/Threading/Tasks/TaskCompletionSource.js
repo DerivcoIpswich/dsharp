@@ -1,13 +1,13 @@
 ﻿
-function TaskCompletionSource_$1() {
+function TaskCompletionSource() {
     this._isCompleted = false;
-    this.task = new promise((resolve, reject) => {
+    this.task = new promise(function (resolve, reject) {
         this._reject = reject;
         this._resolve = resolve;
     });
 }
 
-var TaskCompletionSource_$1$ = {
+var TaskCompletionSource$ = {
     setResult: function (result) {
         if (!this._isCompleted) {
             this._isCompleted = true;

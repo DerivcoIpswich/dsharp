@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <IsTestProject>true</IsTestProject>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -36,6 +36,8 @@
     <Compile Remove="Source\Expression\AnonymousMethods\Code.cs" />
     <Compile Remove="Source\Expression\Arguments\Code.cs" />
     <Compile Remove="Source\Expression\Array\Code.cs" />
+    <Compile Remove="Source\Expression\AsyncAwait2\Code.cs" />
+    <Compile Remove="Source\Expression\AsyncAwait\Code.cs" />
     <Compile Remove="Source\Expression\Base\Code.cs" />
     <Compile Remove="Source\Expression\Binary\Code.cs" />
     <Compile Remove="Source\Expression\Cast\Code.cs" />
@@ -150,6 +152,8 @@
     <None Remove="Source\Expression\AnonymousMethods\Baseline.txt" />
     <None Remove="Source\Expression\Arguments\Baseline.txt" />
     <None Remove="Source\Expression\Array\Baseline.txt" />
+    <None Remove="Source\Expression\AsyncAwait2\Baseline.txt" />
+    <None Remove="Source\Expression\AsyncAwait\Baseline.txt" />
     <None Remove="Source\Expression\Base\Baseline.txt" />
     <None Remove="Source\Expression\Binary\Baseline.txt" />
     <None Remove="Source\Expression\Cast\Baseline.txt" />
@@ -371,6 +375,18 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Source\Expression\Array\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Source\Expression\AsyncAwait2\Baseline.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Source\Expression\AsyncAwait2\Code.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Source\Expression\AsyncAwait\Baseline.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Source\Expression\AsyncAwait\Code.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Source\Expression\Base\Baseline.txt">

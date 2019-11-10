@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 
-[assembly: ScriptAssembly("AsyncAwait")]
+[assembly: ScriptAssembly("test")]
 
 namespace ExpressionTests
 {
@@ -30,17 +31,17 @@ namespace ExpressionTests
           
             string r13 = (await DoIt()).ToString();
            
-            return null;
+            return 1;
         }
 
         public Task<int> DoIt()
         {
-            return new Task<int>();
+            return null;
         }
 
         public Task<ResultClass> DoIt2()
         {
-            return new Task<ResultClass>();
+            return null;
         }
     }
 }
