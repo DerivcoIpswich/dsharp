@@ -133,9 +133,7 @@ namespace DSharp.Compiler.Importer
                 {
                     foreach (var method in GetExtensionMethods(typeSymbol.Members))
                     {
-                        ParameterDefinition parameter = ((MethodDefinition)method.ParseContext).Parameters.First();
-                        string typeToExtend = parameter.ParameterType.FullName;
-                        symbols.AddExtensionType(typeToExtend, method.Name, method);
+                        symbols.AddExtensionMethod(method);
                     }
                 }
             }
@@ -545,7 +543,7 @@ namespace DSharp.Compiler.Importer
                     returnType,
                     MetadataHelpers.IsExtensionMethod(method));
 
-                if(MetadataHelpers.ShouldIgnoreMethodGeneratedTypeArguments(method))
+                if (MetadataHelpers.ShouldIgnoreMethodGeneratedTypeArguments(method))
                 {
                     methodSymbol.IgnoreGeneratedTypeArguments = true;
                 }
@@ -1017,12 +1015,12 @@ namespace DSharp.Compiler.Importer
                 namespaceSymbol.AddType(typeSymbol);
                 importedTypes.Add(typeSymbol);
 
-                if(outerType is TypeSymbol)
+                if (outerType is TypeSymbol)
                 {
                     outerType.AddType(typeSymbol);
                 }
 
-                if(type.HasNestedTypes)
+                if (type.HasNestedTypes)
                 {
                     foreach (TypeDefinition nestedType in type.NestedTypes)
                     {
@@ -1071,7 +1069,7 @@ namespace DSharp.Compiler.Importer
                 typeSymbol = new GenericParameterSymbol(genericParameter.Position, genericParameter.Name,
                     genericParameter.Owner.GenericParameterType == GenericParameterType.Type,
                     symbols.GlobalNamespace);
-                if(parentSymbol != null)
+                if (parentSymbol != null)
                 {
                     ((GenericParameterSymbol)typeSymbol).Owner = parentSymbol;
                 }
