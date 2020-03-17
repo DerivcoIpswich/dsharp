@@ -194,3 +194,4 @@ node_modules/
 dist/
 src/Output/**
 launchSettings.json
+/src/DSharp.Compiler.Tests/Source/Type/GenericClasses/Lib1.dll
