@@ -60,6 +60,8 @@
         emptyString: emptyString,
         whitespace: whitespace,
         format: format,
+        setFormatter: setFormatter,
+        commaFormatNumber: commaFormatNumber,
         compareStrings: compareStrings,
         startsWith: startsWith,
         endsWith: endsWith,
