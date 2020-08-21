@@ -118,6 +118,21 @@ function canAssign(type, otherType) {
     if ((type === Object) || (type === otherType)) {
         return true;
     }
+
+    // DateTime in CLR implements IEquatable and IComparable
+    if (otherType === Date && (
+        type === IEquatable_$1
+        || type == IComparable_$1)) {
+        return true;
+    }
+
+    // Arrays in CLR implement IList and IList<T>
+    if (otherType === Array && (
+        type === IList
+        || type == IList_$1)) {
+        return true;
+    }
+
     if (type.$type === _classMarker) {
         var baseType = otherType.$base;
         while (baseType) {
