@@ -18,9 +18,9 @@ _formatters['JSBI'] = function (number, format, culture) {
     }
 
     s = number.toString();
-    let isNeg = s.startsWith(nf.neg);
-    let l = s.length;
-    let numberOfDigits = isNeg ? l - nf.neg.length : l;
+    var isNeg = s.startsWith(nf.neg);
+    var l = s.length;
+    var numberOfDigits = isNeg ? l - nf.neg.length : l;
 
     if (numberOfDigits <= precision) {
         if (isNeg) {
