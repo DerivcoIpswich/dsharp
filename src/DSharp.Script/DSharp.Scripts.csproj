@@ -6,10 +6,10 @@
     <DefaultItemExcludes>${DefaultItemExcludes};node_modules\**;dist\**;package-lock.json</DefaultItemExcludes>
     <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <JavaScriptTestRoot>.\test</JavaScriptTestRoot>
-    <JavaScriptTestFramework>Jest</JavaScriptTestFramework>
     <GenerateProgramFile>false</GenerateProgramFile>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <JavaScriptTestRoot>.\test</JavaScriptTestRoot>
+    <JavaScriptTestFramework>Jest</JavaScriptTestFramework>
     <IsPackable>true</IsPackable>
   </PropertyGroup>
 

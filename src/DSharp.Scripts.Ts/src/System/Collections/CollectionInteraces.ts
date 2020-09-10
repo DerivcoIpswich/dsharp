@@ -1,0 +1,9 @@
+export function ICollection() { }
+export function ICollection_$1() { }
+export function IReadOnlyCollection_$1() { }
+export function IDictionary() { }
+export function IDictionary_$2() { }
+export function IReadOnlyDictionary_$2() { }
+export function IList() { }
+export function IList_$1() { }
+export function IReadOnlyList_$1() { }

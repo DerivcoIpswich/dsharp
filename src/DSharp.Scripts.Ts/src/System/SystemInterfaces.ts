@@ -1,0 +1,13 @@
+export function IDisposable() { }
+export function IEnumerator() { }
+export function IEnumerator_$1() { }
+export function IEnumerable() { }
+export function IEnumerable_$1() { }
+export function IServiceProvider() { }
+export function IEquatable_$1() { }
+export function IComparable_$1() { }
+export function ICloneable() { }
+export function IComparer() { }
+export function IComparer_$1() { }
+export function IEqualityComparer() { }
+export function IEqualityComparer_$1() { }
