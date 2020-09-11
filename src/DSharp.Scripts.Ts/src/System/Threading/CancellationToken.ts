@@ -1,5 +1,6 @@
 import { ExceptionHelper } from "../ExceptionHelper";
 import { CancellationTokenRegistration } from "./CancellationTokenRegistration";
+import { CancellationTokenSource } from "./CancellationTokenSource";
 
 export class CancellationToken {
     private _source: any;
