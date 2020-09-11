@@ -5,6 +5,7 @@ import { Enum } from "./System/Enum";
 import { IEquatable_$1, IComparable_$1 } from "./System/SystemInterfaces";
 import { IList, IList_$1 } from "./System/Collections/CollectionInteraces";
 import { isValue } from "./Helpers";
+import { Exception } from "./System/Exception";
 
 export var _classMarker = 'class';
 export var _interfaceMarker = 'interface';
@@ -34,19 +35,43 @@ export function defineInterface(constructor: Function, interfaces?: Function[]) 
     return [_interfaceMarker, type];
 }
 
-export function defineModule(name: string, implementation?: object, exports?: object) {
-    var registry = _modules[name] = { $name: name };
+//TODO: Look at reworking this system to be smaller and cleaner
+export function extendModule(name: string, existingApi: object, internalTypes?: object, publicTypes?: object){
+    existingApi = existingApi || {};
 
-    var api = {};
-    if (exports) {
-        for (var typeName in exports) {
-            api[typeName] = createType(typeName, exports[typeName], registry);
+    let registry = _modules[name];
+    if(!registry){
+        throw new Exception(`Unable to extend Module as missing module '${name}'`);
+    }
+
+    if (publicTypes) {
+        for (var typeName in publicTypes) {
+            existingApi[typeName] = createType(typeName, publicTypes[typeName], registry);
         }
     }
 
-    if (implementation) {
-        for (var typeName in implementation) {
-            createType(typeName, implementation[typeName], registry);
+    if (internalTypes) {
+        for (var typeName in internalTypes) {
+            createType(typeName, internalTypes[typeName], registry);
+        }
+    }
+
+    return existingApi;
+}
+
+export function defineModule(name: string, internalTypes?: object, publicTypes?: object) {
+    var registry = _modules[name] = { $name: name };
+
+    var api = {};
+    if (publicTypes) {
+        for (var typeName in publicTypes) {
+            api[typeName] = createType(typeName, publicTypes[typeName], registry);
+        }
+    }
+
+    if (internalTypes) {
+        for (var typeName in internalTypes) {
+            createType(typeName, internalTypes[typeName], registry);
         }
     }
 

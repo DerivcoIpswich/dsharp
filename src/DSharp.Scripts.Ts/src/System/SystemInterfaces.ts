@@ -5,6 +5,7 @@ export function IEnumerable() { }
 export function IEnumerable_$1() { }
 export function IServiceProvider() { }
 export function IEquatable_$1() { }
+export function IComparable() { }
 export function IComparable_$1() { }
 export function ICloneable() { }
 export function IComparer() { }

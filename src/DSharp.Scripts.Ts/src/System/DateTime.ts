@@ -3,7 +3,7 @@ import { endsWith } from "./String";
 import { createPropertyGet } from "./Properties";
 import { typeOf } from "../TypeSystem";
 import { culture } from "./Globalization/Culture";
-import { format } from "./Format";
+import { format } from "./Formatter";
 
 export function compareDates(d1, d2) {
     return (d1 === d2)

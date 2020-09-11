@@ -1,8 +1,8 @@
-import { defineModule, defineClass, defineInterface, isClass, isInterface, typeOf, type, typeName, canCast, safeCast, canAssign, instanceOf, baseProperty, getConstructorParams, createInstance, getMembers } from "./TypeSystem";
+import { defineModule, defineClass, defineInterface, isClass, isInterface, typeOf, type, typeName, canCast, safeCast, canAssign, instanceOf, baseProperty, getConstructorParams, createInstance, getMembers, extendModule } from "./TypeSystem";
 import { Dictionary_$2 } from './System/Collections/Dictionary';
 import { Enum } from "./System/Enum";
 import { _modules } from "./Modules";
-import { IServiceProvider, IDisposable, IEnumerable, IEquatable_$1, IComparable_$1, ICloneable, IEnumerable_$1, IEnumerator, IEnumerator_$1, IComparer, IComparer_$1, IEqualityComparer, IEqualityComparer_$1 } from "./System/SystemInterfaces";
+import { IServiceProvider, IDisposable, IEnumerable, IEquatable_$1, IComparable_$1, ICloneable, IEnumerable_$1, IEnumerator, IEnumerator_$1, IComparer, IComparer_$1, IEqualityComparer, IEqualityComparer_$1, IComparable } from "./System/SystemInterfaces";
 import { DateTime, compareDates } from "./System/DateTime";
 import { ICollection, ICollection_$1, IReadOnlyCollection_$1, IDictionary, IDictionary_$2, IReadOnlyDictionary_$2, IList, IList_$1, IReadOnlyList_$1 } from "./System/Collections/CollectionInteraces";
 import { List_$1 } from "./System/Collections/List";
@@ -18,13 +18,28 @@ import { keys, values, keyCount, keyExists, clearKeys, toArray, removeItem, cont
 import { enumerate } from "./System/Collections/Enumerator";
 import { parseBoolean, parseRegExp, parseNumber, parseDate, truncate, now, today, error, paramsGenerator, namedFunction, assertFail } from "./System/Misc";
 import { string, emptyString, whitespace, compareStrings, startsWith, endsWith, padLeft, padRight, trim, trimStart, trimEnd, insertString, removeString, replaceString } from "./System/String";
-import { format, setFormatter, commaFormatNumber } from "./System/Format";
+import { format } from "./System/Formatter";
+import { formatters } from "./System/FormatterStore";
 import { bind, baseBind, bindAdd, bindSub, bindExport } from "./System/Delegate";
 import { createPropertyGet, createPropertySet, createReadonlyProperty, defineProperty, initializeObject } from "./System/Properties";
 import { copyArray } from "./System/Array";
 import { getGenericTemplate, makeGenericType, createGenericType, getGenericConstructor, getTypeArgument } from "./System/Generics";
 import { culture } from "./System/Globalization/Culture";
 import { TimeSpan } from "./System/TimeSpan";
+import { commaFormatNumber } from "./System/Formatter.Number";
+import { CallbackInsertionIndex } from "./System/Threading/CallbackInsertionIndex";
+import { CancellationCallbacks } from "./System/Threading/CancellationCallbacks";
+import { CancellationCallbackInfo } from "./System/Threading/CancellationCallbackInfo";
+import { CancellationTokenSource } from "./System/Threading/CancellationTokenSource";
+import { ExceptionHelper } from "./System/ExceptionHelper";
+import { DelayTask } from "./System/Threading/Tasks/DelayTask";
+import { CancellationToken } from "./System/Threading/CancellationToken";
+import { Task, Task_$1 } from "./System/Threading/Tasks/Task";
+import { WhenAllTask } from "./System/Threading/Tasks/WhenAllTask";
+import { TaskContinuationOptions } from "./System/Threading/Tasks/TaskContinuationOptions";
+import { TaskStatus } from "./System/Threading/Tasks/TaskStatus";
+import { CancellationTokenRegistration } from "./System/Threading/CancellationTokenRegistration";
+import { TaskCompletionSource_$1 } from "./System/Threading/Tasks/TaskCompletionSource";
 
 const SCRIPT_NAME = "ss";
 
@@ -77,6 +92,32 @@ let moduleExports = defineModule(SCRIPT_NAME, undefined, {
     TimeSpan: defineClass(TimeSpan),
 });
 
+moduleExports = extendModule(SCRIPT_NAME, moduleExports, {
+    CallbackInsertionIndex: defineClass(CallbackInsertionIndex, undefined, [Number, CancellationCallbacks]),
+    CancellationCallbackInfo: defineClass(CancellationCallbackInfo, undefined, [Function, Object, CancellationTokenSource]),
+    CancellationCallbacks: defineClass(CancellationCallbacks),
+    ExceptionHelper: defineClass(ExceptionHelper),
+    DelayTask: defineClass(DelayTask, undefined, [Number, CancellationToken], Task),
+    WhenAllTask: defineClass(WhenAllTask, undefined, [Array, CancellationToken], Task)
+  },
+  {
+    TaskContinuationOptions: TaskContinuationOptions,
+    TaskStatus: TaskStatus,
+    IComparable: defineInterface(IComparable),
+    IComparable_$1: defineInterface(IComparable_$1),
+    TimeSpan: defineClass(TimeSpan, undefined, [Number, Number, Number, Number, Number], undefined, [IEquatable_$1, IComparable_$1]),
+    CancellationToken: defineClass(CancellationToken, undefined, [CancellationTokenSource]),
+    CancellationTokenRegistration: defineClass(CancellationTokenRegistration, undefined, [CancellationCallbackInfo, CallbackInsertionIndex], undefined, [IDisposable]),
+    CancellationTokenSource: defineClass(CancellationTokenSource, undefined, [], undefined, [IDisposable]),
+    Task: defineClass(Task, undefined, [Function, CancellationToken], undefined, [IDisposable]),
+    TaskCompletionSource_$1: defineClass(TaskCompletionSource_$1, undefined, [Object]),
+    Task_$1: defineClass(Task_$1, undefined, [Function, CancellationToken], Task),
+
+    //TODO: Finish up Scheduler and Factory implementations
+    // TaskScheduler: defineClass(TaskScheduler, TaskScheduler$, []),
+    // JsTaskScheduler: defineClass(JsTaskScheduler, JsTaskScheduler$, [], TaskScheduler)
+  });
+
 moduleExports = Object.assign(moduleExports, {
     created: true,
     isValue: isValue,
@@ -104,7 +145,7 @@ moduleExports = Object.assign(moduleExports, {
     emptyString: emptyString,
     whitespace: whitespace,
     format: format,
-    setFormatter: setFormatter,
+    setFormatter: formatters.setFormatter,
     commaFormatNumber: commaFormatNumber,
     compareStrings: compareStrings,
     startsWith: startsWith,

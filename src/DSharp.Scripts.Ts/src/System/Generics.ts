@@ -5,9 +5,9 @@ import { paramsGenerator } from "./Misc";
 
 export let _genericConstructorCache: object = {};
 
-export function createGenericType(ctorMethod, typeArguments) {
+export function createGenericType(ctorMethod, typeArguments, ...args: any[]) {
     var genericConstructor = getGenericConstructor(ctorMethod, typeArguments);
-    var args: any[] = [null].concat(Array.prototype.slice.call(arguments).splice(2));
+    var args: any[] = [null].concat(...args);
     return new (Function.prototype.bind.apply(genericConstructor, args as any));
 }
 
