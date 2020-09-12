@@ -101,8 +101,8 @@ moduleExports = extendModule(SCRIPT_NAME, moduleExports, {
     WhenAllTask: defineClass(WhenAllTask, undefined, [Array, CancellationToken], Task)
   },
   {
-    TaskContinuationOptions: TaskContinuationOptions,
-    TaskStatus: TaskStatus,
+    TaskContinuationOptions: new Enum("TaskContinuationOptions", TaskContinuationOptions),
+    TaskStatus: new Enum("TaskStatus", TaskStatus),
     IComparable: defineInterface(IComparable),
     IComparable_$1: defineInterface(IComparable_$1),
     TimeSpan: defineClass(TimeSpan, undefined, [Number, Number, Number, Number, Number], undefined, [IEquatable_$1, IComparable_$1]),

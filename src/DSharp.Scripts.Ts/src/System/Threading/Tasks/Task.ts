@@ -13,6 +13,8 @@ import { enumerate } from "../../Collections/Enumerator";
 import { Exception } from "../../Exception";
 import { WhenAllTask } from "./WhenAllTask";
 
+import { TaskStatus } from "./TaskStatus";
+
 let taskId = 0;
 
 export class Task {
@@ -24,7 +26,7 @@ export class Task {
     protected _taskContinuations: any;
     protected _rejectionMethod: Function | undefined = undefined;
 
-    Status: number = 0;
+    Status: TaskStatus = 0;
     Exception: Error | undefined = undefined;
     Id: number = taskId++;
 
@@ -45,16 +47,18 @@ export class Task {
     }
 
     get IsCanceled() {
-        return this.Status === 6;
+        return this.Status === TaskStatus.canceled;
     }
     get IsCancellationRequested() {
         return this._cancellationToken.IsCancellationRequested;
     }
     get IsCompleted() {
-        return this.Status === 5 || this.Status === 7 || this.Status === 6;
+        return this.Status === TaskStatus.ranToCompletion 
+            || this.Status === TaskStatus.faulted 
+            || this.Status === TaskStatus.canceled;
     }
     get IsFaulted() {
-        return this.Status === 7;
+        return this.Status === TaskStatus.faulted;
     }
     get CancellationToken() {
         return this._cancellationToken;
@@ -64,7 +68,9 @@ export class Task {
         this._cancellationToken.register(bind('onCancellationRequested', this));
     }
     get IsTaskPending() {
-        return !this.Status || this.Status === 1 || this.Status === 2;
+        return !this.Status 
+            || this.Status === TaskStatus.waitingToRun 
+            || this.Status === TaskStatus.waitingForActivation;
     }
     get ReturnsResult() {
         return false;
@@ -78,10 +84,10 @@ export class Task {
     }
     _executeTask(resolve, reject) {
         if (this._cancellationToken.IsCancellationRequested) {
-            this.Status = 6;
+            this.Status = TaskStatus.canceled;
             return;
         }
-        this.Status = 3;
+        this.Status = TaskStatus.running;
         this._rejectionMethod = reject;
         var result;
         try {
@@ -90,12 +96,12 @@ export class Task {
         catch (e) {
             console.log(e);
             this.Exception = e;
-            this.Status = 7;
+            this.Status = TaskStatus.faulted;
             reject(e);
             return;
         }
         if (this._cancellationToken.IsCancellationRequested) {
-            this.Status = 6;
+            this.Status = TaskStatus.canceled;
             return;
         }
         if (!this.ReturnsResult) {
@@ -106,7 +112,7 @@ export class Task {
             resolve(result);
         }
         if (!this._taskContinuations.count) {
-            this.Status = 5;
+            this.Status = TaskStatus.ranToCompletion;
         }
     }
     setResult(result?: any) {
@@ -143,17 +149,17 @@ export class Task {
     }
     onCancellationRequested() {
         switch (this.Status) {
-            case 5:
-            case 7:
-            case 6:
+            case TaskStatus.ranToCompletion:
+            case TaskStatus.faulted:
+            case TaskStatus.canceled:
                 return;
-            case 0:
-            case 1:
-            case 2:
-                this.Status = 6;
+            case TaskStatus.created:
+            case TaskStatus.waitingForActivation:
+            case TaskStatus.waitingToRun:
+                this.Status = TaskStatus.canceled;
                 this._promiseFactory = () => Promise.resolve();
                 break;
-            case 3:
+            case TaskStatus.running:
                 break;
         }
         if (this._rejectionMethod != null) {
@@ -167,12 +173,12 @@ export class Task {
             return false;
         }
         this.Exception = exceptionObject;
-        this.Status = 7;
+        this.Status = TaskStatus.faulted;
         if (this._rejectionMethod != null) {
             this._rejectionMethod(exceptionObject);
         }
         this.invokeContinuations().then(function () {
-            return $this.Status = 7;
+            return $this.Status = TaskStatus.faulted;
         });
         return true;
     }
@@ -187,7 +193,7 @@ export class Task {
             this.onCancellationRequested();
         }
         this.invokeContinuations().then(function () {
-            return $this.Status = 6;
+            return $this.Status = TaskStatus.canceled;
         });
         return this.IsCanceled;
     }
@@ -195,7 +201,7 @@ export class Task {
         if (!this._taskContinuations.count) {
             return Promise.resolve();
         }
-        this.Status = 4;
+        this.Status = TaskStatus.waitingForChildrenToComplete;
         var promises: Promise<any>[] = [];
         while (this._taskContinuations.count > 0) {
             var innerTask = this._taskContinuations.dequeue();
@@ -209,11 +215,11 @@ export class Task {
         if (this._resolvedPromise != null) {
             return this._resolvedPromise;
         }
-        this.Status = 2;
+        this.Status = TaskStatus.waitingToRun;
         this._resolvedPromise = this._promiseFactory();
         this._resolvedPromise.then(function () {
             return $this.invokeContinuations().then(function () {
-                return $this.Status = 5;
+                return $this.Status = TaskStatus.ranToCompletion;
             });
         }, function () {
         });
@@ -222,21 +228,21 @@ export class Task {
 
     public static get CompletedTask() {
         var task = new Task();
-        task.Status = 5;
+        task.Status = TaskStatus.ranToCompletion;
         return task;
     }
 
     public static fromResult($TArgs, result) {
         var task = createGenericType(Task_$1, { TResult: $TArgs['T'] });
         task.Result = result;
-        task.Status = 5;
+        task.Status = TaskStatus.ranToCompletion;
         return task;
     }
 
     public static fromException(exception: Error) {
         var task = new Task();
         task.Exception = exception;
-        task.Status = 7;
+        task.Status = TaskStatus.faulted;
         return task;
     }
 
@@ -245,7 +251,7 @@ export class Task {
             throw ExceptionHelper.throwArgumentOutOfRangeException('token');
         }
         var task = new Task(undefined, token);
-        task.Status = 6;
+        task.Status = TaskStatus.canceled;
         return task;
     }
 
@@ -320,11 +326,11 @@ export class Task_$1 extends Task {
         this.Result = result;
         if (this._taskContinuations.count > 0) {
             this.invokeContinuations().then(function () {
-                return $this.Status = 5;
+                return $this.Status = TaskStatus.ranToCompletion;
             });
             return true;
         }
-        this.Status = 5;
+        this.Status = TaskStatus.ranToCompletion;
         return true;
     }
     continueWith(continuation, ...args: any[]) {
