@@ -15,7 +15,7 @@ export class Enum{
     private _name: string;
     private map: object = {};
 
-    constructor(name, enumMap){
+    constructor(name: string, enumMap){
         Enum.map[name] = createEnumMap(enumMap);
 
         this._name = name;

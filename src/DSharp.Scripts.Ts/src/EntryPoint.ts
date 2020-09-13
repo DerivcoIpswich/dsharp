@@ -2,7 +2,7 @@ import { defineModule, defineClass, defineInterface, isClass, isInterface, typeO
 import { Dictionary_$2 } from './System/Collections/Dictionary';
 import { Enum } from "./System/Enum";
 import { _modules } from "./Modules";
-import { IServiceProvider, IDisposable, IEnumerable, IEquatable_$1, IComparable_$1, ICloneable, IEnumerable_$1, IEnumerator, IEnumerator_$1, IComparer, IComparer_$1, IEqualityComparer, IEqualityComparer_$1, IComparable } from "./System/SystemInterfaces";
+import { IServiceProvider, IEnumerable, IEquatable_$1, IComparable_$1, ICloneable, IEnumerable_$1, IEnumerator, IEnumerator_$1, IComparer, IComparer_$1, IEqualityComparer, IEqualityComparer_$1, IComparable, IDisposable } from "./System/SystemInterfaces";
 import { DateTime, compareDates } from "./System/DateTime";
 import { ICollection, ICollection_$1, IReadOnlyCollection_$1, IDictionary, IDictionary_$2, IReadOnlyDictionary_$2, IList, IList_$1, IReadOnlyList_$1 } from "./System/Collections/CollectionInteraces";
 import { List_$1 } from "./System/Collections/List";
@@ -41,6 +41,8 @@ import { TaskStatus } from "./System/Threading/Tasks/TaskStatus";
 import { CancellationTokenRegistration } from "./System/Threading/CancellationTokenRegistration";
 import { TaskCompletionSource_$1 } from "./System/Threading/Tasks/TaskCompletionSource";
 import { task_delay, task_whenAll } from "./System/Threading/Tasks/Task.Extensions";
+import { Timer } from "./System/Threading/Timer";
+import { MemberTypes } from "./System/Reflection/MemberTypes";
 
 const SCRIPT_NAME = "ss";
 
@@ -78,22 +80,13 @@ let moduleExports = defineModule(SCRIPT_NAME, undefined, {
     IServiceProvider: defineInterface(IServiceProvider),
     Lazy: defineClass(Lazy),
     List_$1: defineClass(List_$1, Array, [], undefined, [IList, IList_$1, IReadOnlyList_$1]),
-    MemberType: new Enum('MemberType', {
-        all: 191,
-        constructor: 1,
-        custom: 64,
-        event: 2,
-        field: 4,
-        method: 8,
-        nestedType: 128,
-        property: 16,
-        typeInfo: 32
-    }),
+    MemberTypes: new Enum("MemberTypes", MemberTypes),
     Nullable: defineClass(Nullable),
     Queue: defineClass(Queue),
     Stack: defineClass(Stack),
     StringBuilder: defineClass(StringBuilder),
     TimeSpan: defineClass(TimeSpan),
+    Timer: defineClass(Timer)
 });
 
 moduleExports = extendModule(SCRIPT_NAME, moduleExports, {

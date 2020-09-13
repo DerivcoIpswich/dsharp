@@ -1,8 +1,8 @@
 import { Task } from "./Task";
 import { CancellationToken } from "../CancellationToken";
 import { isValue } from "../../Misc";
-import { IBrowserTimer } from "../../Timers/Browser/IBrowserTimer";
-import { _browserTimerManager } from "../../Timers/Browser/BrowserTimerManager";
+import { IBrowserTimer } from "../../../Browser/Timers/IBrowserTimer";
+import { _browserTimerManager } from "../../../Browser/Timers/BrowserTimerManager";
 
 export class DelayTask extends Task {
     private _timeoutInMs: number;
