@@ -4,35 +4,33 @@ import { bind } from "../../Delegate";
 import { ExceptionHelper } from "../../ExceptionHelper";
 import { toArray } from "../../Collections/CollectionHelpers";
 import { createGenericType, getTypeArgument } from "../../Generics";
-import { typeOf, instanceOf } from "../../../TypeSystem";
-import { TimeSpan } from "../../TimeSpan";
-import { truncate } from "../../Misc";
-import { DelayTask } from "./DelayTask";
-import { IEnumerable } from "../../SystemInterfaces";
-import { enumerate } from "../../Collections/Enumerator";
 import { Exception } from "../../Exception";
-import { WhenAllTask } from "./WhenAllTask";
 
 import { TaskStatus } from "./TaskStatus";
+import { TaskCanceledException } from "./TaskCanceledException";
 
 let taskId = 0;
 
 export class Task {
-    private _invocationMethod: Function | undefined = undefined;
     private _resolvedPromise: Promise<any> | undefined = undefined;
     private _promiseFactory: () => Promise<any>;
     private _cancellationToken: CancellationToken = CancellationToken.None;
     
     protected _taskContinuations: any;
+    protected _taskCompletionsActions: ((task: Task) => void)[] = [];
     protected _rejectionMethod: Function | undefined = undefined;
+    protected _invocationMethod: Function = () => {};
+    protected _createPromise: () => Promise<any>;
 
     Status: TaskStatus = 0;
     Exception: Error | undefined = undefined;
     Id: number = taskId++;
+    static delay: (...args: any[]) => Task;
+    static whenAll: (...args: any[]) => Task;
 
     constructor(action?: Function, cancellationToken?: CancellationToken) {
         this._taskContinuations = new Queue();
-        var $this = this;
+        this._createPromise = this._createTaskPromise;
 
         if ((cancellationToken !== undefined)) {
             this.CancellationToken = cancellationToken;
@@ -42,7 +40,7 @@ export class Task {
             this._invocationMethod = action;
         }
         this._promiseFactory = function () {
-            return $this.createTaskPromise();
+            return this._createPromise();
         };
     }
 
@@ -56,6 +54,9 @@ export class Task {
         return this.Status === TaskStatus.ranToCompletion 
             || this.Status === TaskStatus.faulted 
             || this.Status === TaskStatus.canceled;
+    }
+    get IsCompletedSuccessfully(){
+        return this.Status === TaskStatus.ranToCompletion;
     }
     get IsFaulted() {
         return this.Status === TaskStatus.faulted;
@@ -75,7 +76,7 @@ export class Task {
     get ReturnsResult() {
         return false;
     }
-    createTaskPromise() {
+    private _createTaskPromise() : Promise<any> {
         var $this = this;
 
         return new Promise(function (resolve, reject) {
@@ -84,7 +85,7 @@ export class Task {
     }
     _executeTask(resolve, reject) {
         if (this._cancellationToken.IsCancellationRequested) {
-            this.Status = TaskStatus.canceled;
+            this.completeTask(TaskStatus.canceled);
             return;
         }
         this.Status = TaskStatus.running;
@@ -96,12 +97,12 @@ export class Task {
         catch (e) {
             console.log(e);
             this.Exception = e;
-            this.Status = TaskStatus.faulted;
+            this.completeTask(TaskStatus.faulted);
             reject(e);
             return;
         }
         if (this._cancellationToken.IsCancellationRequested) {
-            this.Status = TaskStatus.canceled;
+            this.completeTask(TaskStatus.canceled);
             return;
         }
         if (!this.ReturnsResult) {
@@ -112,10 +113,10 @@ export class Task {
             resolve(result);
         }
         if (!this._taskContinuations.count) {
-            this.Status = TaskStatus.ranToCompletion;
+            this.completeTask(TaskStatus.ranToCompletion);
         }
     }
-    setResult(result?: any) {
+    setResult() {
     }
     executeDelegatedWork(invocationMethod) {
         (invocationMethod)();
@@ -130,7 +131,7 @@ export class Task {
         }
         this.asPromise();
     }
-    continueWith(continuation, ...args: any[]) {
+    continueWith(continuation) {
         var $this = this;
         let $continuation = continuation;
 
@@ -163,7 +164,7 @@ export class Task {
                 break;
         }
         if (this._rejectionMethod != null) {
-            this._rejectionMethod(null);
+            this?._rejectionMethod(null);
         }
     }
     _trySetException(exceptionObject: Error) {
@@ -219,11 +220,32 @@ export class Task {
         this._resolvedPromise = this._promiseFactory();
         this._resolvedPromise.then(function () {
             return $this.invokeContinuations().then(function () {
-                return $this.Status = TaskStatus.ranToCompletion;
+                $this.completeTask(TaskStatus.ranToCompletion);
+                return $this.Status
             });
         }, function () {
         });
         return this._resolvedPromise;
+    }
+    _addCompletionAction(action: (task: Task) => void){
+        if(this.IsCompleted){
+           action(this);
+           return; 
+        }
+
+        this._taskCompletionsActions.push(action);
+    }
+
+    private completeTask(status: TaskStatus){
+        if(this.IsCompleted){
+            return;
+        }
+        this.Status = status;
+        if(this.IsCompleted)
+        {
+            this._taskCompletionsActions.forEach(action => action(this));
+            this._taskCompletionsActions = [];
+        }
     }
 
     public static get CompletedTask() {
@@ -235,14 +257,14 @@ export class Task {
     public static fromResult($TArgs, result) {
         var task = createGenericType(Task_$1, { TResult: $TArgs['T'] });
         task.Result = result;
-        task.Status = TaskStatus.ranToCompletion;
+        task.completeTask(TaskStatus.ranToCompletion);
         return task;
     }
 
     public static fromException(exception: Error) {
         var task = new Task();
         task.Exception = exception;
-        task.Status = TaskStatus.faulted;
+        task.completeTask(TaskStatus.faulted);
         return task;
     }
 
@@ -251,7 +273,7 @@ export class Task {
             throw ExceptionHelper.throwArgumentOutOfRangeException('token');
         }
         var task = new Task(undefined, token);
-        task.Status = TaskStatus.canceled;
+        task.completeTask(TaskStatus.canceled);
         return task;
     }
 
@@ -263,42 +285,37 @@ export class Task {
         return Task._runTask(createGenericType(Task_$1, { TResult: getTypeArgument(this, 'TResult') }, func, cancellationToken));
     }
 
-    public static delay(...args: any[]) {
-        var firstArg = args[0];
-        var token = args[1];
-        if (typeOf(firstArg) === TimeSpan) {
-            return Task._runTask(new DelayTask(truncate((firstArg).TotalMilliseconds), token));
-        }
-        else {
-            return Task._runTask(new DelayTask(firstArg, token));
-        }
-    };
-
-    public static whenAll(...args: any[]) {
-        var obj = args[0];
-        if (instanceOf((IEnumerable), obj)) {
-            var enumerableTasks = obj;
-            var taskCollection: any[] = [];
-            var $enum1 = enumerate(enumerableTasks);
-            while ($enum1.moveNext()) {
-                var t = $enum1.current;
-                taskCollection.push(t);
-            }
-            return new WhenAllTask(toArray(taskCollection), CancellationToken.None);
-        }
-        else {
-            var tasksAsArray = obj;
-            return new WhenAllTask(tasksAsArray, CancellationToken.None);
-        }
-    }
-
     public static whenAny() {
         throw new Exception();
     }
 
-    private static _runTask = function (task) {
+    public static _runTask = function (task: Task) {
         task.start();
         return task;
+    }
+
+    public static async _runTaskAsync(task: Task): Promise<any>{
+        return new Promise((resolve, reject) =>{
+            task._addCompletionAction(t => {
+                if(t.IsCompletedSuccessfully){
+                    let tWithResult = t as Task_$1;
+                    if(tWithResult?.Result != undefined){
+                        resolve(tWithResult.Result)
+                    }
+                    resolve(t);
+                }
+                else if (t.IsFaulted){
+                    reject(t.Exception);
+                }
+                else if (t.IsCanceled){
+                    reject(new TaskCanceledException())
+                }
+                else{
+                    reject();
+                }
+            });
+            task.start();
+        })
     }
 }
 

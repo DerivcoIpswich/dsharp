@@ -40,8 +40,12 @@ import { TaskContinuationOptions } from "./System/Threading/Tasks/TaskContinuati
 import { TaskStatus } from "./System/Threading/Tasks/TaskStatus";
 import { CancellationTokenRegistration } from "./System/Threading/CancellationTokenRegistration";
 import { TaskCompletionSource_$1 } from "./System/Threading/Tasks/TaskCompletionSource";
+import { task_delay, task_whenAll } from "./System/Threading/Tasks/Task.Extensions";
 
 const SCRIPT_NAME = "ss";
+
+Task.delay = task_delay;
+Task.whenAll = task_whenAll;
 
 let moduleExports = defineModule(SCRIPT_NAME, undefined, {
     CancelEventArgs: defineClass(CancelEventArgs),
@@ -99,24 +103,24 @@ moduleExports = extendModule(SCRIPT_NAME, moduleExports, {
     ExceptionHelper: defineClass(ExceptionHelper),
     DelayTask: defineClass(DelayTask, undefined, [Number, CancellationToken], Task),
     WhenAllTask: defineClass(WhenAllTask, undefined, [Array, CancellationToken], Task)
-  },
-  {
-    TaskContinuationOptions: new Enum("TaskContinuationOptions", TaskContinuationOptions),
-    TaskStatus: new Enum("TaskStatus", TaskStatus),
-    IComparable: defineInterface(IComparable),
-    IComparable_$1: defineInterface(IComparable_$1),
-    TimeSpan: defineClass(TimeSpan, undefined, [Number, Number, Number, Number, Number], undefined, [IEquatable_$1, IComparable_$1]),
-    CancellationToken: defineClass(CancellationToken, undefined, [CancellationTokenSource]),
-    CancellationTokenRegistration: defineClass(CancellationTokenRegistration, undefined, [CancellationCallbackInfo, CallbackInsertionIndex], undefined, [IDisposable]),
-    CancellationTokenSource: defineClass(CancellationTokenSource, undefined, [], undefined, [IDisposable]),
-    Task: defineClass(Task, undefined, [Function, CancellationToken], undefined, [IDisposable]),
-    TaskCompletionSource_$1: defineClass(TaskCompletionSource_$1, undefined, [Object]),
-    Task_$1: defineClass(Task_$1, undefined, [Function, CancellationToken], Task),
+},
+    {
+        TaskContinuationOptions: new Enum("TaskContinuationOptions", TaskContinuationOptions),
+        TaskStatus: new Enum("TaskStatus", TaskStatus),
+        IComparable: defineInterface(IComparable),
+        IComparable_$1: defineInterface(IComparable_$1),
+        TimeSpan: defineClass(TimeSpan, undefined, [Number, Number, Number, Number, Number], undefined, [IEquatable_$1, IComparable_$1]),
+        CancellationToken: defineClass(CancellationToken, undefined, [CancellationTokenSource]),
+        CancellationTokenRegistration: defineClass(CancellationTokenRegistration, undefined, [CancellationCallbackInfo, CallbackInsertionIndex], undefined, [IDisposable]),
+        CancellationTokenSource: defineClass(CancellationTokenSource, undefined, [], undefined, [IDisposable]),
+        Task: defineClass(Task, undefined, [Function, CancellationToken], undefined, [IDisposable]),
+        TaskCompletionSource_$1: defineClass(TaskCompletionSource_$1, undefined, [Object]),
+        Task_$1: defineClass(Task_$1, undefined, [Function, CancellationToken], Task),
 
-    //TODO: Finish up Scheduler and Factory implementations
-    // TaskScheduler: defineClass(TaskScheduler, TaskScheduler$, []),
-    // JsTaskScheduler: defineClass(JsTaskScheduler, JsTaskScheduler$, [], TaskScheduler)
-  });
+        //TODO: Finish up Scheduler and Factory implementations
+        // TaskScheduler: defineClass(TaskScheduler, TaskScheduler$, []),
+        // JsTaskScheduler: defineClass(JsTaskScheduler, JsTaskScheduler$, [], TaskScheduler)
+    });
 
 moduleExports = Object.assign(moduleExports, {
     created: true,

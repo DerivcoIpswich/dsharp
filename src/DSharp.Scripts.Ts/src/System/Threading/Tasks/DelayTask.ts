@@ -1,38 +1,38 @@
 import { Task } from "./Task";
 import { CancellationToken } from "../CancellationToken";
 import { isValue } from "../../Misc";
+import { IBrowserTimer } from "../../Timers/Browser/IBrowserTimer";
+import { _browserTimerManager } from "../../Timers/Browser/BrowserTimerManager";
 
 export class DelayTask extends Task {
     private _timeoutInMs: number;
-    private _timerHandle: number | undefined = undefined;
+    private _timer: IBrowserTimer| null = null;
+
     constructor(timeoutInMs: number, cancellationToken?: CancellationToken) {
-        super(undefined, cancellationToken)
+        super(undefined, cancellationToken);
         this._timeoutInMs = timeoutInMs;
+
+        let $this = this; 
+        this._createPromise = () => {
+            return new Promise(function (resolve, reject) {
+                $this._timer = _browserTimerManager.createTimer(function () {
+                    if ($this.CancellationToken.IsCancellationRequested) {
+                        reject();
+                        return;
+                    }
+                    resolve();
+                    $this._rejectionMethod = undefined;
+                }, $this._timeoutInMs);
+                $this._rejectionMethod = reject;
+                $this._timer?.start();
+            });
+        };
     }
 
     onCancellationRequested(this: DelayTask) {
-        Task.prototype.onCancellationRequested.call(this);
-        if (isValue(this._timerHandle)) {
-            clearTimeout(this._timerHandle);
-            if (this._rejectionMethod != null) {
-                this._rejectionMethod();
-            }
+        if(this._timer != null){
+            this._timer.dispose();
+            super.onCancellationRequested();
         }
-    }
-    createTaskPromise(this: DelayTask) {
-        var $this = this;
-
-        return new Promise(function (resolve, reject) {
-            $this._rejectionMethod = reject;
-            $this._timerHandle = setTimeout(function () {
-                if ($this.CancellationToken.IsCancellationRequested) {
-                    reject();
-                    return;
-                }
-                resolve();
-                $this._timerHandle = undefined;
-                $this._rejectionMethod = undefined;
-            }, $this._timeoutInMs) as unknown as number;
-        });
     }
 }
