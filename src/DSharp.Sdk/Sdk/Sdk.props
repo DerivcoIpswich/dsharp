@@ -8,7 +8,7 @@
     <IsDSharpBuild>$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', 'net\d{2,3}'))</IsDSharpBuild>
     <BuildingProject>true</BuildingProject>
     <UseHostCompilerIfAvailable>false</UseHostCompilerIfAvailable>
-    <MinimumFrameworkVersion>4.0</MinimumFrameworkVersion>
+    <MinimumFrameworkVersion>4.7</MinimumFrameworkVersion>
   </PropertyGroup>
   <Import Condition="$(IsDSharpBuild) " Project="$(MSBuildThisFileDirectory)DSharp.props"/>
   <Import Condition="!$(IsDSharpBuild)" Project="$(MSBuildThisFileDirectory)NetStandard.props" />
