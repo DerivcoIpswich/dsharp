@@ -48,6 +48,7 @@ namespace DSharp.Compiler.Generator
             Writer.Indent++;
             Writer.WriteLine("\"use strict\"");
             Writer.WriteLine("var Void = null;");
+            Writer.WriteLine("var Type = Function;");
             Writer.WriteLine($"var module = {DSharpStringResources.DSHARP_SCRIPT_NAME}.modules['{symbols.ScriptName}'];");
 
             foreach (TypeSymbol type in types)
@@ -169,9 +170,10 @@ namespace DSharp.Compiler.Generator
                 associatedType = associatedType.GenericArguments.First();
             }
 
-            if (associatedType.IsApplicationType)
+            if (associatedType.IsApplicationType
+                && associatedType.Type != SymbolType.Delegate) // transpile named delegates to native functions
             {
-                if (associatedType is GenericParameterSymbol)
+                if (associatedType is GenericParameterSymbol || associatedType.IsAnonymousType)
                 {
                     // we have no idea what the generic parameters are at this point
                     // apply boxing and hope for the best
@@ -190,8 +192,9 @@ namespace DSharp.Compiler.Generator
             Writer.Write($"MemberType: {memberType},");
             Writer.Write($"Name: '{name}'");
             Writer.Write(", ");
-            Writer.Write("Type: ");
+            Writer.Write("Type: eval(\"try{");
             Writer.Write(type);
+            Writer.Write("}catch{}\")");
             Writer.Write("}");
         }
 

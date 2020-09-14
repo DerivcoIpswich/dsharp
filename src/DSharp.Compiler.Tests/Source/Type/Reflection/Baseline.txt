@@ -7,6 +7,7 @@ define('test', ['ss'], function(ss) {
   function MyClass() {
     ss.defineProperty(this, 'Other', null);
     ss.defineProperty(this, 'Getter', 0);
+    ss.defineProperty(this, 'Tyyype', null);
     var members = ss.getMembers((MyClass));
     MyClass._assert(members[0].Name === 'get_Item');
     MyClass._assert(members[1].Name === 'set_Item');
@@ -18,6 +19,9 @@ define('test', ['ss'], function(ss) {
   MyClass._assert = function(assertion) {
   };
   var MyClass$ = {
+    getDelegate: function() {
+      throw new Error();
+    },
     method: function() {
     },
     method2: function($TArgs) {

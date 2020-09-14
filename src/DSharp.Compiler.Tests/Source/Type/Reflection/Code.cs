@@ -8,8 +8,12 @@ using System.Runtime.CompilerServices;
 
 namespace TypeTests {
 
+    public delegate void Wooow();
+
     public class MyClass
     {
+        public Wooow GetDelegate() { throw new Exception(); }
+
         public MyClass<int> Other { get; set; }
 
         public object this[int index]
@@ -23,6 +27,8 @@ namespace TypeTests {
         public void Method()
         {
         }
+
+        public Type Tyyype { get; set; }
 
         public T Method2<T>() { throw new Exception();  }
 
