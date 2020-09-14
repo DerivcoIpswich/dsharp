@@ -1,6 +1,19 @@
 import { createFallbackFunction } from "../../Helpers";
+import { instanceOf } from "../../TypeSystem";
+import { IEnumerable } from "../SystemInterfaces";
+import { enumerate } from "./Enumerator";
 
 export function toArray(obj) {
+    if (instanceOf((IEnumerable), obj)) {
+        var array: any[] = [];
+        var enumerable = enumerate(obj);
+        while (enumerable.moveNext()) {
+            var t = enumerable.current;
+            array.push(t);
+        }
+        return array;
+    }
+
     return obj
         ? typeof obj === "string"
             ? JSON.parse("(" + obj + ")")

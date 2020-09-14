@@ -27,6 +27,7 @@ export class Task {
     Id: number = taskId++;
     static delay: (...args: any[]) => Task;
     static whenAll: (...args: any[]) => Task;
+    static whenAny: (...args: any[]) => Task;
 
     constructor(action?: Function, cancellationToken?: CancellationToken) {
         this._taskContinuations = new Queue();
@@ -95,7 +96,6 @@ export class Task {
             result = this.executeDelegatedWork(this._invocationMethod);
         }
         catch (e) {
-            console.log(e);
             this.Exception = e;
             this.completeTask(TaskStatus.faulted);
             reject(e);
@@ -285,22 +285,23 @@ export class Task {
         return Task._runTask(createGenericType(Task_$1, { TResult: getTypeArgument(this, 'TResult') }, func, cancellationToken));
     }
 
-    public static whenAny() {
-        throw new Exception();
-    }
-
-    public static _runTask = function (task: Task) {
+    public static _runTask = function (task: Task): Task {
         task.start();
         return task;
     }
 
-    public static async _runTaskAsync(task: Task): Promise<any>{
+    /**
+     * Executes a task asynchronously and returns a promise to await.
+     * If the task returns a value it will return it on success, otherwise it'll return the task object or the exception.
+     * @param task 
+     */
+    public static async _runTaskAsync(task: Task): Promise<Task | Exception | any>{
         return new Promise((resolve, reject) =>{
             task._addCompletionAction(t => {
                 if(t.IsCompletedSuccessfully){
-                    let tWithResult = t as Task_$1;
-                    if(tWithResult?.Result != undefined){
-                        resolve(tWithResult.Result)
+                    let taskWithResult = t as Task_$1;
+                    if(taskWithResult?.Result != undefined){
+                        resolve(taskWithResult.Result);
                     }
                     resolve(t);
                 }
@@ -311,7 +312,7 @@ export class Task {
                     reject(new TaskCanceledException())
                 }
                 else{
-                    reject();
+                    reject(t);
                 }
             });
             task.start();

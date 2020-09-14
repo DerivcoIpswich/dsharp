@@ -29,3 +29,7 @@ export function createFallbackFunction(name, fallback) : FallBackFunction{
 
 export function _nop() {
 }
+
+export function isArray(obj: any){
+    return Array.isArray(obj);
+}

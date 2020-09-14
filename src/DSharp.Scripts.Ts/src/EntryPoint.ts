@@ -40,14 +40,17 @@ import { TaskContinuationOptions } from "./System/Threading/Tasks/TaskContinuati
 import { TaskStatus } from "./System/Threading/Tasks/TaskStatus";
 import { CancellationTokenRegistration } from "./System/Threading/CancellationTokenRegistration";
 import { TaskCompletionSource_$1 } from "./System/Threading/Tasks/TaskCompletionSource";
-import { task_delay, task_whenAll } from "./System/Threading/Tasks/Task.Extensions";
+import { task_delay, task_whenAll, task_whenAny } from "./System/Threading/Tasks/Task.Extensions";
 import { Timer } from "./System/Threading/Timer";
 import { MemberTypes } from "./System/Reflection/MemberTypes";
+import { Exception } from "./System/Exception";
+import { TaskCanceledException } from "./System/Threading/Tasks/TaskCanceledException";
 
 const SCRIPT_NAME = "ss";
 
 Task.delay = task_delay;
 Task.whenAll = task_whenAll;
+Task.whenAny = task_whenAny;
 
 let moduleExports = defineModule(SCRIPT_NAME, undefined, {
     CancelEventArgs: defineClass(CancelEventArgs),
@@ -86,7 +89,9 @@ let moduleExports = defineModule(SCRIPT_NAME, undefined, {
     Stack: defineClass(Stack),
     StringBuilder: defineClass(StringBuilder),
     TimeSpan: defineClass(TimeSpan),
-    Timer: defineClass(Timer)
+    Timer: defineClass(Timer),
+    Exception: defineClass(Exception),
+    TaskCanceledException: defineClass(TaskCanceledException)
 });
 
 moduleExports = extendModule(SCRIPT_NAME, moduleExports, {

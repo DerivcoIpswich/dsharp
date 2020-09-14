@@ -8,6 +8,8 @@ import { enumerate } from "../../Collections/Enumerator";
 import { WhenAllTask } from "./WhenAllTask";
 import { toArray } from "../../Collections/CollectionHelpers";
 import { CancellationToken } from "../CancellationToken";
+import { WhenAnyTask } from "./WhenAnyTask";
+import { isArray } from "../../../Helpers";
 
 export function task_delay(...args: any[]): Task {
     if(args.length <= 0){
@@ -29,17 +31,23 @@ export function task_whenAll(...args: any[]): Task {
         return Task.CompletedTask;
     }
     var obj = args[0];
-    if (instanceOf((IEnumerable), obj)) {
-        var enumerableTasks = obj;
-        var taskCollection: any[] = [];
-        var $enum1 = enumerate(enumerableTasks);
-        while ($enum1.moveNext()) {
-            var t = $enum1.current;
-            taskCollection.push(t);
-        }
-        return new WhenAllTask(toArray(taskCollection), CancellationToken.None);
+    if (isArray(obj)) {
+        return new WhenAllTask(obj as Task[], CancellationToken.None);
     }
     else {
-        return new WhenAllTask(obj as Task[], CancellationToken.None);
+        return new WhenAllTask(toArray(obj), CancellationToken.None);
+    }
+}
+
+export function task_whenAny(...args: any[]): Task {
+    if(args.length <= 0){
+        return Task.CompletedTask;
+    }
+    var obj = args[0];
+    if (isArray(obj)) {
+        return new WhenAnyTask(obj as Task[], CancellationToken.None);
+    }
+    else {
+        return new WhenAnyTask(toArray(obj), CancellationToken.None);
     }
 }
