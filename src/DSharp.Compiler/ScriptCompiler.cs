@@ -173,7 +173,7 @@ namespace DSharp.Compiler
                 new ObjectInitializerRewriter(this),
                 new ImplicitArrayCreationRewriter(),
                 new OperatorOverloadRewriter(),
-                new ExtensionMethodToStaticRewriter(),
+                new ExtensionMethodToStaticRewriter(this),
             };
 
             compilation = CompilationPreprocessor.Preprocess(compilation, lowerers);

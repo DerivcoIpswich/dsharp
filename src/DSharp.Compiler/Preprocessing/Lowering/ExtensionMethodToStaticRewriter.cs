@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DSharp.Compiler.Errors;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -13,6 +14,12 @@ namespace DSharp.Compiler.Preprocessing.Lowering
     {
         private SemanticModel sem;
         private Dictionary<string, string> typeAliases = new Dictionary<string, string>();
+        private readonly IErrorHandler errorHandler;
+
+        public ExtensionMethodToStaticRewriter(IErrorHandler errorHandler)
+        {
+            this.errorHandler = errorHandler;
+        }
 
         public CompilationUnitSyntax Apply(Compilation compilation, CompilationUnitSyntax root)
         {
@@ -51,7 +58,7 @@ namespace DSharp.Compiler.Preprocessing.Lowering
 
         public override SyntaxNode VisitInvocationExpression(InvocationExpressionSyntax node)
         {
-            var symb = Try(() => sem.GetSymbolInfo(node).Symbol as IMethodSymbol, null);
+            var symb = Try(() => sem.GetSymbolInfo(node) is SymbolInfo info && info.Symbol is IMethodSymbol method ? method : null, null, e => errorHandler.ReportExpressionError(e.Message, node));
             var newNode = (InvocationExpressionSyntax)base.VisitInvocationExpression(node);
 
             if (symb != null
@@ -105,10 +112,16 @@ namespace DSharp.Compiler.Preprocessing.Lowering
             return newNode;
         }
 
-        private static T Try<T>(Func<T> action, T defaultValue)
+        private static T Try<T>(Func<T> action, T defaultValue, Action<Exception> errorAction = null)
         {
             try { return action(); }
-            catch (Exception) { }
+            catch (Exception e) 
+            {
+                if(errorAction is Action<Exception>)
+                {
+                    errorAction.Invoke(e);
+                }                
+            }
 
             return defaultValue;
         }
