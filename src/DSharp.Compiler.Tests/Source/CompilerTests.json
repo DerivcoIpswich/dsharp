@@ -408,13 +408,13 @@
       {
         "Name": "EnumToString_Normal",
         "SourceFolder": "EnumToString",
-        "SourceFiles": [ "Code1.cs" ],
+        "SourceFiles": [ "Code.cs" ],
         "ComparisonFile": "NormalBaseline.txt"
       },
       {
         "Name": "EnumToString_Minified",
         "SourceFolder": "EnumToString",
-        "SourceFiles": [ "Code2.cs" ],
+        "SourceFiles": [ "Code.cs" ],
         "ComparisonFile": "MinBaseline.txt",
         "Options": {
           "Minimize": true
@@ -585,6 +585,20 @@
         "Name": "Properties",
         "SourceFiles": [ "Code.cs" ],
         "ComparisonFile": "Baseline.txt"
+      },
+      {
+        "Name": "PropertiesInheritance",
+        "SourceFiles": [ "Code.cs" ],
+        "ComparisonFile": "Baseline.txt"
+      },
+      {
+        "Name": "PropertiesInheritance_Minified",
+        "SourceFolder": "PropertiesInheritance",
+        "SourceFiles": [ "Code.cs" ],
+        "ComparisonFile": "MinBaseline.txt",
+        "Options": {
+          "Minimize": true
+        }
       },
       {
         "Name": "StaticConstructors",

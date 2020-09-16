@@ -153,6 +153,7 @@ define('test', ['ss'], function(ss) {
   // MemberTests.ImplementedContainer
 
   function ImplementedContainer() {
+    ss.defineProperty(this, 'InstanceProp', null);
     this._value$1 = '';
     AbstractPropertiesContainer.call(this);
   }

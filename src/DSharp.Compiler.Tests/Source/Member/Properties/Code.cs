@@ -142,6 +142,8 @@ namespace MemberTests {
 
     public sealed class ImplementedContainer : AbstractPropertiesContainer
     {
+        private string InstanceProp { get; set; }
+
         private string value = "";
 
         protected override string MyAbstractProp
