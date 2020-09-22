@@ -69,7 +69,7 @@
     <ItemGroup>
       <DeleteFile Include="$(OutputPath)*.js"/>
       <DeleteFile Include="$(OutputPath)$(AssemblyName).scripts"/>
-      <DeleteFile Include="$(IntermediarySourceFolder)*.*"/>
+      <DeleteFile Include="$(IntermediarySourceFolder)*.*" Condition="'$(GenerateCompilerIntermediarySource)' == 'true'"/>
     </ItemGroup>
     <Delete Files="@(DeleteFile)" />
   </Target>

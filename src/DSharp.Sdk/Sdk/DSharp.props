@@ -6,7 +6,9 @@
     <ExcludeCodeAnalysis Condition="'$(ExcludeCodeAnalysis)' == ''">false</ExcludeCodeAnalysis>
     <SkipScriptCopy Condition="'$(SkipScriptCopy)' == ''">false</SkipScriptCopy>
     <DSharpCompilerDebugMode Condition="'$(DSharpCompilerDebugMode)' == ''">false</DSharpCompilerDebugMode>
-    <IntermediarySourceFolder Condition="'$(IntermediarySourceFolder)' == '' AND '$(Configuration)' == 'Debug'">$(BaseIntermediateOutputPath)PreprocessedScripts\</IntermediarySourceFolder>
+    <GenerateCompilerIntermediarySource Condition="'$(GenerateCompilerIntermediarySource)' == '' AND '$(Configuration)' == 'Debug'">true</GenerateCompilerIntermediarySource>
+    <GenerateCompilerIntermediarySource Condition="'$(GenerateCompilerIntermediarySource)' == '' AND '$(Configuration)' != 'Debug'">false</GenerateCompilerIntermediarySource>
+    <IntermediarySourceFolder Condition="'$(IntermediarySourceFolder)' == '' AND '$(GenerateCompilerIntermediarySource)' == 'true'">$(BaseIntermediateOutputPath)PreprocessedScripts\</IntermediarySourceFolder>
     <DefineConstants>DSHARP;@(DefineConstants)</DefineConstants>
     <GenerateScriptAssemblyAttribute Condition="'$(GenerateScriptAssemblyAttributeCondition)' == ''">true</GenerateScriptAssemblyAttribute>
     <GenerateScriptMetadata Condition="'$(GenerateScriptMetadata)' == ''">true</GenerateScriptMetadata>
