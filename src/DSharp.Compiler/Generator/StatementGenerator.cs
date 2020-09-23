@@ -292,6 +292,23 @@ namespace DSharp.Compiler.Generator
             }
         }
 
+        private static void GenerateYieldStatement(ScriptGenerator generator, MemberSymbol symbol,
+                                            YieldStatement statement)
+        {
+            ScriptTextWriter writer = generator.Writer;
+
+            if (statement.Value != null)
+            {
+                writer.Write("yield ");
+                ExpressionGenerator.GenerateExpression(generator, symbol, statement.Value);
+                writer.WriteLine(";");
+            }
+            else
+            {
+                writer.WriteLine("yield;");
+            }
+        }
+
         public static void GenerateStatement(ScriptGenerator generator, MemberSymbol symbol, Statement statement)
         {
             switch (statement.Type)
@@ -357,6 +374,10 @@ namespace DSharp.Compiler.Generator
                     break;
                 case StatementType.Using:
                     GenerateUsingStatement(generator, symbol, (UsingStatement) statement);
+
+                    break;
+                case StatementType.Yield:
+                    GenerateYieldStatement(generator, symbol, (YieldStatement)statement);
 
                     break;
                 default:

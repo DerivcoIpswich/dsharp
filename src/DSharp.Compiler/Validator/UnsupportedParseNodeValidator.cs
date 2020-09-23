@@ -47,14 +47,7 @@ namespace DSharp.Compiler.Validator
                     featureName = "Labeled statements";
 
                     break;
-                case ParseNodeType.YieldReturn:
-                    featureName = "Yield return statements";
 
-                    break;
-                case ParseNodeType.YieldBreak:
-                    featureName = "Yield break statements";
-
-                    break;
                 case ParseNodeType.Checked:
                     featureName = "Checked expressions";
 

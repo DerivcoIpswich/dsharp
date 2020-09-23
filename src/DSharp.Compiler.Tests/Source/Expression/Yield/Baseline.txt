@@ -1,0 +1,26 @@
+"use strict";
+
+define('test', ['ss'], function(ss) {
+  var $global = this;
+  // ExpressionTests.App
+
+  function App() {
+  }
+  var App$ = {
+    test: function*(arg) {
+      return;
+      for (var i = 0; i < arg; ++i) {
+        yield i;
+      }
+    }
+  };
+
+
+  var $exports = ss.module('test', null,
+    {
+      App: ss.defineClass(App, App$, [], null)
+    });
+
+
+  return $exports;
+});

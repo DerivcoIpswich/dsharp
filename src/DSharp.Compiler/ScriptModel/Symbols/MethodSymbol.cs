@@ -3,6 +3,7 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
@@ -112,6 +113,8 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
         public bool IgnoreGeneratedTypeArguments { get; set; }
 
+        public bool IsSequenceGenerator { get; private set; }
+
         public void AddGenericArguments(ICollection<GenericParameterSymbol> genericArguments)
         {
             Debug.Assert(GenericArguments == null);
@@ -183,6 +186,11 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         {
             Debug.Assert(SkipGeneration == false);
             SkipGeneration = true;
+        }
+
+        internal void SetSequenceGenerator()
+        {
+            IsSequenceGenerator = true;
         }
     }
 }

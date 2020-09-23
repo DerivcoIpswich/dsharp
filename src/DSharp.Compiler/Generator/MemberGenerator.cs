@@ -298,7 +298,12 @@ namespace DSharp.Compiler.Generator
                 writer.Write("{0}, ", methodSymbol.GetGeneratedParamsCount());
             }
 
-            writer.Write("function(");
+            writer.Write("function");
+            if(methodSymbol.IsSequenceGenerator)
+            {
+                writer.Write("*");
+            }
+            writer.Write("(");
             WriteParameters(methodSymbol, writer, true);
 
             writer.WriteLine(") {");

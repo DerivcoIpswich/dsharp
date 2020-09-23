@@ -117,6 +117,8 @@ namespace DSharp.Compiler.Validator
                 case ParseNodeType.Using:
                 case ParseNodeType.ObjectInitializer:
                 case ParseNodeType.TypeParameter:
+                case ParseNodeType.YieldReturn:
+                case ParseNodeType.YieldBreak:
 
                     // No validation required
                     break;
@@ -126,8 +128,6 @@ namespace DSharp.Compiler.Validator
                 case ParseNodeType.Goto:
                 case ParseNodeType.Lock:
                 case ParseNodeType.UnsafeStatement:
-                case ParseNodeType.YieldReturn:
-                case ParseNodeType.YieldBreak:
                 case ParseNodeType.LabeledStatement:
                 case ParseNodeType.Checked:
                 case ParseNodeType.Unchecked:

@@ -130,6 +130,15 @@ namespace DSharp.Compiler.Compiler
                     statement = ProcessUsingStatement((UsingNode) statementNode);
 
                     break;
+                case ParseNodeType.YieldReturn:
+                    statement = ProcessYieldReturnStatement((YieldReturnNode)statementNode);
+
+                    break;
+
+                case ParseNodeType.YieldBreak:
+                    statement = ProcessYieldBreakStatement((YieldBreakNode)statementNode);
+
+                    break;
             }
 
             return statement;
@@ -331,6 +340,33 @@ namespace DSharp.Compiler.Compiler
             }
 
             return new ReturnStatement(returnValue);
+        }
+
+        private Statement ProcessYieldReturnStatement(YieldReturnNode node)
+        {
+            Expression returnValue = null;
+
+            if (node.Value != null)
+            {
+                returnValue = expressionBuilder.BuildExpression(node.Value);
+
+                if (returnValue is MemberExpression)
+                {
+                    returnValue = expressionBuilder.TransformMemberExpression((MemberExpression)returnValue);
+                }
+            }
+
+            if(memberContext is MethodSymbol methodSymbol)
+            {
+                methodSymbol.SetSequenceGenerator();
+            }
+
+            return new YieldStatement(returnValue);
+        }
+
+        private Statement ProcessYieldBreakStatement(YieldBreakNode node)
+        {
+            return new ReturnStatement(null);
         }
 
         private Statement ProcessSwitchStatement(SwitchNode node)
