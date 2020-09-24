@@ -4,9 +4,18 @@
     <DSharpBuildAssembly Condition="'$(DSharpBuildAssembly)' == ''">$(ToolsPath)DSharp.Build.dll</DSharpBuildAssembly>
     <NoWarn>CS0626;$(NoWarn)</NoWarn>
   </PropertyGroup>
-  
+
   <UsingTask TaskName="ScriptCompilerTask" AssemblyFile="$(DSharpBuildAssembly)" />
   <UsingTask TaskName="ResXCodeGeneratorTask" AssemblyFile="$(DSharpBuildAssembly)" />
+
+  <Target Name="InstallBabel" BeforeTargets="_GenerateRestoreProjectSpec;CollectPackageReferences" Condition="Exists('$(MsBuildThisFileDirectory)node_modules') == 'False'">
+    <Message Text="InstallBabel" Importance="High" />
+    <Exec
+      Command="npm install @babel/core@7.11.6 @babel/cli@7.11.6 @babel/preset-env@7.11.5 --no-save"
+      WorkingDirectory="$(MsBuildThisFileDirectory)"
+      ConsoleToMsBuild="true"
+    />
+  </Target>
 
   <Target Name="ValidateMinimumFrameworkVersion" BeforeTargets="Compile">
     <Error Text="Invalid .NetFramework version specified. Please specify $(MinimumFrameworkVersion) or greater"
@@ -35,6 +44,12 @@
       ProjectPath="$(MSBuildProjectFullPath)">
       <Output TaskParameter="Scripts" ItemName="Scripts" />
     </ScriptCompilerTask>
+
+    <Exec
+      Command="npx babel %(Scripts.Identity) --out-file %(RootDir)%(Directory)%(FileName).es5.js --presets=@babel/preset-env"
+      WorkingDirectory="$(MsBuildThisFileDirectory)"
+      ConsoleToMsBuild="true"
+    />
   </Target>
 
   <Target Name="GenerateResourcesCode" Inputs="@(EmbeddedResource)" Outputs="@(GeneratedResourceCode)">
