@@ -9,6 +9,7 @@
   <UsingTask TaskName="ResXCodeGeneratorTask" AssemblyFile="$(DSharpBuildAssembly)" />
 
   <Target Name="InstallBabel" BeforeTargets="_GenerateRestoreProjectSpec;CollectPackageReferences" Condition="Exists('$(MsBuildThisFileDirectory)node_modules') == 'False'">
+    <MakeDir Directories="$(MsBuildThisFileDirectory)node_modules" />
     <Message Text="InstallBabel" Importance="High" />
     <Exec
       Command="npm install @babel/core@7.11.6 @babel/cli@7.11.6 @babel/preset-env@7.11.5 --no-save"
@@ -50,6 +51,8 @@
       WorkingDirectory="$(MsBuildThisFileDirectory)"
       ConsoleToMsBuild="true"
     />
+    
+    <Message Text="%(Scripts.Identity) -> %(RootDir)%(Directory)%(FileName).es5.js" Importance="High"/>
   </Target>
 
   <Target Name="GenerateResourcesCode" Inputs="@(EmbeddedResource)" Outputs="@(GeneratedResourceCode)">
