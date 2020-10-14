@@ -5,7 +5,6 @@ using System.Runtime.InteropServices;
 namespace System
 {
     [EditorBrowsable(EditorBrowsableState.Never)]
-    [ScriptIgnore]
     public abstract class Attribute : _Attribute
     {
         extern void _Attribute.GetIDsOfNames(ref Guid riid, IntPtr rgszNames, uint cNames, uint lcid, IntPtr rgDispId);
