@@ -23,6 +23,7 @@
       AssemblyName ="$(AssemblyName)"
       Defines="$(DefineConstants)"
       Minimize="$(MinimizeScript)"
+      ObfuscationMapPath="$(ObfuscationMapPath)"
       CopyReferences="$(CopyReferences)"
       CopyReferencesPath="$(CopyReferencesPath)"
       OutputPath="$(OutputPath)"

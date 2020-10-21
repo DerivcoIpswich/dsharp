@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using DSharp.Compiler.Errors;
+using DSharp.Compiler.Obfuscation;
 using DSharp.Compiler.References;
 using DSharp.Compiler.ScriptModel.Symbols;
 using Mono.Cecil;
@@ -17,17 +18,20 @@ namespace DSharp.Compiler.Importer
     internal sealed class MetadataImporter
     {
         private readonly IErrorHandler errorHandler;
-
+        private readonly CompilerOptions options;
+        private readonly IObfuscator obfuscator;
         private List<TypeSymbol> importedTypes;
         private bool resolveError;
 
         private SymbolSet symbols;
 
-        public MetadataImporter(IErrorHandler errorHandler)
+        public MetadataImporter(IErrorHandler errorHandler, CompilerOptions options)
         {
             Debug.Assert(errorHandler != null);
 
             this.errorHandler = errorHandler;
+            this.options = options;
+            obfuscator = new CartesianObfuscator("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", options.ObfuscationMap);
         }
 
         private ICollection<TypeSymbol> ImportAssemblies(MetadataSource mdSource)
@@ -397,11 +401,26 @@ namespace DSharp.Compiler.Importer
                     && (field.FieldType.IsPrimitive || field.FieldType.Name == "String"))
                 {
                     fieldSymbol.SetConstant();
-                    fieldSymbol.Value = field.Constant;
+                    object value = field.Constant;
+
+                    if (value is string strValue && ShouldObfuscateValue(field, type))
+                    {
+                        fieldSymbol.Value = obfuscator.Obfuscate(strValue);
+                    }
+                    else
+                    {
+                        fieldSymbol.Value = field.Constant;
+                    }
                 }
 
                 typeSymbol.AddMember(fieldSymbol);
             }
+        }
+
+        private bool ShouldObfuscateValue(FieldDefinition field, TypeDefinition type)
+        {
+            return field.CustomAttributes.Any(a => a.AttributeType.Name.StartsWith("ObfuscateValues"))
+                || type.CustomAttributes.Any(a => a.AttributeType.Name.StartsWith("ObfuscateValues"));
         }
 
         private void ImportMemberDetails(MemberSymbol memberSymbol, MethodDefinition methodDefinition,
@@ -979,7 +998,7 @@ namespace DSharp.Compiler.Importer
 
             if (typeSymbol != null)
             {
-                if(MetadataHelpers.ShouldIgnoreGenerics(type))
+                if (MetadataHelpers.ShouldIgnoreGenerics(type))
                 {
                     typeSymbol.SetIgnoreGenerics();
                 }

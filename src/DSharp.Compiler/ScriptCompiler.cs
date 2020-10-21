@@ -11,8 +11,10 @@ using DSharp.Compiler.Compiler;
 using DSharp.Compiler.Errors;
 using DSharp.Compiler.Generator;
 using DSharp.Compiler.Importer;
+using DSharp.Compiler.Obfuscation;
 using DSharp.Compiler.Preprocessing;
 using DSharp.Compiler.Preprocessing.Lowering;
+using DSharp.Compiler.Preprocessing.Obfuscation;
 using DSharp.Compiler.References;
 using DSharp.Compiler.ScriptModel.Symbols;
 using DSharp.Compiler.Validator;
@@ -130,7 +132,7 @@ namespace DSharp.Compiler
 
         private void ImportMetadata()
         {
-            MetadataImporter mdImporter = new MetadataImporter(this);
+            MetadataImporter mdImporter = new MetadataImporter(this, options);
             mdImporter.ImportMetadata(options.References, symbols);
         }
 
@@ -174,7 +176,9 @@ namespace DSharp.Compiler
                 new ImplicitArrayCreationRewriter(),
                 new OperatorOverloadRewriter(),
                 new ExtensionMethodToStaticRewriter(),
-            };
+
+                new ConstValueObfuscator(new CartesianObfuscator("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", options.ObfuscationMap))
+        };
 
             compilation = CompilationPreprocessor.Preprocess(compilation, lowerers);
 

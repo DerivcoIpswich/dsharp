@@ -6,6 +6,7 @@ using DSharp.Compiler;
 using DSharp.Compiler.Errors;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
+using Newtonsoft.Json;
 using NUglify;
 using NUglify.JavaScript;
 
@@ -99,6 +100,8 @@ namespace DSharp.Build.Tasks
 
         public string ScriptName { get; set; }
 
+        public string ObfuscationMapPath { get; set; }
+
         [Output]
         public ITaskItem[] Scripts
         {
@@ -161,7 +164,30 @@ namespace DSharp.Build.Tasks
                 }
             }
 
+            SaveObfuscationMap(options.ObfuscationMap);
             return true;
+        }
+
+        private Dictionary<string, string> ReadObfuscationMap()
+        {
+            if (string.IsNullOrEmpty(ObfuscationMapPath) || !File.Exists(ObfuscationMapPath))
+            {
+                return new Dictionary<string, string>();
+            }
+
+            var contents = File.ReadAllText(ObfuscationMapPath);
+            return JsonConvert.DeserializeObject<Dictionary<string, string>>(contents);
+        }
+
+        private void SaveObfuscationMap(Dictionary<string, string> obfuscationMap)
+        {
+            if (string.IsNullOrEmpty(ObfuscationMapPath))
+            {
+                return;
+            }
+
+            var contents = JsonConvert.SerializeObject(obfuscationMap, Formatting.Indented);
+            File.WriteAllText(ObfuscationMapPath, contents);
         }
 
         private CompilerOptions CreateOptions(IEnumerable<ITaskItem> sourceItems, IEnumerable<ITaskItem> resourceItems,
@@ -188,11 +214,13 @@ namespace DSharp.Build.Tasks
             outputScriptItem = new TaskItem(scriptFilePath);
             options.ScriptFile = new TaskItemOutputStreamSource(outputScriptItem);
 
-            if(GenerateScriptMetadata)
+            if (GenerateScriptMetadata)
             {
                 var metadataPath = Path.ChangeExtension(scriptFilePath, "meta.js");
                 options.MetadataFile = new TaskItemOutputStreamSource(new TaskItem(metadataPath));
             }
+
+            options.ObfuscationMap = ReadObfuscationMap();
 
             return options;
         }
@@ -258,7 +286,7 @@ namespace DSharp.Build.Tasks
 
             UglifyResult result = Uglify.Js(script, codeSettings);
 
-            if(result.HasErrors)
+            if (result.HasErrors)
             {
                 foreach (UglifyError error in result.Errors)
                 {
@@ -425,7 +453,7 @@ namespace DSharp.Build.Tasks
 
         private string GetTemplate()
         {
-            if(!File.Exists(TemplatePath))
+            if (!File.Exists(TemplatePath))
             {
                 Log.LogWarning($"Unable to read from template file: {TemplatePath}. Default template will be used.");
                 return null;

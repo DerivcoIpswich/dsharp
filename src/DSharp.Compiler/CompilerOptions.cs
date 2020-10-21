@@ -36,6 +36,7 @@ namespace DSharp.Compiler
         public bool DebugMode { get; set; } = false;
 
         public string IntermediarySourceFolder { get; set; }
+        public Dictionary<string, string> ObfuscationMap { get; set; }
 
         //TODO: Remove this mechanism
         public bool Validate(out string errorMessage)
