@@ -3,7 +3,7 @@
     <PackageOutputPath Condition="'$(PackageOutputPath)' == ''">$(SolutionDir)Output\Packages</PackageOutputPath>
     <NuspecFile Condition="'$(NuspecFile)' == '' AND Exists('$(AssemblyName).nuspec')">$(AssemblyName).nuspec</NuspecFile>
     <AssemblyVersion>2.9.0</AssemblyVersion>
-    <PackageVersion Condition="'$(PackageVersion)' == ''">$(AssemblyVersion)-dev.836</PackageVersion>
+    <PackageVersion Condition="'$(PackageVersion)' == ''">$(AssemblyVersion)-dev.1</PackageVersion>
   </PropertyGroup>
 
   <Target Name="UpdateNuspecFileProperties" BeforeTargets="GenerateNuspec">
