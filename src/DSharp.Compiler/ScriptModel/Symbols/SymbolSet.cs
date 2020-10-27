@@ -959,17 +959,54 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                     return rootedType;
                 }
 
-                foreach (var part in parts)
+                foreach (AtomicNameNode part in parts)
                 {
-                    names.Insert(0, part.Name);
+                    if(part is GenericNameNode genericName)
+                    {
+                        names.Insert(0, genericName.FullGenericName);
+                    }
+                    else
+                    {
+                        names.Insert(0, part.Name);
+                    }
+
                     var nestedTypeName = string.Join("$", names);
 
                     if (symbolTable.FindSymbol(nestedTypeName, contextSymbol, SymbolFilter.Types) is TypeSymbol typeSymbol)
                     {
+                        if(typeSymbol.IsGeneric && parts.FirstOrDefault(p => p is GenericNameNode) is GenericNameNode genericName1)
+                        {
+                            if (!typeSymbol.IsGeneric || genericName1.TypeArguments.All(n => n is AtomicNameNode n1 && n1.Name == "__unknown"))
+                            {
+                                //generics ignored
+                                return typeSymbol;
+                            }
+
+                            List<TypeSymbol> typeArguments = new List<TypeSymbol>();
+
+                            foreach (ParseNode argNode in genericName1.TypeArguments)
+                            {
+                                TypeSymbol argType = ResolveType(argNode, symbolTable, contextSymbol);
+                                if (argType == null)
+                                {
+                                    return null;
+                                }
+                                Debug.Assert(argType != null);
+                                typeArguments.Add(argType);
+                            }
+
+                            if (typeSymbol != null)
+                            {
+                                TypeSymbol resolvedSymbol = CreateGenericTypeSymbol(typeSymbol, typeArguments);
+                                Debug.Assert(resolvedSymbol != null);
+
+                                return resolvedSymbol;
+                            }
+                        }
+
                         return typeSymbol;
                     }
                 }
-
             }
 
             return default;
