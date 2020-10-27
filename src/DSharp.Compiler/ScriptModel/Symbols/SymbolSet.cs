@@ -910,31 +910,9 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                 TypeSymbol templateType =
                     (TypeSymbol)symbolTable.FindSymbol(genericTypeName, contextSymbol, SymbolFilter.Types);
 
-                if (!templateType.IsGeneric || genericNameNode.TypeArguments.All(n => n is AtomicNameNode n1 && n1.Name == "__unknown"))
+                if(ResolveGenericTypeArguments(symbolTable, contextSymbol, genericNameNode, templateType) is TypeSymbol typeSymbol)
                 {
-                    //generics ignored
-                    return templateType;
-                }
-
-                List<TypeSymbol> typeArguments = new List<TypeSymbol>();
-
-                foreach (ParseNode argNode in genericNameNode.TypeArguments)
-                {
-                    TypeSymbol argType = ResolveType(argNode, symbolTable, contextSymbol);
-                    if (argType == null)
-                    {
-                        return null;
-                    }
-                    Debug.Assert(argType != null);
-                    typeArguments.Add(argType);
-                }
-
-                if (templateType != null)
-                {
-                    TypeSymbol resolvedSymbol = CreateGenericTypeSymbol(templateType, typeArguments);
-                    Debug.Assert(resolvedSymbol != null);
-
-                    return resolvedSymbol;
+                    return typeSymbol;
                 }
             }
 
@@ -974,34 +952,9 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
                     if (symbolTable.FindSymbol(nestedTypeName, contextSymbol, SymbolFilter.Types) is TypeSymbol typeSymbol)
                     {
-                        if(typeSymbol.IsGeneric && parts.FirstOrDefault(p => p is GenericNameNode) is GenericNameNode genericName1)
+                        if(typeSymbol.IsGeneric)
                         {
-                            if (!typeSymbol.IsGeneric || genericName1.TypeArguments.All(n => n is AtomicNameNode n1 && n1.Name == "__unknown"))
-                            {
-                                //generics ignored
-                                return typeSymbol;
-                            }
-
-                            List<TypeSymbol> typeArguments = new List<TypeSymbol>();
-
-                            foreach (ParseNode argNode in genericName1.TypeArguments)
-                            {
-                                TypeSymbol argType = ResolveType(argNode, symbolTable, contextSymbol);
-                                if (argType == null)
-                                {
-                                    return null;
-                                }
-                                Debug.Assert(argType != null);
-                                typeArguments.Add(argType);
-                            }
-
-                            if (typeSymbol != null)
-                            {
-                                TypeSymbol resolvedSymbol = CreateGenericTypeSymbol(typeSymbol, typeArguments);
-                                Debug.Assert(resolvedSymbol != null);
-
-                                return resolvedSymbol;
-                            }
+                            return ResolveGenericTypeArguments(symbolTable, contextSymbol, parts.FirstOrDefault(p => p is GenericNameNode).As<GenericNameNode>(), typeSymbol);
                         }
 
                         return typeSymbol;
@@ -1010,6 +963,38 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             }
 
             return default;
+        }
+
+        private TypeSymbol ResolveGenericTypeArguments(ISymbolTable symbolTable, Symbol contextSymbol, GenericNameNode genericNameNode, TypeSymbol templateType)
+        {
+            if (!templateType.IsGeneric || genericNameNode.TypeArguments.All(n => n is AtomicNameNode n1 && n1.Name == "__unknown"))
+            {
+                //generics ignored
+                return templateType;
+            }
+
+            List<TypeSymbol> typeArguments = new List<TypeSymbol>();
+
+            foreach (ParseNode argNode in genericNameNode.TypeArguments)
+            {
+                TypeSymbol argType = ResolveType(argNode, symbolTable, contextSymbol);
+                if (argType == null)
+                {
+                    return null;
+                }
+                Debug.Assert(argType != null);
+                typeArguments.Add(argType);
+            }
+
+            if (templateType != null)
+            {
+                TypeSymbol resolvedSymbol = CreateGenericTypeSymbol(templateType, typeArguments);
+                Debug.Assert(resolvedSymbol != null);
+
+                return resolvedSymbol;
+            }
+
+            return null;
         }
 
         private TypeSymbol ResolveAtomicNameNodeType(AtomicNameNode atomicNameNode, ISymbolTable symbolTable, Symbol contextSymbol)
