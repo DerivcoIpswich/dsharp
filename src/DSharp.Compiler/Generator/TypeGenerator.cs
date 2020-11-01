@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using DSharp.Compiler.CodeModel.Members;
-using DSharp.Compiler.ScriptModel.Expressions;
 using DSharp.Compiler.ScriptModel.Symbols;
 
 namespace DSharp.Compiler.Generator
@@ -42,8 +41,7 @@ namespace DSharp.Compiler.Generator
             foreach (MemberSymbol memberSymbol in classSymbol.Members.Where(member => !member.Visibility.HasFlag(MemberVisibility.Static)))
             {
                 if (memberSymbol.Type == SymbolType.Field
-                    || (memberSymbol is CodeMemberSymbol codeMemberSymbol && codeMemberSymbol.IsAbstract)
-                    || (memberSymbol is PropertySymbol propertySymbol && propertySymbol.IsAutoProperty()))
+                    || (memberSymbol is CodeMemberSymbol codeMemberSymbol && codeMemberSymbol.IsAbstract))
                 {
                     continue;
                 }
@@ -127,18 +125,6 @@ namespace DSharp.Compiler.Generator
                 DocCommentGenerator.GenerateComment(generator, classSymbol);
             }
 
-            foreach (var property in GetNonReadonlyAutoProperties(classSymbol))
-            {
-                writer.Write(DSharpStringResources.ScriptExportMember("defineProperty"));
-                writer.Write($"(this, '{property.GeneratedName}', ");
-                    
-                var initialValueExpression = Compiler.ImplementationBuilder.GetDefaultValueExpression(property.AssociatedType, property.SymbolSet);
-                ExpressionGenerator.GenerateLiteralExpression(generator, property, initialValueExpression);
-
-                writer.Write(");");
-                writer.WriteLine();
-            }
-
             foreach (MemberSymbol memberSymbol in classSymbol.Members)
             {
                 if (memberSymbol.Type == SymbolType.Field &&
@@ -176,14 +162,6 @@ namespace DSharp.Compiler.Generator
             {
                 writer.WriteLine($"));");
             }
-        }
-
-        private static IEnumerable<PropertySymbol> GetNonReadonlyAutoProperties(ClassSymbol classSymbol)
-        {
-            return classSymbol.Members
-                .Where(symbol => symbol is PropertySymbol)
-                .Cast<PropertySymbol>()
-                .Where(prop => prop.IsAutoProperty() && !prop.IsReadOnly && !prop.IsAbstract && !prop.Visibility.HasFlag(MemberVisibility.Static));
         }
 
         private static void GenerateEnumeration(ScriptGenerator generator, EnumerationSymbol enumSymbol)

@@ -23,6 +23,9 @@ var extend = Object.assign;
 
 function extendType(o, items) {
     for (var n in items) {
+        if (startsWith(n, "$_")) {
+            defineProperty(o, n.slice(2), items[n]);
+        }
         if (startsWith(n, "$get_")) {
             createPropertyGet(o, n.slice(5), items[n]);
         }

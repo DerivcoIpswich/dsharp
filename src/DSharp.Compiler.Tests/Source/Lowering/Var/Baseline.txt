@@ -23,10 +23,9 @@ define('test', ['ss'], function(ss) {
   // n1.c1
 
   function c1() {
-    ss.defineProperty(this, 'C2', null);
   }
   var c1$ = {
-
+    $_C2: null
   };
 
 

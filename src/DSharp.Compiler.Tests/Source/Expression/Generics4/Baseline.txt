@@ -81,7 +81,7 @@ define('test', ['ss', 'lib1'], function(ss, lib1) {
   function Wrapper() {
   }
   var Wrapper$ = {
-
+    $_Invokee: null
   };
 
 

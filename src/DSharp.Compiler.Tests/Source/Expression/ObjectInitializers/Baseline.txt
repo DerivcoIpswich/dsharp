@@ -49,14 +49,13 @@ define('test', ['ss'], function(ss) {
   // ExpressionTests.MyTestClass
 
   function MyTestClass() {
-    ss.defineProperty(this, 'MyProperty', 0);
-    ss.defineProperty(this, 'Prop2', null);
-    ss.defineProperty(this, 'InnerClass', null);
-    ss.defineProperty(this, 'Act', null);
-    ss.defineProperty(this, 'Func', null);
   }
   var MyTestClass$ = {
-
+    $_MyProperty: 0,
+    $_Prop2: null,
+    $_InnerClass: null,
+    $_Act: null,
+    $_Func: null
   };
 
 

@@ -23,9 +23,9 @@ define('test', ['ss'], function(ss) {
   // EquatableTest.TestObject
 
   function TestObject() {
-    ss.defineProperty(this, 'Text', null);
   }
   var TestObject$ = {
+    $_Text: null,
     equals: function(other) {
       return this.Text === other.Text;
     }

@@ -53,23 +53,21 @@ define('test', ['ss'], function(ss) {
   // LoweringTests.C1
 
   function C1() {
-    ss.defineProperty(this, 'BoolProp', false);
-    ss.defineProperty(this, 'StringProp', null);
-    ss.defineProperty(this, 'C1Prop', null);
-    ss.defineProperty(this, 'DictProp', null);
   }
   var C1$ = {
-
+    $_BoolProp: false,
+    $_StringProp: null,
+    $_C1Prop: null,
+    $_DictProp: null
   };
 
 
   // LoweringTests.C2
 
   function C2(arg) {
-    ss.defineProperty(this, 'Prop', null);
   }
   var C2$ = {
-
+    $_Prop: null
   };
 
 

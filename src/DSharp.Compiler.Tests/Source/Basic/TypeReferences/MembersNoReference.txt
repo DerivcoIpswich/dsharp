@@ -18,10 +18,10 @@ define('test', ['ss'], function(ss) {
   // BasicTests.App
 
   function App() {
-    ss.defineProperty(this, 'AutoProperty', null);
     this._field = null;
   }
   var App$ = {
+    $_AutoProperty: null,
     _method: ss.paramsGenerator(1, function(arg1, args) {
       return 'text';
     }),

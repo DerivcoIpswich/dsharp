@@ -3,6 +3,7 @@
 // This source code is subject to terms and conditions of the Apache License, Version 2.0.
 //
 
+using System;
 using System.Diagnostics;
 using System.Linq;
 using DSharp.Compiler.CodeModel.Members;
@@ -377,26 +378,52 @@ namespace DSharp.Compiler.Generator
                 instanceMember = false;
             }
 
-            if (propertySymbol.HasGetter)
+            if(propertySymbol.IsAutoProperty())
             {
-                GeneratePropertyGetter(generator, typeName, propertySymbol, writer, instanceMember);
+                GenerateAutoProperty(generator, typeName, propertySymbol, writer, instanceMember);
             }
-
-            if (propertySymbol.HasSetter)
+            else
             {
-                if (instanceMember && propertySymbol.HasGetter)
+                if (propertySymbol.HasGetter)
                 {
-                    writer.WriteLine(",");
+                    GeneratePropertyGetter(generator, typeName, propertySymbol, writer, instanceMember);
                 }
 
-                GeneratePropertySetter(generator, typeName, propertySymbol, writer, instanceMember);
+                if (propertySymbol.HasSetter)
+                {
+                    if (instanceMember && propertySymbol.HasGetter)
+                    {
+                        writer.WriteLine(",");
+                    }
+
+                    GeneratePropertySetter(generator, typeName, propertySymbol, writer, instanceMember);
+                }
+            }
+        }
+
+        private static void GenerateAutoProperty(ScriptGenerator generator, string typeName, PropertySymbol propertySymbol, ScriptTextWriter writer, bool instanceMember)
+        {
+            if (instanceMember)
+            {
+                writer.Write("$_");
+                writer.Write(propertySymbol.GeneratedName);
+                writer.Write(": ");
+            }
+            else
+            {
+                writer.Write($"{DSharpStringResources.ScriptExportMember("defineProperty")}(");
+                writer.Write(typeName);
+                writer.Write(", '");
+                writer.Write(propertySymbol.GeneratedName);
+                writer.Write("', ");
             }
 
-            if(propertySymbol.Visibility.HasFlag(MemberVisibility.Static) && propertySymbol.IsAutoProperty())
+            var initialValueExpression = Compiler.ImplementationBuilder.GetDefaultValueExpression(propertySymbol.AssociatedType, propertySymbol.SymbolSet);
+            ExpressionGenerator.GenerateLiteralExpression(generator, propertySymbol, initialValueExpression);
+
+            if (instanceMember == false)
             {
-                writer.Write(DSharpStringResources.ScriptExportMember("defineProperty"));
-                writer.Write($"({((ClassSymbol)propertySymbol.Parent).FullGeneratedName}, '{propertySymbol.GeneratedName}');");
-                writer.WriteLine();
+                writer.WriteLine(");");
             }
         }
 

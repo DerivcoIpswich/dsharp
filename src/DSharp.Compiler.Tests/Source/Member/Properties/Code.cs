@@ -163,6 +163,10 @@ namespace MemberTests {
     {
         public static string Prop { get; set; }
 
+        public static int IntProp { get; set; }
+
+        public static int BoolProp { get; set; }
+
         public static StaticProps Instance { get; private set; }
 
         public int Index { get; set; }

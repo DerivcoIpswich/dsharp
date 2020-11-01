@@ -26,7 +26,6 @@ define('test', ['ss'], function(ss) {
   // MemberTests.Test
 
   function Test() {
-    ss.defineProperty(this, 'Object', null);
     this.isFoo = false;
     this.XYZ = 1;
     this.XYZ = this.Name.length;
@@ -60,6 +59,7 @@ define('test', ['ss'], function(ss) {
     $set_ISet: function(value) {
       return value;
     },
+    $_Object: null,
     $get_Name: function() {
       return 'nk';
     },
@@ -72,11 +72,6 @@ define('test', ['ss'], function(ss) {
   // MemberTests.Properties
 
   function Properties(readonlyVal) {
-    ss.defineProperty(this, 'Normal', null);
-    ss.defineProperty(this, 'Standard', null);
-    ss.defineProperty(this, 'ReadLocalWrite', null);
-    ss.defineProperty(this, 'BoolAutoProp', false);
-    ss.defineProperty(this, 'IntAutoProp', 0);
     this.ReadonlyValue = ss.value(readonlyVal, 'InitialState_ReadonlyValue');
     this.ReadLocalWrite = 'InitialState_ReadLocalWrite';
     this.Normal = ss.value(this.ReadLocalWrite, Properties._createNormalExpression(function() {
@@ -87,6 +82,12 @@ define('test', ['ss'], function(ss) {
     returnValue();
   };
   var Properties$ = {
+    $_Normal: null,
+    $_Standard: null,
+    $_ReadLocalWrite: null,
+    $_ReadonlyValue: null,
+    $_BoolAutoProp: false,
+    $_IntAutoProp: 0,
     $get_ReadWriteWithBacking: function() {
       return this._readWriteWithBacking;
     },
@@ -103,23 +104,23 @@ define('test', ['ss'], function(ss) {
   // MemberTests.AbstractPropertiesContainer
 
   function AbstractPropertiesContainer() {
-    ss.defineProperty(this, 'MyVirtualProp', null);
   }
   var AbstractPropertiesContainer$ = {
-
+    $_MyVirtualProp: null
   };
 
 
   // MemberTests.StaticProps
 
   function StaticProps() {
-    ss.defineProperty(this, 'Index', 0);
     this.Index = StaticProps$NestedStaticProps.Val;
   }
-  ss.defineProperty(StaticProps, 'Prop');
-  ss.defineProperty(StaticProps, 'Instance');
+  ss.defineProperty(StaticProps, 'Prop', null);
+  ss.defineProperty(StaticProps, 'IntProp', 0);
+  ss.defineProperty(StaticProps, 'BoolProp', 0);
+  ss.defineProperty(StaticProps, 'Instance', null);
   var StaticProps$ = {
-
+    $_Index: 0
   };
 
 
@@ -127,7 +128,7 @@ define('test', ['ss'], function(ss) {
 
   function StaticProps$NestedStaticProps() {
   }
-  ss.defineProperty(StaticProps$NestedStaticProps, 'Val');
+  ss.defineProperty(StaticProps$NestedStaticProps, 'Val', 0);
   var StaticProps$NestedStaticProps$ = {
 
   };
@@ -153,11 +154,11 @@ define('test', ['ss'], function(ss) {
   // MemberTests.ImplementedContainer
 
   function ImplementedContainer() {
-    ss.defineProperty(this, 'InstanceProp', null);
     this._value$1 = '';
     AbstractPropertiesContainer.call(this);
   }
   var ImplementedContainer$ = {
+    $_InstanceProp: null,
     $get_MyAbstractProp: function() {
       return this._value$1;
     },

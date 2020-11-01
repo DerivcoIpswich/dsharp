@@ -26,9 +26,9 @@ define('test', ['ss'], function(ss) {
   // CloneableTest.TestObject
 
   function TestObject() {
-    ss.defineProperty(this, 'Text', null);
   }
   var TestObject$ = {
+    $_Text: null,
     clone: function() {
       var $this = this;
 
