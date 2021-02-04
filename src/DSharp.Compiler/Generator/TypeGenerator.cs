@@ -162,11 +162,11 @@ namespace DSharp.Compiler.Generator
             {
                 CodeGenerator.GenerateScript(generator, ctorSymbol);
             }
-            else if (classSymbol.BaseClass != null)
+            else if (classSymbol.BaseClass is ClassSymbol)
             {
-                writer.Write(classSymbol.BaseClass.FullGeneratedName);
-                writer.Write(".call(this);");
-                writer.WriteLine();
+                writer.Write("$exports.");
+                writer.Write(classSymbol.FullGeneratedName);
+                writer.WriteLine(".$base.call(this);");
             }
 
             writer.Indent--;
@@ -418,6 +418,12 @@ namespace DSharp.Compiler.Generator
                 //       and not at runtime. At that point this check of IsTestClass can be generalized.
 
                 writer.Write("null");
+            }
+            else if(classSymbol.BaseClass.GenericParameters?.Any() == true)
+            {
+                writer.Write($"ss.getGenericConstructor({classSymbol.BaseClass.FullGeneratedName},");
+                ScriptGeneratorExtensions.WriteGenericTypeArguments(writer.Write, classSymbol.BaseClass.GenericArguments, classSymbol.BaseClass.GenericParameters);
+                writer.Write(")");
             }
             else
             {

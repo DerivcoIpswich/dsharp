@@ -39,7 +39,7 @@ namespace DSharp.Compiler.Generator
             write("}");
         }
 
-        private static void WriteGenericTypeArguments(Action<string> write, IList<TypeSymbol> typeArguments, IList<GenericParameterSymbol> typeParameters)
+        public static void WriteGenericTypeArguments(Action<string> write, IList<TypeSymbol> typeArguments, IList<GenericParameterSymbol> typeParameters)
         {
             var dictionary = new Dictionary<string, string>();
             for (int i = 0; i < typeArguments.Count; i++)

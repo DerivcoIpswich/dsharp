@@ -20,7 +20,7 @@ function getGenericConstructor(ctorMethod, typeArguments) {
             genericInstance.$interfaces = ctorMethod.$interfaces;
         }
         else {
-            genericInstance = function () {
+            genericInstance = ss.namedFunction(key, function () {
                 ctorMethod.apply(this, Array.prototype.slice.call(arguments));
                 var ctr = this.__proto__.constructor;
                 ctr.$typeArguments = typeArguments || {};
@@ -29,11 +29,11 @@ function getGenericConstructor(ctorMethod, typeArguments) {
                 ctr.$type = ctr.$type || genericInstance.$type;
                 ctr.$name = ctr.$name || genericInstance.$name;
                 ctr.$constructorParams = ctr.$constructorParams || genericInstance.$constructorParams;
-            };
+            });
             genericInstance.$base = ctorMethod.$base;
             genericInstance.$interfaces = ctorMethod.$interfaces;
             genericInstance.$type = ctorMethod.$type;
-            genericInstance.$name = ctorMethod.$name;
+            genericInstance.$name = key;
             genericInstance.$constructorParams = ctorMethod.$constructorParams;
         }
         genericInstance.prototype = Object.create(ctorMethod.prototype);
@@ -49,11 +49,11 @@ function getGenericConstructor(ctorMethod, typeArguments) {
 
 function createGenericConstructorKey(ctorMethod, typeArguments) {
     var key = getTypeName(ctorMethod);
-    key += "<";
+    key += "\u1438";
     key += Object.getOwnPropertyNames(typeArguments)
         .map(function (parameterKey) { return getTypeName(typeArguments[parameterKey]); })
-        .join(",");
-    key += ">";
+        .join("\u02cf");
+    key += "\u1433";
 
     return key;
 }
