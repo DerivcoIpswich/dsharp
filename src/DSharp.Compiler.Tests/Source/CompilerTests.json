@@ -693,6 +693,12 @@
         "References": [ "Lib1.dll" ]
       },
       {
+        "Name": "GenericInterfaces",
+        "SourceFiles": [ "Code.cs" ],
+        "ComparisonFile": "Baseline.txt",
+        "References": [ "Lib1.dll" ]
+      },
+      {
         "Name": "Globals",
         "SourceFiles": [ "Code.cs" ],
         "ComparisonFile": "Baseline.txt"

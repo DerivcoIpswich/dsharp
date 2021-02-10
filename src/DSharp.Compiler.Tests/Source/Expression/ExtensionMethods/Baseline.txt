@@ -160,7 +160,7 @@ define('ExpressionTests.ExtensionMethods', ['ss'], function(ss) {
   // ExpressionTests.MyServiceCollection
 
   function MyServiceCollection() {
-    ServiceCollection.call(this);
+    $exports.MyServiceCollection.$base.call(this);
   }
   var MyServiceCollection$ = {
 
@@ -170,7 +170,7 @@ define('ExpressionTests.ExtensionMethods', ['ss'], function(ss) {
   // ExpressionTests.MyOtherServiceCollection
 
   function MyOtherServiceCollection() {
-    ServiceCollection.call(this);
+    $exports.MyOtherServiceCollection.$base.call(this);
   }
   var MyOtherServiceCollection$ = {
 

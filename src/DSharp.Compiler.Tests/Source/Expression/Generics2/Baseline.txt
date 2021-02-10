@@ -54,7 +54,7 @@ define('test', ['ss'], function(ss) {
   // ExpressionTests.TestDisposableBase
 
   function TestDisposableBase() {
-    TestBase.call(this);
+    $exports.TestDisposableBase.$base.call(this);
   }
   var TestDisposableBase$ = {
     dispose: function() {

@@ -1013,9 +1013,9 @@ namespace DSharp.Compiler.Importer
 
             if (typeSymbol != null)
             {
-                if (MetadataHelpers.ShouldIgnoreGenerics(type))
+                if (MetadataHelpers.ShouldIgnoreGenerics(type, out var useGenericName))
                 {
-                    typeSymbol.SetIgnoreGenerics();
+                    typeSymbol.SetIgnoreGenerics(useGenericName);
                 }
 
                 if (type.HasGenericParameters)

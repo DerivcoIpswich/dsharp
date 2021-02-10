@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using DSharp.Compiler.CodeModel.Members;
-using DSharp.Compiler.ScriptModel.Expressions;
 using DSharp.Compiler.ScriptModel.Symbols;
 
 namespace DSharp.Compiler.Generator
@@ -98,7 +97,7 @@ namespace DSharp.Compiler.Generator
             else
             {
                 writer.Write("function ");
-                writer.Write(name);   
+                writer.Write(name);
             }
 
             writer.Write("(");
@@ -131,7 +130,7 @@ namespace DSharp.Compiler.Generator
             {
                 writer.Write(DSharpStringResources.ScriptExportMember("defineProperty"));
                 writer.Write($"(this, '{property.GeneratedName}', ");
-                    
+
                 var initialValueExpression = Compiler.ImplementationBuilder.GetDefaultValueExpression(property.AssociatedType, property.SymbolSet);
                 ExpressionGenerator.GenerateLiteralExpression(generator, property, initialValueExpression);
 
@@ -412,46 +411,86 @@ namespace DSharp.Compiler.Generator
             writer.Write("], ");
 
             //base class
-            if (classSymbol.BaseClass == null)
-            {
-                // TODO: We need to introduce the notion of a base class that only exists in the metadata
-                //       and not at runtime. At that point this check of IsTestClass can be generalized.
+            WriteBaseClass(classSymbol, writer);
 
-                writer.Write("null");
-            }
-            else if(classSymbol.BaseClass.GenericParameters?.Any() == true)
+            //interfaces
+            WriteInterfaces(writer, classSymbol.Interfaces);
+
+            writer.Write(")");
+        }
+
+        private static void WriteBaseClass(ClassSymbol classSymbol, ScriptTextWriter writer)
+        {
+            if (classSymbol.BaseClass is ClassSymbol baseClass)
             {
-                writer.Write($"ss.getGenericConstructor({classSymbol.BaseClass.FullGeneratedName},");
-                ScriptGeneratorExtensions.WriteGenericTypeArguments(writer.Write, classSymbol.BaseClass.GenericArguments, classSymbol.BaseClass.GenericParameters);
-                writer.Write(")");
+                if (baseClass.GenericParameters?.Any() == true && baseClass.UseGenericName)
+                {
+                    writer.Write($"ss.getGenericConstructor({baseClass.FullGeneratedName},");
+                    ScriptGeneratorExtensions.WriteGenericTypeArguments(writer.Write, baseClass.GenericArguments, baseClass.GenericParameters);
+                    writer.Write(")");
+                }
+                else
+                {
+                    writer.Write(baseClass.FullGeneratedName);
+                }
             }
             else
             {
-                writer.Write(classSymbol.BaseClass.FullGeneratedName);
+                // TODO: We need to introduce the notion of a base class that only exists in the metadata
+                //       and not at runtime. At that point this check of IsTestClass can be generalized.
+                writer.Write("null");
             }
+        }
 
-            //interfaces
-            if (classSymbol.Interfaces != null)
+        private static void WriteInterfaces(ScriptTextWriter writer, ICollection<InterfaceSymbol> interfaces)
+        {
+            if (interfaces is null)
             {
-                writer.Write(", [");
-                bool first = true;
+                return;
+            }
+            writer.Write(", [");
+            bool first = true;
 
-                foreach (InterfaceSymbol inheritedInterface in classSymbol.Interfaces)
+            foreach (InterfaceSymbol inheritedInterface in interfaces)
+            {
+                if (!first)
                 {
-                    if (!first)
-                    {
-                        writer.Write(", ");
-                    }
-
-                    string parameterTypeName = GetParameterTypeName(inheritedInterface);
-                    writer.Write(parameterTypeName);
-                    first = false;
+                    writer.Write(", ");
                 }
 
-                writer.Write("]");
+                string parameterTypeName = GetParameterTypeName(inheritedInterface);
+
+                if (inheritedInterface.IsGeneric && inheritedInterface.GenericArguments is IList<TypeSymbol>)
+                {
+                    if (inheritedInterface.IgnoreGenericTypeArguments)
+                    {
+                        if (inheritedInterface.UseGenericName)
+                        {
+                            writer.Write(inheritedInterface.FullGeneratedName);
+                        }
+                    }
+                    else if (inheritedInterface.GenericArguments.Any(p => p is GenericParameterSymbol gp && gp.IsTypeParameter))
+                    {
+                        writer.Write($"ss.makeGenericInterfaceTemplate({parameterTypeName},");
+                        ScriptGeneratorExtensions.WriteGenericTypeArguments(writer.Write, inheritedInterface.GenericArguments, inheritedInterface.GenericParameters, writeNameMap: true);
+                        writer.Write(")");
+                    }
+                    else
+                    {
+                        writer.Write($"ss.getGenericConstructor({parameterTypeName},");
+                        ScriptGeneratorExtensions.WriteGenericTypeArguments(writer.Write, inheritedInterface.GenericArguments, inheritedInterface.GenericParameters);
+                        writer.Write(")");
+                    }
+                }
+                else
+                {
+                    writer.Write(parameterTypeName);
+                }
+
+                first = false;
             }
 
-            writer.Write(")");
+            writer.Write("]");
         }
 
         private static bool HasParamsModifier(MethodSymbol methodSymbol)
@@ -500,7 +539,7 @@ namespace DSharp.Compiler.Generator
                 }
             }
 
-            if(parameterType is GenericParameterSymbol)
+            if (parameterType is GenericParameterSymbol)
             {
                 parameterType = symbolSet.ResolveIntrinsicType(IntrinsicType.Object);
             }
@@ -516,30 +555,13 @@ namespace DSharp.Compiler.Generator
             writer.Write($"{DSharpStringResources.ScriptExportMember("defineInterface")}(");
             writer.Write(interfaceSymbol.FullGeneratedName);
 
-            if (interfaceSymbol.Interfaces != null)
-            {
-                writer.Write(", [");
-                bool first = true;
-
-                foreach (InterfaceSymbol inheritedInterface in interfaceSymbol.Interfaces)
-                {
-                    if (!first)
-                    {
-                        writer.Write(", ");
-                    }
-
-                    writer.Write(inheritedInterface.FullGeneratedName);
-                    first = false;
-                }
-
-                writer.Write("]");
-            }
+            WriteInterfaces(writer, interfaceSymbol.Interfaces);
 
             writer.Write(")");
         }
 
         private static void GenerateEnumerationRegistrationScript(
-            ScriptGenerator generator, 
+            ScriptGenerator generator,
             EnumerationSymbol enumerationSymbol)
         {
             ScriptTextWriter writer = generator.Writer;

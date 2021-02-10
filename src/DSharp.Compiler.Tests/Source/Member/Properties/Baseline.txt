@@ -155,7 +155,7 @@ define('test', ['ss'], function(ss) {
   function ImplementedContainer() {
     ss.defineProperty(this, 'InstanceProp', null);
     this._value$1 = '';
-    AbstractPropertiesContainer.call(this);
+    $exports.ImplementedContainer.$base.call(this);
   }
   var ImplementedContainer$ = {
     $get_MyAbstractProp: function() {

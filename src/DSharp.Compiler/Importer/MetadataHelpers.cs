@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Mono.Cecil;
 
@@ -206,10 +207,20 @@ namespace DSharp.Compiler.Importer
             return string.CompareOrdinal(type.BaseType.FullName, "System.Enum") == 0;
         }
 
-        public static bool ShouldIgnoreGenerics(TypeDefinition type)
+        public static bool ShouldIgnoreGenerics(TypeDefinition type, out bool useGenericName)
         {
-            return GetAttribute(type, "System.Runtime.CompilerServices.ScriptIgnoreGenericArgumentsAttribute") != null
-                || GetAttribute(type, "System.Runtime.CompilerServices.ScriptImportAttribute") != null;
+            useGenericName = true;
+            if (GetAttribute(type, "System.Runtime.CompilerServices.ScriptIgnoreGenericArgumentsAttribute") is CustomAttribute scriptIgnoreGenericArgumentsAttribute)
+            {
+                useGenericName = ((bool?)scriptIgnoreGenericArgumentsAttribute.Properties.FirstOrDefault(p => p.Name == "UseGenericName").Argument.Value).GetValueOrDefault();
+                return true;
+            }
+            if(GetAttribute(type, "System.Runtime.CompilerServices.ScriptImportAttribute") != null)
+            {
+                useGenericName = false;
+                return true;
+            }
+            return false;
         }
 
         public static bool ShouldIgnoreNamespace(TypeDefinition type)

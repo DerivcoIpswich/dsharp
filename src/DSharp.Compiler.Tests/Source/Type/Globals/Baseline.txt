@@ -48,7 +48,7 @@ define('test', ['ss'], function(ss) {
   // MyClass2
 
   function MyClass2() {
-    MyClass.call(this);
+    $exports.MyClass2.$base.call(this);
   }
   var MyClass2$ = {
 
@@ -58,7 +58,7 @@ define('test', ['ss'], function(ss) {
   // MyClass4
 
   function MyClass4() {
-    MyClass.call(this);
+    $exports.MyClass4.$base.call(this);
   }
   var MyClass4$ = {
     someMethod: function() {

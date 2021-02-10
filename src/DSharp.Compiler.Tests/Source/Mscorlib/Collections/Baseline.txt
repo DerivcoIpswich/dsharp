@@ -165,7 +165,7 @@ define('test', ['ss'], function(ss) {
   // MscorlibTests.MyChildrenCollection
 
   function MyChildrenCollection() {
-    MyCollection.call(this);
+    $exports.MyChildrenCollection.$base.call(this);
   }
   var MyChildrenCollection$ = {
 

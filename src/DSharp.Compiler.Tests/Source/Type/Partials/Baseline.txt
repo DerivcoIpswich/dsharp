@@ -99,7 +99,7 @@ define('test', ['ss'], function(ss) {
   // TypeTests.DerivedMemberClass
 
   function DerivedMemberClass() {
-    SingleMemberClass.call(this);
+    $exports.DerivedMemberClass.$base.call(this);
   }
   var DerivedMemberClass$ = {
 

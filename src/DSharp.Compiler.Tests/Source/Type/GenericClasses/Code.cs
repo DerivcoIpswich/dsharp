@@ -199,6 +199,12 @@ namespace DSharp.Compiler.Tests.Source.Type.GenericClasses
 
     }
 
+    [ScriptIgnoreGenericArgumentsAttribute(UseGenericName = true)]
+    public class GenericTypeWithUseGenericName<T1, T2, T3>
+    {
+
+    }
+
     public class GenericTypeWithParamsInCtor<T>
     {
         public GenericTypeWithParamsInCtor(T arg, params object[] args)

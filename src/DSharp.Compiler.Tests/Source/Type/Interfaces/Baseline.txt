@@ -75,7 +75,7 @@ define('test', ['ss'], function(ss) {
   // TypeTests.MyObject2
 
   function MyObject2() {
-    MyObject.call(this);
+    $exports.MyObject2.$base.call(this);
   }
   var MyObject2$ = {
     $get_canRun: function() {

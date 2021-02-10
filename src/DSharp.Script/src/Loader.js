@@ -143,6 +143,7 @@
         createGenericType: createGenericType,
         getGenericConstructor: getGenericConstructor,
         getTypeArgument: getTypeArgument,
+        makeGenericInterfaceTemplate: makeGenericInterfaceTemplate,
         initializeObject: initializeObject,
     });
   }

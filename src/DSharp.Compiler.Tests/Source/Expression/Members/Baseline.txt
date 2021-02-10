@@ -22,7 +22,7 @@ define('test', ['ss'], function(ss) {
   function App() {
     this._value$1 = 0;
     this._value2 = 0;
-    BApp.call(this);
+    $exports.App.$base.call(this);
   }
   var App$ = {
     $get_XYZ: function() {
@@ -61,7 +61,7 @@ define('test', ['ss'], function(ss) {
   // ExpressionTests.DApp
 
   function DApp() {
-    App.call(this);
+    $exports.DApp.$base.call(this);
   }
   var DApp$ = {
     test2: function() {

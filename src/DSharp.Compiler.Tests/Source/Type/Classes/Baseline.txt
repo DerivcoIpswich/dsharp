@@ -68,7 +68,7 @@ define('test', ['ss'], function(ss) {
   // TypeTests.MyClass2
 
   function MyClass2() {
-    MyClass.call(this);
+    $exports.MyClass2.$base.call(this);
   }
   var MyClass2$ = {
 

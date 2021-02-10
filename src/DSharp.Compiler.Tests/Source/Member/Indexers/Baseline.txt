@@ -163,7 +163,7 @@ define('test', ['ss'], function(ss) {
   // MemberTests.B
 
   function B() {
-    A.call(this);
+    $exports.B.$base.call(this);
   }
   var B$ = {
 
@@ -173,7 +173,7 @@ define('test', ['ss'], function(ss) {
   // MemberTests.C
 
   function C() {
-    B.call(this);
+    $exports.C.$base.call(this);
   }
   C.main = function() {
     var c = new C();

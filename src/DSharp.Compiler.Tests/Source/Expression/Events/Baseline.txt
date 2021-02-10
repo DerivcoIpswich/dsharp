@@ -80,7 +80,7 @@ define('test', ['ss'], function(ss) {
   // ExpressionTests.FooEventArgs
 
   function FooEventArgs() {
-    ss.EventArgs.call(this);
+    $exports.FooEventArgs.$base.call(this);
   }
   var FooEventArgs$ = {
 

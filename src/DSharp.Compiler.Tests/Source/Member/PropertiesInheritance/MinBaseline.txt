@@ -30,7 +30,7 @@ define('test', ['ss'], function(ss) {
 
   function MyClass() {
     this.$1 = 0;
-    AbstractBase.call(this);
+    $exports.MyClass.$base.call(this);
   }
   var MyClass$ = {
     useWow: function() {
@@ -43,7 +43,7 @@ define('test', ['ss'], function(ss) {
 
   function MyGenericClass() {
     this.$1 = 0;
-    GenericBase_$1.call(this);
+    $exports.MyGenericClass.$base.call(this);
   }
   var MyGenericClass$ = {
     useWow: function() {
@@ -57,7 +57,7 @@ define('test', ['ss'], function(ss) {
       AbstractBase: ss.defineClass(AbstractBase, AbstractBase$, [], null),
       GenericBase_$1: ss.defineClass(GenericBase_$1, GenericBase_$1$, [], null),
       MyClass: ss.defineClass(MyClass, MyClass$, [], AbstractBase),
-      MyGenericClass: ss.defineClass(MyGenericClass, MyGenericClass$, [], GenericBase_$1)
+      MyGenericClass: ss.defineClass(MyGenericClass, MyGenericClass$, [], ss.getGenericConstructor(GenericBase_$1,{T : Boolean}))
     });
 
 

@@ -352,7 +352,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
                 if (templateType.IgnoreGenericTypeArguments)
                 {
-                    instanceCoreType.SetIgnoreGenerics();
+                    instanceCoreType.SetIgnoreGenerics(templateType.UseGenericName);
                 }
 
                 return instanceCoreType;

@@ -10,7 +10,7 @@ define('test', ['ss'], function(ss) {
   // BasicTests.Wow
 
   function Wow() {
-    Object.call(this);
+    $exports.Wow.$base.call(this);
   }
   var Wow$ = {
 
