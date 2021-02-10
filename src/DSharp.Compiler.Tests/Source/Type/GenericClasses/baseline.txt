@@ -1,6 +1,6 @@
 ﻿"use strict";
 
-define('test', ['ss'], function(ss) {
+define('test', ['ss', 'lib1'], function(ss, lib1) {
   var $global = this;
   // DSharp.Compiler.Tests.Source.Type.GenericClasses.IBulkAsyncExecutionManager`1
 

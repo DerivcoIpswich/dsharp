@@ -299,7 +299,8 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
             if (IsGeneric)
             {
-                IncrementReferenceCountForGenericType();
+                GenericType?.IncrementReferenceCount();
+                IncrementReferenceCountForGenericArguments();
             }
 
             if (Source == null)
@@ -451,7 +452,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             }
         }
 
-        private void IncrementReferenceCountForGenericType()
+        private void IncrementReferenceCountForGenericArguments()
         {
             if (GenericArguments == null)
             {
