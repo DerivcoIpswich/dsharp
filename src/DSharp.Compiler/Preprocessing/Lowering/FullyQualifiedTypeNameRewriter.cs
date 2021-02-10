@@ -64,7 +64,7 @@ namespace DSharp.Compiler.Preprocessing.Lowering
         {
             var type = sem.GetTypeInfo(node).Type 
                 ?? sem.GetTypeInfo(node.Parent).Type;
-
+            //todo: find out what is breaking when using alias solution
             if(type is INamedTypeSymbol namedType && !node.Parent.IsKind(SyntaxKind.UsingDirective))
             {
                 if(true || namedType.IsGenericType)

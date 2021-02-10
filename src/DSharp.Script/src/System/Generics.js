@@ -25,13 +25,13 @@ function getGenericConstructor(ctorMethod, typeArguments) {
             }
         }
         if (isInterface(ctorMethod)) {
-            genericInstance = ss.namedFunction(key, function () { });
+            genericInstance = namedFunction(key, function () { });
             genericInstance.$type = _interfaceMarker;
             genericInstance.$name = key;
             genericInstance.$interfaces = interfaces;
         }
         else {
-            genericInstance = ss.namedFunction(key, function () {
+            genericInstance = namedFunction(key, function () {
                 ctorMethod.apply(this, Array.prototype.slice.call(arguments));
                 var ctr = this.__proto__.constructor;
                 ctr.$typeArguments = typeArguments || {};

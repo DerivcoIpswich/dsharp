@@ -51,10 +51,10 @@ namespace FullyQualifiedTypesTests
 
         public class NestedFoo
         {
-            public System.Threading.Tasks.Task TaskAsync()
-            {
+            //public System.Threading.Tasks.Task TaskAsync()
+            //{
 
-            }
+            //}
         }
     }
 }
