@@ -4,6 +4,12 @@
     return new (Function.prototype.bind.apply(genericConstructor, args));
 }
 
+function mapGenericType(type, typeArguments) {
+    return type.IsGenericTypeDefinition
+        ? type.makeGenericType(typeArguments)
+        : type;
+}
+
 function getGenericConstructor(ctorMethod, typeArguments) {
     if (!isValue(ctorMethod)) {
         return null;
@@ -16,14 +22,17 @@ function getGenericConstructor(ctorMethod, typeArguments) {
         if (ctorMethod.$interfaces) {
             var interfaces = [];
             for (var i = 0; i < ctorMethod.$interfaces.length; ++i) {
-                if (ctorMethod.$interfaces[i].IsGenericTypeDefinition) {
-                    interfaces.push(ctorMethod.$interfaces[i].makeGenericType(typeArguments))
-                }
-                else {
-                    interfaces.push(ctorMethod.$interfaces[i])
-                }
+                interfaces.push(mapGenericType(ctorMethod.$interfaces[i], typeArguments))
             }
         }
+
+        if (ctorMethod.$constructorParams) {
+            var constructorParams = [];
+            for (var i = 0; i < ctorMethod.$constructorParams.length; ++i) {
+                constructorParams.push(mapGenericType(ctorMethod.$constructorParams[i], typeArguments))
+            }
+        }
+
         if (isInterface(ctorMethod)) {
             genericInstance = namedFunction(key, function () { });
             genericInstance.$type = _interfaceMarker;
@@ -39,13 +48,13 @@ function getGenericConstructor(ctorMethod, typeArguments) {
                 ctr.$interfaces = interfaces;
                 ctr.$type = ctr.$type || genericInstance.$type;
                 ctr.$name = ctr.$name || genericInstance.$name;
-                ctr.$constructorParams = ctr.$constructorParams || genericInstance.$constructorParams;
+                ctr.$constructorParams = constructorParams;
             });
             genericInstance.$base = ctorMethod.$base;
             genericInstance.$interfaces = interfaces;
             genericInstance.$type = ctorMethod.$type;
             genericInstance.$name = key;
-            genericInstance.$constructorParams = ctorMethod.$constructorParams;
+            genericInstance.$constructorParams = constructorParams;
         }
         genericInstance.prototype = Object.create(ctorMethod.prototype);
         genericInstance.prototype.constructor = genericInstance;
@@ -121,7 +130,7 @@ var makeGenericType = paramsGenerator(1, function (genericTemplate, typeArgument
     return genericTemplate.makeGenericType(typeArguments);
 });
 
-function makeGenericInterfaceTemplate(ctorMethod, typeMap) {
+function makeMappedGenericTemplate(ctorMethod, typeMap) {
     if (!isValue(ctorMethod)) {
         return null;
     }

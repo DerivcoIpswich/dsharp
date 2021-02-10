@@ -402,8 +402,7 @@ namespace DSharp.Compiler.Generator
                     }
 
                     TypeSymbol parameterType = parameterSymbol.ValueType;
-                    string parameterTypeName = GetParameterTypeName(parameterType);
-                    writer.Write(parameterTypeName);
+                    WriteTypeReference(writer, parameterType);
                     firstParameter = false;
                 }
             }
@@ -458,39 +457,44 @@ namespace DSharp.Compiler.Generator
                     writer.Write(", ");
                 }
 
-                string parameterTypeName = GetParameterTypeName(inheritedInterface);
-
-                if (inheritedInterface.IsGeneric && inheritedInterface.GenericArguments is IList<TypeSymbol>)
-                {
-                    if (inheritedInterface.IgnoreGenericTypeArguments)
-                    {
-                        if (inheritedInterface.UseGenericName)
-                        {
-                            writer.Write(inheritedInterface.FullGeneratedName);
-                        }
-                    }
-                    else if (inheritedInterface.GenericArguments.Any(p => p is GenericParameterSymbol gp && gp.IsTypeParameter))
-                    {
-                        writer.Write($"ss.makeGenericInterfaceTemplate({parameterTypeName},");
-                        ScriptGeneratorExtensions.WriteGenericTypeArguments(writer.Write, inheritedInterface.GenericArguments, inheritedInterface.GenericParameters, writeNameMap: true);
-                        writer.Write(")");
-                    }
-                    else
-                    {
-                        writer.Write($"ss.getGenericConstructor({parameterTypeName},");
-                        ScriptGeneratorExtensions.WriteGenericTypeArguments(writer.Write, inheritedInterface.GenericArguments, inheritedInterface.GenericParameters);
-                        writer.Write(")");
-                    }
-                }
-                else
-                {
-                    writer.Write(parameterTypeName);
-                }
+                WriteTypeReference(writer, inheritedInterface);
 
                 first = false;
             }
 
             writer.Write("]");
+        }
+
+        private static void WriteTypeReference(ScriptTextWriter writer, TypeSymbol typeSymbol)
+        {
+            string parameterTypeName = GetParameterTypeName(typeSymbol);
+
+            if (typeSymbol.IsGeneric && typeSymbol.GenericArguments is IList<TypeSymbol>)
+            {
+                if (typeSymbol.IgnoreGenericTypeArguments)
+                {
+                    if (typeSymbol.UseGenericName)
+                    {
+                        writer.Write(typeSymbol.FullGeneratedName);
+                    }
+                }
+                else if (typeSymbol.GenericArguments.Any(p => p is GenericParameterSymbol gp && gp.IsTypeParameter))
+                {
+                    writer.Write($"ss.makeMappedGenericTemplate({parameterTypeName}, ");
+                    ScriptGeneratorExtensions.WriteGenericTypeArguments(writer.Write, typeSymbol.GenericArguments, typeSymbol.GenericParameters, writeNameMap: true);
+                    writer.Write(")");
+                }
+                else
+                {
+                    writer.Write($"ss.getGenericConstructor({parameterTypeName}, ");
+                    ScriptGeneratorExtensions.WriteGenericTypeArguments(writer.Write, typeSymbol.GenericArguments, typeSymbol.GenericParameters);
+                    writer.Write(")");
+                }
+            }
+            else
+            {
+                writer.Write(parameterTypeName);
+            }
         }
 
         private static bool HasParamsModifier(MethodSymbol methodSymbol)

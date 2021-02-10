@@ -222,4 +222,14 @@ namespace DSharp.Compiler.Tests.Source.Type.GenericClasses
     {
 
     }
+
+    public class GenericWithGenericInConstructor<X>
+    {
+        private readonly GenericClass<X> genericClass;
+
+        public GenericWithGenericInConstructor(GenericClass<X> genericClass)
+        {
+            this.genericClass = genericClass;
+        }
+    }
 }
