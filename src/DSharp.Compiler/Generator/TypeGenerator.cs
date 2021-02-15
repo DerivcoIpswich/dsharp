@@ -467,7 +467,7 @@ namespace DSharp.Compiler.Generator
 
         private static void WriteTypeReference(ScriptTextWriter writer, TypeSymbol typeSymbol)
         {
-            string parameterTypeName = GetParameterTypeName(typeSymbol);
+            typeSymbol = GetParameterType(typeSymbol);
 
             if (typeSymbol.IsGeneric && typeSymbol.GenericArguments is IList<TypeSymbol>)
             {
@@ -480,20 +480,20 @@ namespace DSharp.Compiler.Generator
                 }
                 else if (typeSymbol.GenericArguments.Any(p => p is GenericParameterSymbol gp && gp.IsTypeParameter))
                 {
-                    writer.Write($"ss.makeMappedGenericTemplate({parameterTypeName}, ");
+                    writer.Write($"ss.makeMappedGenericTemplate({typeSymbol.FullGeneratedName}, ");
                     ScriptGeneratorExtensions.WriteGenericTypeArguments(writer.Write, typeSymbol.GenericArguments, typeSymbol.GenericParameters, writeNameMap: true);
                     writer.Write(")");
                 }
                 else
                 {
-                    writer.Write($"ss.getGenericConstructor({parameterTypeName}, ");
+                    writer.Write($"ss.getGenericConstructor({typeSymbol.FullGeneratedName}, ");
                     ScriptGeneratorExtensions.WriteGenericTypeArguments(writer.Write, typeSymbol.GenericArguments, typeSymbol.GenericParameters);
                     writer.Write(")");
                 }
             }
             else
             {
-                writer.Write(parameterTypeName);
+                writer.Write(typeSymbol.FullGeneratedName);
             }
         }
 
@@ -509,7 +509,7 @@ namespace DSharp.Compiler.Generator
             return lastParameterParseContext.Flags.HasFlag(ParameterFlags.Params);
         }
 
-        private static string GetParameterTypeName(TypeSymbol parameterType)
+        private static TypeSymbol GetParameterType(TypeSymbol parameterType)
         {
             SymbolSet symbolSet = parameterType.SymbolSet;
             TypeSymbol nullableType = symbolSet.ResolveIntrinsicType(IntrinsicType.Nullable);
@@ -548,7 +548,7 @@ namespace DSharp.Compiler.Generator
                 parameterType = symbolSet.ResolveIntrinsicType(IntrinsicType.Object);
             }
 
-            return parameterType.FullGeneratedName;
+            return parameterType;
         }
 
         private static void GenerateInterfaceRegistrationScript(ScriptGenerator generator,
