@@ -29,7 +29,7 @@ define('test', ['ss'], function(ss) {
     };
     var foo = ss.createGenericType(GenericClass_$1, {T : Test});
     var nested = function(x) {
-      return x.method(function(a) {
+      x.method(function(a) {
         return a.bar++;
       });
     };
