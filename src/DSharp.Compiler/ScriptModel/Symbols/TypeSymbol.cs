@@ -103,6 +103,10 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                 {
                     return Namespace.Replace(".", "$");
                 }
+                else if(IsInternal && !string.IsNullOrEmpty(ScriptNamespace))
+                {
+                    return $"ss.modules['{ScriptNamespace}']";
+                }
 
                 return ScriptNamespace != null ? ScriptNamespace : string.Empty;
             }

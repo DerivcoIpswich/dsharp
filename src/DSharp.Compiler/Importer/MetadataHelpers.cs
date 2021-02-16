@@ -18,12 +18,26 @@ namespace DSharp.Compiler.Importer
                                                     string attributeTypeName)
         {
             foreach (CustomAttribute attribute in attributeProvider.CustomAttributes)
+            {
                 if (string.CompareOrdinal(attribute.Constructor.DeclaringType.FullName, attributeTypeName) == 0)
                 {
                     return attribute;
                 }
+            }
 
             return null;
+        }
+
+        private static IEnumerable<CustomAttribute> GetAttributes(ICustomAttributeProvider attributeProvider,
+                                            string attributeTypeName)
+        {
+            foreach (CustomAttribute attribute in attributeProvider.CustomAttributes)
+            {
+                if (string.CompareOrdinal(attribute.Constructor.DeclaringType.FullName, attributeTypeName) == 0)
+                {
+                    yield return attribute;
+                }
+            }
         }
 
         private static string GetAttributeArgument(CustomAttribute attribute)
@@ -72,6 +86,13 @@ namespace DSharp.Compiler.Importer
             }
 
             return null;
+        }
+
+        public static IEnumerable<string> InternalesVisibleTo(ICustomAttributeProvider attributeProvider)
+        {
+            var attributes = GetAttributes(attributeProvider, "System.Runtime.CompilerServices.InternalsVisibleToAttribute");
+
+            return attributes.Where(a => a.ConstructorArguments.FirstOrDefault().Value is string).Select(a=>a.ConstructorArguments.FirstOrDefault().Value as string);
         }
 
         public static string GetScriptDependencyName(ICustomAttributeProvider attributeProvider,
@@ -215,7 +236,7 @@ namespace DSharp.Compiler.Importer
                 useGenericName = ((bool?)scriptIgnoreGenericArgumentsAttribute.Properties.FirstOrDefault(p => p.Name == "UseGenericName").Argument.Value).GetValueOrDefault();
                 return true;
             }
-            if(GetAttribute(type, "System.Runtime.CompilerServices.ScriptImportAttribute") != null)
+            if (GetAttribute(type, "System.Runtime.CompilerServices.ScriptImportAttribute") != null)
             {
                 useGenericName = false;
                 return true;

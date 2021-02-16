@@ -131,7 +131,7 @@ namespace DSharp.Compiler
         private void ImportMetadata()
         {
             MetadataImporter mdImporter = new MetadataImporter(this);
-            mdImporter.ImportMetadata(options.References, symbols);
+            mdImporter.ImportMetadata(options.AssemblyName, options.References, symbols);
         }
 
         private void BuildCodeModel()
