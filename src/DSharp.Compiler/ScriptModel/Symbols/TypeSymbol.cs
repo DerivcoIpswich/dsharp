@@ -247,9 +247,9 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                 return memberTable[name];
             }
 
-            if (GenericType?.memberTable.ContainsKey(name) ?? false)
+            if (GenericType?.GetMember(name) is MemberSymbol member)
             {
-                return GenericType.memberTable[name];
+                return member;
             }
 
             return null;
