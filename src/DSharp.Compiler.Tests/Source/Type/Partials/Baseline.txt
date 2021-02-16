@@ -99,7 +99,7 @@ define('test', ['ss'], function(ss) {
   // TypeTests.DerivedMemberClass
 
   function DerivedMemberClass() {
-    $exports.DerivedMemberClass.$base.call(this);
+    $module.registry.DerivedMemberClass.$base.call(this);
   }
   var DerivedMemberClass$ = {
 
@@ -131,7 +131,7 @@ define('test', ['ss'], function(ss) {
   };
 
 
-  var $exports = ss.module('test',
+  var $module = ss.module('test',
     {
       SingleMemberClass: ss.defineClass(SingleMemberClass, SingleMemberClass$, [], null),
       SomeClass: ss.defineClass(SomeClass, SomeClass$, [], null)
@@ -146,6 +146,7 @@ define('test', ['ss'], function(ss) {
       DerivedMemberClass: ss.defineClass(DerivedMemberClass, DerivedMemberClass$, [], SingleMemberClass),
       DerivedMergedMembersClass: ss.defineClass(DerivedMergedMembersClass, DerivedMergedMembersClass$, [], MergedMembersClass)
     });
+  var $exports = $module.api;
 
 
   return $exports;

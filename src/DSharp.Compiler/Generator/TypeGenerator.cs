@@ -163,7 +163,7 @@ namespace DSharp.Compiler.Generator
             }
             else if (classSymbol.BaseClass is ClassSymbol)
             {
-                writer.Write("$exports.");
+                writer.Write("$module.registry.");
                 writer.Write(classSymbol.FullGeneratedName);
                 writer.WriteLine(".$base.call(this);");
             }

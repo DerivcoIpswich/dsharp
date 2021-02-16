@@ -1,4 +1,4 @@
-﻿"use strict";
+"use strict";
 
 define('test', ['ss'], function(ss) {
   var $global = this;
@@ -165,18 +165,20 @@ define('test', ['ss'], function(ss) {
   // MscorlibTests.MyChildrenCollection
 
   function MyChildrenCollection() {
-    $exports.MyChildrenCollection.$base.call(this);
+    $module.registry.MyChildrenCollection.$base.call(this);
   }
   var MyChildrenCollection$ = {
 
   };
 
-  var $exports = ss.module('test', null,
+
+  var $module = ss.module('test', null,
     {
       MyCollection: ss.defineClass(MyCollection, MyCollection$, [], null, [ss.IList_$1]),
       X: ss.defineClass(X, null, [], null),
       MyChildrenCollection: ss.defineClass(MyChildrenCollection, MyChildrenCollection$, [], MyCollection)
     });
+  var $exports = $module.api;
 
 
   return $exports;

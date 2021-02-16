@@ -1,4 +1,4 @@
-﻿"use strict";
+"use strict";
 
 define('test', ['ss', 'lib1'], function(ss, lib1) {
   var $global = this;
@@ -94,7 +94,7 @@ define('test', ['ss', 'lib1'], function(ss, lib1) {
   };
 
 
-  var $exports = ss.module('test', null,
+  var $module = ss.module('test', null,
     {
       IGenericInterface_$1: ss.defineInterface(IGenericInterface_$1, [ss.makeMappedGenericTemplate(lib1.IReferencedGenericInterface_$1, {T : 'T'})]),
       GenericInterfaceWithIgnore: ss.defineInterface(GenericInterfaceWithIgnore),
@@ -104,6 +104,7 @@ define('test', ['ss', 'lib1'], function(ss, lib1) {
       GenericWithMultipleParams_$3: ss.defineClass(GenericWithMultipleParams_$3, GenericWithMultipleParams_$3$, [], null),
       SpecificClassOfGeneric: ss.defineClass(SpecificClassOfGeneric, SpecificClassOfGeneric$, [Number, Function], null, [ss.getGenericConstructor(IGenericInterface_$1, {T : Number})])
     });
+  var $exports = $module.api;
 
 
   return $exports;

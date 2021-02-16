@@ -5,17 +5,18 @@ define('test', ['ss', 'lib'], function(ss, lib) {
   // BasicTests.App
 
   function App() {
-    $exports.App.$base.call(this);
+    $module.registry.App.$base.call(this);
   }
   var App$ = {
 
   };
 
 
-  var $exports = ss.module('test', null,
+  var $module = ss.module('test', null,
     {
       App: ss.defineClass(App, App$, [], lib.ClassInLib)
     });
+  var $exports = $module.api;
 
 
   return $exports;

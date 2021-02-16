@@ -65,7 +65,7 @@ define('test', ['ss'], function(ss) {
   };
 
 
-  var $exports = ss.module('test', null,
+  var $module = ss.module('test', null,
     {
       MyEnum: MyEnum,
       MyInterface_$1: ss.defineInterface(MyInterface_$1),
@@ -74,6 +74,7 @@ define('test', ['ss'], function(ss) {
       MyClass: ss.defineClass(MyClass, MyClass$, [], null),
       MyStruct: ss.defineClass(MyStruct, MyStruct$, [], null)
     });
+  var $exports = $module.api;
 
   App._number = 42;
 

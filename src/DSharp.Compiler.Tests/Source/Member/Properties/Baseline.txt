@@ -155,7 +155,7 @@ define('test', ['ss'], function(ss) {
   function ImplementedContainer() {
     ss.defineProperty(this, 'InstanceProp', null);
     this._value$1 = '';
-    $exports.ImplementedContainer.$base.call(this);
+    $module.registry.ImplementedContainer.$base.call(this);
   }
   var ImplementedContainer$ = {
     $get_MyAbstractProp: function() {
@@ -175,7 +175,7 @@ define('test', ['ss'], function(ss) {
   };
 
 
-  var $exports = ss.module('test', null,
+  var $module = ss.module('test', null,
     {
       ITest: ss.defineInterface(ITest),
       Program: ss.defineClass(Program, Program$, [], null),
@@ -187,6 +187,7 @@ define('test', ['ss'], function(ss) {
       Test2: ss.defineClass(Test2, Test2$, [], Test),
       ImplementedContainer: ss.defineClass(ImplementedContainer, ImplementedContainer$, [], AbstractPropertiesContainer)
     });
+  var $exports = $module.api;
 
   StaticProps.Instance = new StaticProps();
 

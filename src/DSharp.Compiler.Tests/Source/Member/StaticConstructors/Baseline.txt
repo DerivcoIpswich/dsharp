@@ -2,7 +2,6 @@
 
 define('test', ['ss'], function(ss) {
   var $global = this;
-
   // MemberTests.Behavior
 
   function Behavior(e, name) {
@@ -58,7 +57,7 @@ define('test', ['ss'], function(ss) {
   };
 
 
-  var $exports = ss.module('test', null,
+  var $module = ss.module('test', null,
     {
       Behavior: ss.defineClass(Behavior, Behavior$, [Element, String], null),
       MyClass: ss.defineClass(MyClass, MyClass$, [Date], null),
@@ -67,6 +66,7 @@ define('test', ['ss'], function(ss) {
       MyClassSimpleMulti: ss.defineClass(MyClassSimpleMulti, MyClassSimpleMulti$, [], null),
       MyBehavior: ss.defineClass(MyBehavior, MyBehavior$, [Element], Behavior)
     });
+  var $exports = $module.api;
 
   MyClass.instance = new MyClass(ss.now());
   alert('simple static ctor');

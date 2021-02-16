@@ -1,4 +1,4 @@
-﻿"use strict";
+"use strict";
 
 define('test', ['ss', 'lib1'], function(ss, lib1) {
   var $global = this;
@@ -99,7 +99,7 @@ define('test', ['ss', 'lib1'], function(ss, lib1) {
   };
 
 
-  var $exports = ss.module('test',
+  var $module = ss.module('test',
     {
       Usages: ss.defineClass(Usages, Usages$, [], null)
     },
@@ -110,6 +110,7 @@ define('test', ['ss', 'lib1'], function(ss, lib1) {
       Wrapper: ss.defineClass(Wrapper, Wrapper$, [], null),
       Invoker: ss.defineClass(Invoker, Invoker$, [], null)
     });
+  var $exports = $module.api;
 
 
   return $exports;

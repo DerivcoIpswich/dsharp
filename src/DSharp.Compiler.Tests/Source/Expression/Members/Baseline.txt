@@ -2,7 +2,6 @@
 
 define('test', ['ss'], function(ss) {
   var $global = this;
-
   // ExpressionTests.IFoo
 
   function IFoo() { }
@@ -22,7 +21,7 @@ define('test', ['ss'], function(ss) {
   function App() {
     this._value$1 = 0;
     this._value2 = 0;
-    $exports.App.$base.call(this);
+    $module.registry.App.$base.call(this);
   }
   var App$ = {
     $get_XYZ: function() {
@@ -61,7 +60,7 @@ define('test', ['ss'], function(ss) {
   // ExpressionTests.DApp
 
   function DApp() {
-    $exports.DApp.$base.call(this);
+    $module.registry.DApp.$base.call(this);
   }
   var DApp$ = {
     test2: function() {
@@ -95,13 +94,14 @@ define('test', ['ss'], function(ss) {
   };
 
 
-  var $exports = ss.module('test', null,
+  var $module = ss.module('test', null,
     {
       IFoo: ss.defineInterface(IFoo),
       BApp: ss.defineClass(BApp, BApp$, [], null),
       App: ss.defineClass(App, App$, [], BApp),
       DApp: ss.defineClass(DApp, DApp$, [], App)
     });
+  var $exports = $module.api;
 
   BApp.myConstant = 3;
   App.myConstant2 = 3;

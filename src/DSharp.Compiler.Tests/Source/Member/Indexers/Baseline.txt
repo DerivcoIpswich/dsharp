@@ -2,7 +2,6 @@
 
 define('test', ['ss'], function(ss) {
   var $global = this;
-
   // MemberTests.IIndexable
 
   function IIndexable() { }
@@ -163,7 +162,7 @@ define('test', ['ss'], function(ss) {
   // MemberTests.B
 
   function B() {
-    $exports.B.$base.call(this);
+    $module.registry.B.$base.call(this);
   }
   var B$ = {
 
@@ -173,7 +172,7 @@ define('test', ['ss'], function(ss) {
   // MemberTests.C
 
   function C() {
-    $exports.C.$base.call(this);
+    $module.registry.C.$base.call(this);
   }
   C.main = function() {
     var c = new C();
@@ -188,7 +187,7 @@ define('test', ['ss'], function(ss) {
   };
 
 
-  var $exports = ss.module('test', null,
+  var $module = ss.module('test', null,
     {
       IIndexable: ss.defineInterface(IIndexable),
       Normal: ss.defineClass(Normal, Normal$, [], null),
@@ -204,6 +203,7 @@ define('test', ['ss'], function(ss) {
       B: ss.defineClass(B, B$, [], A),
       C: ss.defineClass(C, C$, [], B)
     });
+  var $exports = $module.api;
 
 
   return $exports;

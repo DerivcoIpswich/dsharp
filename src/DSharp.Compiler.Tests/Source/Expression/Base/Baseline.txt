@@ -89,7 +89,7 @@ define('test', ['ss'], function(ss) {
   };
 
 
-  var $exports = ss.module('test', null,
+  var $module = ss.module('test', null,
     {
       IExecutor: ss.defineInterface(IExecutor),
       Program: ss.defineClass(Program, Program$, [], null),
@@ -99,6 +99,7 @@ define('test', ['ss'], function(ss) {
       ConcreteClass: ss.defineClass(ConcreteClass, ConcreteClass$, [IExecutor], BaseClass),
       Bar: ss.defineClass(Bar, Bar$, [Number, Number, Foo], Foo)
     });
+  var $exports = $module.api;
 
 
   return $exports;

@@ -48,7 +48,7 @@ define('test', ['ss'], function(ss) {
   // MyClass2
 
   function MyClass2() {
-    $exports.MyClass2.$base.call(this);
+    $module.registry.MyClass2.$base.call(this);
   }
   var MyClass2$ = {
 
@@ -58,7 +58,7 @@ define('test', ['ss'], function(ss) {
   // MyClass4
 
   function MyClass4() {
-    $exports.MyClass4.$base.call(this);
+    $module.registry.MyClass4.$base.call(this);
   }
   var MyClass4$ = {
     someMethod: function() {
@@ -69,7 +69,7 @@ define('test', ['ss'], function(ss) {
   };
 
 
-  var $exports = ss.module('test', null,
+  var $module = ss.module('test', null,
     {
       MyEnum: MyEnum,
       IXyzInterface: ss.defineInterface(IXyzInterface),
@@ -80,8 +80,8 @@ define('test', ['ss'], function(ss) {
       MyClass2: ss.defineClass(MyClass2, MyClass2$, [], MyClass),
       MyClass4: ss.defineClass(MyClass4, MyClass4$, [], MyClass, [ss.IDisposable])
     });
+  var $exports = $module.api;
 
 
   return $exports;
 });
-

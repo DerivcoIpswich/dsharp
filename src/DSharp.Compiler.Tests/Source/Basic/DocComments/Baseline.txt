@@ -236,7 +236,7 @@ define('test', ['ss'], function(ss) {
   };
 
 
-  var $exports = ss.module('test',
+  var $module = ss.module('test',
     {
       InternalClass: ss.defineClass(InternalClass, InternalClass$, [], null),
       InternalClassWithNoComments: ss.defineClass(InternalClassWithNoComments, InternalClassWithNoComments$, [], null)
@@ -248,9 +248,9 @@ define('test', ['ss'], function(ss) {
       BaseClass: ss.defineClass(BaseClass, BaseClass$, [Element, String, Number], null),
       DerivedClass: ss.defineClass(DerivedClass, DerivedClass$, [], BaseClass)
     });
+  var $exports = $module.api;
 
   BaseClass.constantField = 3;
 
   return $exports;
 });
-

@@ -229,7 +229,10 @@ function module(name, implementation, exports) {
         }
     }
 
-    return api;
+    return {
+        registry: registry,
+        api: api
+    };
 }
 
 function baseProperty(type, propertyName) {

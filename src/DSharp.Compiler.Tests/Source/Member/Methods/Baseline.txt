@@ -59,12 +59,13 @@ define('test', ['ss'], function(ss) {
   };
 
 
-  var $exports = ss.module('test', null,
+  var $module = ss.module('test', null,
     {
       Test: ss.defineClass(Test, Test$, [], null),
       X: ss.defineClass(X, X$, [], null),
       X$Y_$1: ss.defineClass(X$Y_$1, X$Y_$1$, [], null)
     });
+  var $exports = $module.api;
 
 
   return $exports;
