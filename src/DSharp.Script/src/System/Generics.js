@@ -38,6 +38,9 @@ function getGenericConstructor(ctorMethod, typeArguments) {
             genericInstance.$type = _interfaceMarker;
             genericInstance.$name = key;
             genericInstance.$interfaces = interfaces;
+            Object.defineProperty(genericInstance, "$members", {
+                get: function () { return ctorMethod.$members }
+            });
         }
         else {
             genericInstance = namedFunction(key, function () {
@@ -55,6 +58,9 @@ function getGenericConstructor(ctorMethod, typeArguments) {
             genericInstance.$type = ctorMethod.$type;
             genericInstance.$name = key;
             genericInstance.$constructorParams = constructorParams;
+            Object.defineProperty(genericInstance, "$members", {
+                get: function () { return ctorMethod.$members }
+            });
         }
         genericInstance.prototype = Object.create(ctorMethod.prototype);
         genericInstance.prototype.constructor = genericInstance;
