@@ -109,31 +109,54 @@ function getTypeArgument(instance, typeArgumentName) {
     return instance.constructor.$typeArguments[typeArgumentName];
 }
 
-function getGenericTemplate(ctorMethod, typeParameters) {
+function getGenericTemplate(ctorMethod, typeParameters, makeGenericType) {
     if (!isValue(ctorMethod)) {
         return null;
     }
 
-    var params = {};
-    for (var i = 0, ln = typeParameters.length; i < ln; ++i) {
-        params[typeParameters[i]] = null;
+    makeGenericType = makeGenericType || function (typeArguments) {
+        var args = {};
+        for (var i = 0, ln = typeParameters.length; i < ln; ++i) {
+            args[typeParameters[i]] = typeArguments[i];
+        }
+        return getGenericConstructor(ctorMethod, args);
     }
 
-    return {
-        $type: ctorMethod.$type,
-        $name: ctorMethod.$name,
-        $interfaces: ctorMethod.$interfaces,
-        $typeArguments: params,
+    var genericTemplate = {
         IsGenericTypeDefinition: true,
-        GenericTypeArguments: values(params || {}),
-        makeGenericType: function (typeArguments) {
-            var args = {};
-            for (var i = 0, ln = typeParameters.length; i < ln; ++i) {
-                args[typeParameters[i]] = typeArguments[i];
+        makeGenericType: makeGenericType
+    };
+
+    function proxyMember(name, impl) {
+        Object.defineProperty(genericTemplate, name, {
+            get: function () { return impl ? impl() : ctorMethod[name]; }
+        });
+    }
+
+    function getTypeParameters() {
+        var params;
+        return function () {
+            if (!params) {
+                params = {}
+                for (var i = 0, ln = typeParameters.length; i < ln; ++i) {
+                    params[typeParameters[i]] = null;
+                }
             }
-            return getGenericConstructor(ctorMethod, args);
+            return params;
         }
     }
+
+    function getGenericTypeArguments() {
+        return function () { values(getTypeParameters()() || {}) }
+    }
+
+    proxyMember("$type");
+    proxyMember("$name");
+    proxyMember("$interfaces");
+    proxyMember("$typeArguments", getTypeParameters());
+    proxyMember("GenericTypeArguments", getGenericTypeArguments());
+
+    return genericTemplate;
 }
 
 var makeGenericType = paramsGenerator(1, function (genericTemplate, typeArguments) {
@@ -148,27 +171,13 @@ function makeMappedGenericTemplate(ctorMethod, typeMap) {
     if (!isValue(ctorMethod)) {
         return null;
     }
-
     var typeParameters = keys(typeMap);
-    var params = {};
-    for (var i = 0, ln = typeParameters.length; i < ln; ++i) {
-        params[typeParameters[i]] = null;
-    }
 
-    return {
-        $type: ctorMethod.$type,
-        $name: ctorMethod.$name,
-        $interfaces: ctorMethod.$interfaces,
-        $typeArguments: params,
-        IsGenericTypeDefinition: true,
-        GenericTypeArguments: values(params || {}),
-
-        makeGenericType: function (typeArguments) {
-            var args = {};
-            for (var i = 0; i < typeParameters.length; ++i) {
-                args[typeParameters[i]] = typeArguments[typeMap[typeParameters[i]]]
-            }
-            return getGenericConstructor(ctorMethod, args);
+    return getGenericTemplate(ctorMethod, typeParameters, function (typeArguments) {
+        var args = {};
+        for (var i = 0; i < typeParameters.length; ++i) {
+            args[typeParameters[i]] = typeArguments[typeMap[typeParameters[i]]]
         }
-    }
+        return getGenericConstructor(ctorMethod, args);
+    });    
 }
