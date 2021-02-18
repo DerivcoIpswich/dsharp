@@ -360,7 +360,8 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
             if ((filter & SymbolFilter.Types) != 0)
             {
-                symbol = GetNestedType(name, context, filter);
+                symbol = GetNestedType(name, context, filter)
+                    ?? GetGenericParamaterType(name, context, filter);
             }
 
             if (symbol == null && (filter & SymbolFilter.Members) != 0)
@@ -428,6 +429,16 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                         return symbol;
                     }
                 }
+            }
+
+            return null;
+        }
+
+        private Symbol GetGenericParamaterType(string name, Symbol context, SymbolFilter filter)
+        {
+            if(IsGeneric)
+            {
+                return GenericParameters?.FirstOrDefault(p => p.Name == name);
             }
 
             return null;

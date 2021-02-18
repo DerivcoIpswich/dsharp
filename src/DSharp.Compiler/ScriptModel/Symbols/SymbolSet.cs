@@ -250,7 +250,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                     return templateType;
                 }
 
-            string key = CreateTypeName(templateType, typeArguments);
+            string key = GenerateGenericTypeKey(templateType, typeArguments);
 
             if (!genericTypeTable.TryGetValue(key, out TypeSymbol instanceTypeSymbol))
             {
@@ -263,14 +263,18 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             return instanceTypeSymbol;
         }
 
-        private static string CreateTypeName(TypeSymbol symbol, IEnumerable<TypeSymbol> arguments)
+        private static string GenerateGenericTypeKey(TypeSymbol symbol, IEnumerable<TypeSymbol> arguments)
         {
+            var symbolKey = symbol is GenericParameterSymbol genericParameterSymbol
+                ? $"{genericParameterSymbol.Owner.Name}:{symbol.FullName}"
+                : symbol.FullName;
+
             if (arguments?.Any() ?? false)
             {
-                return $"{symbol.FullName}<{string.Join(",", arguments.Select(s => CreateTypeName(s, s.GenericArguments)))}>";
+                return $"{symbolKey}<{string.Join(",", arguments.Select(s => GenerateGenericTypeKey(s, s.GenericArguments)))}>";
             }
 
-            return symbol.FullName;
+            return symbolKey;
         }
 
         private TypeSymbol CreateGenericTypeCore(TypeSymbol templateType, IList<TypeSymbol> typeArguments)
