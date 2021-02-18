@@ -16,59 +16,67 @@ function getGenericConstructor(ctorMethod, typeArguments) {
     }
 
     var key = createGenericConstructorKey(ctorMethod, typeArguments);
-    var genericInstance = _genericConstructorCache[key];
 
-    if (!genericInstance) {
-        if (ctorMethod.$interfaces) {
-            var interfaces = [];
-            for (var i = 0; i < ctorMethod.$interfaces.length; ++i) {
-                interfaces.push(mapGenericType(ctorMethod.$interfaces[i], typeArguments))
-            }
-        }
-
-        if (ctorMethod.$constructorParams) {
-            var constructorParams = [];
-            for (var i = 0; i < ctorMethod.$constructorParams.length; ++i) {
-                constructorParams.push(mapGenericType(ctorMethod.$constructorParams[i], typeArguments))
-            }
-        }
-
-        if (isInterface(ctorMethod)) {
-            genericInstance = namedFunction(key, function () { });
-            genericInstance.$type = _interfaceMarker;
-            genericInstance.$name = key;
-            genericInstance.$interfaces = interfaces;
-            Object.defineProperty(genericInstance, "$members", {
-                get: function () { return ctorMethod.$members }
-            });
-        }
-        else {
-            genericInstance = namedFunction(key, function () {
-                ctorMethod.apply(this, Array.prototype.slice.call(arguments));
-                var ctr = this.__proto__.constructor;
-                ctr.$typeArguments = typeArguments || {};
-                ctr.$base = ctr.$base || genericInstance.$base;
-                ctr.$interfaces = interfaces;
-                ctr.$type = ctr.$type || genericInstance.$type;
-                ctr.$name = ctr.$name || genericInstance.$name;
-                ctr.$constructorParams = constructorParams;
-            });
-            genericInstance.$base = ctorMethod.$base;
-            genericInstance.$interfaces = interfaces;
-            genericInstance.$type = ctorMethod.$type;
-            genericInstance.$name = key;
-            genericInstance.$constructorParams = constructorParams;
-            Object.defineProperty(genericInstance, "$members", {
-                get: function () { return ctorMethod.$members }
-            });
-        }
-        genericInstance.prototype = Object.create(ctorMethod.prototype);
-        genericInstance.prototype.constructor = genericInstance;
-        genericInstance.$typeArguments = typeArguments || {};
-        genericInstance.IsGenericTypeDefinition = true;
-        genericInstance.GenericTypeArguments = values(typeArguments || {});
-        _genericConstructorCache[key] = genericInstance;
+    if (!_genericConstructorCache[key]) {
+        _genericConstructorCache[key] = createGenericConstructorProxy(key, ctorMethod, typeArguments);
     }
+    return _genericConstructorCache[key];
+}
+
+function createGenericConstructorProxy(key, ctorMethod, typeArguments) {
+
+    function proxyMember(name, impl) {
+        Object.defineProperty(genericInstance, name, {
+            get: function () { return impl ? impl() : ctorMethod[name]; }
+        });
+    }
+
+    function getInterfaces() {
+        var interfaces;
+        return function () {
+            if (!interfaces && ctorMethod.$interfaces) {
+                interfaces = []
+                for (var i = 0; i < ctorMethod.$interfaces.length; ++i) {
+                    interfaces.push(mapGenericType(ctorMethod.$interfaces[i], typeArguments))
+                }
+            }
+            return interfaces;
+        }
+    }
+
+    function getConstructorParams() {
+        var constructorParams;
+        return function () {
+            if (!constructorParams && ctorMethod.$constructorParams) {
+                constructorParams = [];
+                for (var i = 0; i < ctorMethod.$constructorParams.length; ++i) {
+                    constructorParams.push(mapGenericType(ctorMethod.$constructorParams[i], typeArguments))
+                }
+            }
+            return constructorParams;
+        }
+    }
+
+    function getTypeArguments() {
+        return typeArguments;
+    }
+
+    var genericInstance = namedFunction(key, function () {
+        ctorMethod.apply(this, Array.prototype.slice.call(arguments));
+    });
+
+    genericInstance.prototype = Object.create(ctorMethod.prototype);
+    genericInstance.prototype.constructor = genericInstance;
+    genericInstance.IsGenericTypeDefinition = true;
+    genericInstance.$name = key;
+    genericInstance.GenericTypeArguments = values(typeArguments || {});
+
+    proxyMember("$type");
+    proxyMember("$base");
+    proxyMember("$members");
+    proxyMember("$interfaces", getInterfaces());
+    proxyMember("$constructorParams", getConstructorParams());
+    proxyMember("$typeArguments", getTypeArguments);
 
     return genericInstance;
 }
