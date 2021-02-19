@@ -57,7 +57,7 @@ define('test', ['ss'], function(ss) {
       AbstractBase: ss.defineClass(AbstractBase, AbstractBase$, [], null),
       GenericBase_$1: ss.defineClass(GenericBase_$1, GenericBase_$1$, [], null),
       MyClass: ss.defineClass(MyClass, MyClass$, [], AbstractBase),
-      MyGenericClass: ss.defineClass(MyGenericClass, MyGenericClass$, [], ss.getGenericConstructor(GenericBase_$1,{T : Boolean}))
+      MyGenericClass: ss.defineClass(MyGenericClass, MyGenericClass$, [], ss.getGenericConstructor(GenericBase_$1, {T : Boolean}))
     });
   var $exports = $module.api;
 

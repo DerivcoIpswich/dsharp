@@ -42,7 +42,7 @@ define('test', ['ss'], function(ss) {
     {
       ITest: ss.defineInterface(ITest),
       ITest_$1: ss.defineInterface(ITest_$1),
-      X: ss.defineClass(X, X$, [ss.IEnumerable, ss.IEnumerable_$1, ss.IDictionary, ss.IDictionary_$2, ITest, ss.getGenericConstructor(ITest_$1, {T : Number}), ss.getGenericConstructor(ss.IEquatable_$1, {T : Number})], null, [ss.IEnumerable, ss.IEnumerable_$1, ITest, ss.getGenericConstructor(ITest_$1, {T : Number}), ss.getGenericConstructor(ss.IEquatable_$1, {T : Number})]),
+      X: ss.defineClass(X, X$, [ss.IEnumerable, ss.IEnumerable_$1, ss.IDictionary, ss.IDictionary_$2, ITest, ss.getGenericConstructor(ITest_$1, {T : Number}), ss.IEquatable_$1], null, [ss.IEnumerable, ss.IEnumerable_$1, ITest, ss.getGenericConstructor(ITest_$1, {T : Number}), ss.IEquatable_$1]),
       Hello: ss.defineClass(Hello, Hello$, [], null)
     });
   var $exports = $module.api;

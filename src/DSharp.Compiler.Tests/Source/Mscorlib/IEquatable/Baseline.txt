@@ -35,7 +35,7 @@ define('test', ['ss'], function(ss) {
   var $module = ss.module('test', null,
     {
       TestClass: ss.defineClass(TestClass, TestClass$, [], null),
-      TestObject: ss.defineClass(TestObject, TestObject$, [], null, [ss.getGenericConstructor(ss.IEquatable_$1, {T : TestObject})])
+      TestObject: ss.defineClass(TestObject, TestObject$, [], null, [ss.IEquatable_$1])
     });
   var $exports = $module.api;
 
