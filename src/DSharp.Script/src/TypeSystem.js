@@ -139,8 +139,8 @@ function canAssign(type, otherType) {
 
     // DateTime in CLR implements IEquatable and IComparable
     if (otherType === Date && (
-        type === getGenericConstructor(IEquatable_$1, { T: DateTime })
-        || type == getGenericConstructor(IComparable_$1, { T: DateTime }))) {
+        type === IEquatable_$1
+        || type == IComparable_$1)) {
         return true;
     }
 

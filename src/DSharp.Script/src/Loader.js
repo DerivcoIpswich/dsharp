@@ -36,7 +36,7 @@
           Stack: defineClass(Stack, Stack$, [], null),
           Queue: defineClass(Queue, Queue$, [], null),
           Guid: defineClass(Guid, Guid$, [], null),
-          DateTime: defineClass(DateTime, {}, [], null, [getGenericConstructor(IEquatable_$1, { T: DateTime }), getGenericConstructor(IComparable_$1, { T: DateTime })]),
+          DateTime: defineClass(DateTime, {}, [], null, [IEquatable_$1, IComparable_$1]),
           Lazy: defineClass(Lazy, {}, [], null),
           Nullable: defineClass(Nullable, Nullable$, [], null),
           Enum: defineClass(Enum, {}, [], null),
