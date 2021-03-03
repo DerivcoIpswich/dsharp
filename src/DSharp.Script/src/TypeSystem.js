@@ -36,7 +36,7 @@ function createType(typeName, typeInfo, typeRegistry) {
         // its prototype members, and optionally the base type, and references
         // to interfaces implemented by the class.
         if (typeMarker === _classMarker) {
-            if (baseType) {
+            if (baseType && !baseType.IsGenericTypeDefinition) {
                 // Chain the prototype of the base type (using an anonymous type
                 // in case the base class is not creatable, or has side-effects).
                 var anonymous = function () { };

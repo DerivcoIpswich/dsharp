@@ -896,7 +896,8 @@ namespace DSharp.Compiler.Importer
                 new ParameterSymbol("instance", getTypeArgument, objectType, ParameterMode.In));
             getTypeArgument.AddParameter(
                 new ParameterSymbol("typeArgumentName", getTypeArgument, stringType, ParameterMode.In));
-
+            getTypeArgument.AddParameter(
+                new ParameterSymbol("templateType", getTypeArgument, typeSymbol, ParameterMode.In));
             classSymbol.AddMember(getTypeArgument);
 
             MethodSymbol getGenericTemplateMethod

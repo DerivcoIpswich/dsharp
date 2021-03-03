@@ -1943,13 +1943,14 @@ namespace DSharp.Compiler.Compiler
                 TypeSymbol stringSymbol = symbolSet.ResolveIntrinsicType(IntrinsicType.String);
                 TypeSymbol objectSymbol = symbolSet.ResolveIntrinsicType(IntrinsicType.Object);
 
-                if (genericParameterSymbol.Owner is ClassSymbol)
+                if (genericParameterSymbol.Owner is ClassSymbol owner)
                 {
                     TypeExpression scriptExpression = new TypeExpression(scriptSymbol, SymbolFilter.Public | SymbolFilter.StaticMembers);
                     var methodSymbol = (MethodSymbol)scriptSymbol.GetMember("getTypeArgument");
                     var methodExpression = new MethodExpression(scriptExpression, methodSymbol);
                     methodExpression.AddParameterValue(new ThisExpression(referencedType.Parent as ClassSymbol, false));
                     methodExpression.AddParameterValue(new LiteralExpression(stringSymbol, genericParameterSymbol.GeneratedName));
+                    methodExpression.AddParameterValue(new LiteralExpression(typeSymbol, owner));
 
                     return methodExpression;
                 }

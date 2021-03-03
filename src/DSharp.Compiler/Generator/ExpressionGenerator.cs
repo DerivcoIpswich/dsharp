@@ -29,13 +29,10 @@ namespace DSharp.Compiler.Generator
             ClassSymbol baseClass = ((ClassSymbol)symbol.Parent).BaseClass;
             Debug.Assert(baseClass != null);
 
-            if(baseClass.GenericArguments?.Any() ?? false)
+            if (baseClass.GenericParameters?.Any() == true && baseClass.UseGenericName)
             {
-                writer.Write(DSharpStringResources.ScriptExportMember("getGenericConstructor"));
-                writer.Write("(");
-                writer.Write(baseClass.FullGeneratedName);
-                writer.Write(", ");
-                generator.WriteGenericTypeArgumentsMap(baseClass.GenericArguments, baseClass.GenericParameters);
+                writer.Write($"ss.getGenericConstructor({baseClass.FullGeneratedName},");
+                ScriptGeneratorExtensions.WriteGenericTypeArguments(writer.Write, baseClass.GenericArguments, baseClass.GenericParameters);
                 writer.Write(")");
             }
             else

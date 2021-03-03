@@ -87,9 +87,9 @@ namespace DSharp.Compiler.Generator
                     return $"'{typeArgument.FullGeneratedName}'";
                 }
 
-                if (parameterSymbol.Owner is ClassSymbol)
+                if (parameterSymbol.Owner is ClassSymbol owner)
                 {
-                    return $"{DSharpStringResources.ScriptExportMember("getTypeArgument")}(this, '{typeArgument.FullGeneratedName}')";
+                    return $"{DSharpStringResources.ScriptExportMember("getTypeArgument")}(this, '{typeArgument.FullGeneratedName}', {owner.FullGeneratedName})";
                 }
 
                 return $"{DSharpStringResources.GeneratedScript.GENERIC_ARGS_PARAMETER_NAME}['{typeArgument.FullGeneratedName}']";

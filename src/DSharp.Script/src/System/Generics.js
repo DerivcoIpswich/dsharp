@@ -50,7 +50,11 @@ function createGenericConstructorProxy(key, ctorMethod, typeArguments) {
             if (!constructorParams && ctorMethod.$constructorParams) {
                 constructorParams = [];
                 for (var i = 0; i < ctorMethod.$constructorParams.length; ++i) {
-                    constructorParams.push(mapGenericType(ctorMethod.$constructorParams[i], typeArguments))
+                    var param = ctorMethod.$constructorParams[i];
+                    if (typeof (param) === "string") {
+                        param = typeArguments[param];
+                    }
+                    constructorParams.push(mapGenericType(param, typeArguments))
                 }
             }
             return constructorParams;
@@ -65,18 +69,28 @@ function createGenericConstructorProxy(key, ctorMethod, typeArguments) {
         ctorMethod.apply(this, Array.prototype.slice.call(arguments));
     });
 
-    genericInstance.prototype = Object.create(ctorMethod.prototype);
-    genericInstance.prototype.constructor = genericInstance;
     genericInstance.IsGenericTypeDefinition = true;
     genericInstance.$name = key;
     genericInstance.GenericTypeArguments = values(typeArguments || {});
+    genericInstance.GenericTemplate = ctorMethod;
 
     proxyMember("$type");
-    proxyMember("$base");
     proxyMember("$members");
     proxyMember("$interfaces", getInterfaces());
     proxyMember("$constructorParams", getConstructorParams());
     proxyMember("$typeArguments", getTypeArguments);
+
+    if (ctorMethod.$base && ctorMethod.$base.IsGenericTypeDefinition) {
+        var baseType = ctorMethod.$base.makeGenericType(typeArguments);
+        genericInstance.prototype = Object.create(baseType.prototype)
+        genericInstance.prototype.constructor = genericInstance;
+        genericInstance.$base = baseType;
+    }
+    else {
+        genericInstance.prototype = Object.create(ctorMethod.prototype);
+        genericInstance.prototype.constructor = genericInstance;
+        genericInstance.$base = ctorMethod.$base;
+    }
 
     return genericInstance;
 }
@@ -101,12 +115,24 @@ function getTypeName(instance) {
     }
 }
 
-function getTypeArgument(instance, typeArgumentName) {
-    if (!isValue(instance) || emptyString(typeArgumentName) || !isValue(instance.constructor.$typeArguments)) {
+function getTypeArgument(instance, typeArgumentName, templateType) {
+    if (!isValue(instance) || emptyString(typeArgumentName)) {
         return null;
     }
 
-    return instance.constructor.$typeArguments[typeArgumentName];
+    var type = instance.constructor;
+
+    if (templateType) {
+        while (type && type.GenericTemplate != templateType) {
+            type = type.$base;
+        }
+    }
+
+    if (isValue(type.$typeArguments)) {
+        return type.$typeArguments[typeArgumentName];
+    }
+
+    return null;
 }
 
 function getGenericTemplate(ctorMethod, typeParameters, makeGenericType) {
@@ -176,8 +202,14 @@ function makeMappedGenericTemplate(ctorMethod, typeMap) {
     return getGenericTemplate(ctorMethod, typeParameters, function (typeArguments) {
         var args = {};
         for (var i = 0; i < typeParameters.length; ++i) {
-            args[typeParameters[i]] = typeArguments[typeMap[typeParameters[i]]]
+            var mappedType = typeMap[typeParameters[i]];
+            if (typeof (mappedType) === "string") {
+                args[typeParameters[i]] = typeArguments[mappedType]
+            }
+            else {
+                args[typeParameters[i]] = mappedType
+            }
         }
         return getGenericConstructor(ctorMethod, args);
-    });    
+    });
 }

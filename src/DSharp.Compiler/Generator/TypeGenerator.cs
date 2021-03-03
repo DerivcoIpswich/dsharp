@@ -161,11 +161,18 @@ namespace DSharp.Compiler.Generator
             {
                 CodeGenerator.GenerateScript(generator, ctorSymbol);
             }
-            else if (classSymbol.BaseClass is ClassSymbol)
+            else if (classSymbol.BaseClass is ClassSymbol baseClass)
             {
-                writer.Write("$module.registry.");
-                writer.Write(classSymbol.FullGeneratedName);
-                writer.WriteLine(".$base.call(this);");
+                if (baseClass.GenericParameters?.Any() == true && baseClass.UseGenericName)
+                {
+                    writer.Write($"ss.getGenericConstructor({baseClass.FullGeneratedName},");
+                    ScriptGeneratorExtensions.WriteGenericTypeArguments(writer.Write, baseClass.GenericArguments, baseClass.GenericParameters);
+                    writer.Write(")");
+                }
+                else
+                {
+                    writer.Write(baseClass.FullGeneratedName);
+                }
             }
 
             writer.Indent--;
@@ -402,7 +409,14 @@ namespace DSharp.Compiler.Generator
                     }
 
                     TypeSymbol parameterType = parameterSymbol.ValueType;
-                    WriteTypeReference(writer, parameterType);
+                    if (parameterType is GenericParameterSymbol)
+                    {
+                        writer.Write($"'{parameterType.FullGeneratedName}'");
+                    }
+                    else
+                    {
+                        WriteTypeReference(writer, parameterType);
+                    }
                     firstParameter = false;
                 }
             }
