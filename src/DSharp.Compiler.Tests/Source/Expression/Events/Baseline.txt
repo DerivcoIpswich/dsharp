@@ -79,7 +79,7 @@ define('test', ['ss'], function(ss) {
   // ExpressionTests.FooEventArgs
 
   function FooEventArgs() {
-    $module.registry.FooEventArgs.$base.call(this);
+    ss.EventArgs.call(this);
   }
   var FooEventArgs$ = {
 
@@ -90,7 +90,7 @@ define('test', ['ss'], function(ss) {
     {
       Button: ss.defineClass(Button, Button$, [], null),
       App: ss.defineClass(App, App$, [], null),
-      FooEventArgs: ss.defineClass(FooEventArgs, FooEventArgs$, [], ss.EventArgs)
+      FooEventArgs: ss.defineClass(FooEventArgs, FooEventArgs$, [], function () { return ss.EventArgs})
     });
   var $exports = $module.api;
 

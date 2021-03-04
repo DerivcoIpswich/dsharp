@@ -160,7 +160,7 @@ define('ExpressionTests.ExtensionMethods', ['ss'], function(ss) {
   // ExpressionTests.MyServiceCollection
 
   function MyServiceCollection() {
-    $module.registry.MyServiceCollection.$base.call(this);
+    ServiceCollection.call(this);
   }
   var MyServiceCollection$ = {
 
@@ -170,7 +170,7 @@ define('ExpressionTests.ExtensionMethods', ['ss'], function(ss) {
   // ExpressionTests.MyOtherServiceCollection
 
   function MyOtherServiceCollection() {
-    $module.registry.MyOtherServiceCollection.$base.call(this);
+    ServiceCollection.call(this);
   }
   var MyOtherServiceCollection$ = {
 
@@ -194,8 +194,8 @@ define('ExpressionTests.ExtensionMethods', ['ss'], function(ss) {
       ServiceCollection: ss.defineClass(ServiceCollection, ServiceCollection$, [], null, [IServiceCollection]),
       Program: ss.defineClass(Program, Program$, [], null),
       Temp: ss.defineClass(Temp, Temp$, [], null, [ITemp]),
-      MyServiceCollection: ss.defineClass(MyServiceCollection, MyServiceCollection$, [], ServiceCollection),
-      MyOtherServiceCollection: ss.defineClass(MyOtherServiceCollection, MyOtherServiceCollection$, [], ServiceCollection, [IServiceCollection])
+      MyServiceCollection: ss.defineClass(MyServiceCollection, MyServiceCollection$, [], function (registry) { return registry.ServiceCollection}),
+      MyOtherServiceCollection: ss.defineClass(MyOtherServiceCollection, MyOtherServiceCollection$, [], function (registry) { return registry.ServiceCollection}, [IServiceCollection])
     });
   var $exports = $module.api;
 

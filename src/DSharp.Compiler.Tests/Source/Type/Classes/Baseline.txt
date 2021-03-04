@@ -68,7 +68,7 @@ define('test', ['ss'], function(ss) {
   // TypeTests.MyClass2
 
   function MyClass2() {
-    $module.registry.MyClass2.$base.call(this);
+    MyClass.call(this);
   }
   var MyClass2$ = {
 
@@ -96,8 +96,8 @@ define('test', ['ss'], function(ss) {
       MyClass3: ss.defineClass(MyClass3, MyClass3$, [], null, [ss.IDisposable]),
       StaticClass: ss.defineClass(StaticClass, null, [], null),
       TypeWithParamsInCtor: ss.defineClass(TypeWithParamsInCtor, TypeWithParamsInCtor$, [Object, Array], null),
-      MyClass2: ss.defineClass(MyClass2, MyClass2$, [], MyClass),
-      MyClass4: ss.defineClass(MyClass4, MyClass4$, [FooBaz, BarBaz, ss.IDisposable], MyClass, [ss.IDisposable])
+      MyClass2: ss.defineClass(MyClass2, MyClass2$, [], function (registry) { return registry.MyClass}),
+      MyClass4: ss.defineClass(MyClass4, MyClass4$, [FooBaz, BarBaz, ss.IDisposable], function (registry) { return registry.MyClass}, [ss.IDisposable])
     });
   var $exports = $module.api;
 

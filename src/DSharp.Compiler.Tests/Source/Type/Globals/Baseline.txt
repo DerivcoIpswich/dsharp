@@ -48,7 +48,7 @@ define('test', ['ss'], function(ss) {
   // MyClass2
 
   function MyClass2() {
-    $module.registry.MyClass2.$base.call(this);
+    MyClass.call(this);
   }
   var MyClass2$ = {
 
@@ -58,7 +58,7 @@ define('test', ['ss'], function(ss) {
   // MyClass4
 
   function MyClass4() {
-    $module.registry.MyClass4.$base.call(this);
+    MyClass.call(this);
   }
   var MyClass4$ = {
     someMethod: function() {
@@ -77,8 +77,8 @@ define('test', ['ss'], function(ss) {
       MyClass: ss.defineClass(MyClass, MyClass$, [], null),
       MyClass3: ss.defineClass(MyClass3, MyClass3$, [], null, [ss.IDisposable]),
       MyClassF: ss.defineClass(MyClassF, MyClassF$, [], null),
-      MyClass2: ss.defineClass(MyClass2, MyClass2$, [], MyClass),
-      MyClass4: ss.defineClass(MyClass4, MyClass4$, [], MyClass, [ss.IDisposable])
+      MyClass2: ss.defineClass(MyClass2, MyClass2$, [], function (registry) { return registry.MyClass}),
+      MyClass4: ss.defineClass(MyClass4, MyClass4$, [], function (registry) { return registry.MyClass}, [ss.IDisposable])
     });
   var $exports = $module.api;
 

@@ -173,8 +173,10 @@ namespace DSharp.Compiler.Generator
                 {
                     writer.Write(baseClass.FullGeneratedName);
                 }
-            }
 
+                writer.WriteLine(".call(this);");
+            }
+            
             writer.Indent--;
             writer.WriteLine("}");
 
@@ -436,7 +438,21 @@ namespace DSharp.Compiler.Generator
         {
             if (classSymbol.BaseClass is ClassSymbol baseClass)
             {
-                WriteTypeReference(writer, baseClass);
+                writer.Write("function (");
+                if(baseClass.IsApplicationType)
+                {
+                    writer.Write("registry");
+                    writer.Write(")");
+                    writer.Write(" { return ");
+                    WriteTypeReference(writer, baseClass, "registry.");
+                }
+                else
+                {
+                    writer.Write(")");
+                    writer.Write(" { return ");
+                    WriteTypeReference(writer, baseClass);
+                }
+                writer.Write("}");
             }
             else
             {
@@ -470,7 +486,7 @@ namespace DSharp.Compiler.Generator
             writer.Write("]");
         }
 
-        private static void WriteTypeReference(ScriptTextWriter writer, TypeSymbol typeSymbol)
+        private static void WriteTypeReference(ScriptTextWriter writer, TypeSymbol typeSymbol, string typePrefix = "")
         {
             typeSymbol = GetParameterType(typeSymbol);
 
@@ -478,23 +494,25 @@ namespace DSharp.Compiler.Generator
             {
                 if (typeSymbol.IgnoreGenericTypeArguments)
                 {
+                    writer.Write(typePrefix);
                     writer.Write(typeSymbol.FullGeneratedName);
                 }
                 else if (typeSymbol.GenericArguments.Any(p => p is GenericParameterSymbol gp && gp.IsTypeParameter))
                 {
-                    writer.Write($"ss.makeMappedGenericTemplate({typeSymbol.FullGeneratedName}, ");
+                    writer.Write($"ss.makeMappedGenericTemplate({typePrefix}{typeSymbol.FullGeneratedName}, ");
                     ScriptGeneratorExtensions.WriteGenericTypeArguments(writer.Write, typeSymbol.GenericArguments, typeSymbol.GenericParameters, writeNameMap: true);
                     writer.Write(")");
                 }
                 else
                 {
-                    writer.Write($"ss.getGenericConstructor({typeSymbol.FullGeneratedName}, ");
+                    writer.Write($"ss.getGenericConstructor({typePrefix}{typeSymbol.FullGeneratedName}, ");
                     ScriptGeneratorExtensions.WriteGenericTypeArguments(writer.Write, typeSymbol.GenericArguments, typeSymbol.GenericParameters);
                     writer.Write(")");
                 }
             }
             else
             {
+                writer.Write(typePrefix);
                 writer.Write(typeSymbol.FullGeneratedName);
             }
         }

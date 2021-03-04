@@ -5,7 +5,7 @@ define('test', ['ss', 'lib'], function(ss, lib) {
   // BasicTests.App
 
   function App() {
-    $module.registry.App.$base.call(this);
+    lib.ClassInLib.call(this);
   }
   var App$ = {
 
@@ -14,7 +14,7 @@ define('test', ['ss', 'lib'], function(ss, lib) {
 
   var $module = ss.module('test', null,
     {
-      App: ss.defineClass(App, App$, [], lib.ClassInLib)
+      App: ss.defineClass(App, App$, [], function () { return lib.ClassInLib})
     });
   var $exports = $module.api;
 

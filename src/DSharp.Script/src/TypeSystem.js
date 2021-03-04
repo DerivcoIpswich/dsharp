@@ -30,27 +30,8 @@ function createType(typeName, typeInfo, typeRegistry) {
     if (Array.isArray(typeInfo)) {
         var typeMarker = typeInfo[0];
         var type = typeInfo[1];
-        var prototypeDescription = typeInfo[2];
-        var baseType = typeInfo[3];
-        // A class is minimally the class type and an object representing
-        // its prototype members, and optionally the base type, and references
-        // to interfaces implemented by the class.
-        if (typeMarker === _classMarker) {
-            if (baseType && !baseType.IsGenericTypeDefinition) {
-                // Chain the prototype of the base type (using an anonymous type
-                // in case the base class is not creatable, or has side-effects).
-                var anonymous = function () { };
-                anonymous.prototype = baseType.prototype;
-                type.prototype = new anonymous();
-                type.prototype.constructor = type;
-            }
-
-            // Add the type's prototype members if there are any
-            prototypeDescription && extendType(type.prototype, prototypeDescription);
-            type.$base = baseType || Object;
-        }
-
         type.$name = typeName;
+        type.$prototypeDescription = typeInfo[2];
         return typeRegistry[typeName] = type;
     }
     else if (typeInfo.constructor === Enum) {
@@ -58,6 +39,20 @@ function createType(typeName, typeInfo, typeRegistry) {
     }
 
     return typeInfo;
+}
+
+function setInheritance(registry, type, prototypeDescription, resolver) {
+    var baseType = resolver && !resolver.$type && resolver(registry) || Object;
+    if (baseType) {
+        // Chain the prototype of the base type (using an anonymous type
+        // in case the base class is not creatable, or has side-effects).
+        var anonymous = function () { };
+        anonymous.prototype = baseType.prototype;
+        type.prototype = new anonymous();
+        type.prototype.constructor = type;
+    }
+    prototypeDescription && extendType(type.prototype, prototypeDescription);
+    type.$base = baseType;
 }
 
 function defineClass(type, prototypeDescription, constructorParams, baseType, interfaces) {
@@ -217,16 +212,28 @@ function module(name, implementation, exports) {
     var registry = _modules[name] = { $name: name };
 
     var api = {};
+    var classList = [];
     if (exports) {
         for (var typeName in exports) {
-            api[typeName] = createType(typeName, exports[typeName], registry);
+            var type = createType(typeName, exports[typeName], registry);
+            if (type.$type == _classMarker) {
+                classList.push([type, exports[typeName][2], exports[typeName][3]]);
+            }
+            api[typeName] = type;
         }
     }
 
     if (implementation) {
         for (var typeName in implementation) {
-            createType(typeName, implementation[typeName], registry);
+            var type = createType(typeName, implementation[typeName], registry);
+            if (type.$type == _classMarker) {
+                classList.push([type, implementation[typeName][2], implementation[typeName][3]]);
+            }
         }
+    }
+
+    for (var i = 0; i < classList.length; ++i) {
+        setInheritance(registry, classList[i][0], classList[i][1], classList[i][2])
     }
 
     return {

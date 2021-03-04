@@ -10,7 +10,7 @@ define('test', ['ss'], function(ss) {
   // BasicTests.Wow
 
   function Wow() {
-    $module.registry.Wow.$base.call(this);
+    Object.call(this);
   }
   var Wow$ = {
 
@@ -20,7 +20,7 @@ define('test', ['ss'], function(ss) {
   var $module = ss.module('test', null,
     {
       IMyThing: ss.defineInterface(IMyThing, [ss.IList_$1]),
-      Wow: ss.defineClass(Wow, Wow$, [], Object)
+      Wow: ss.defineClass(Wow, Wow$, [], function () { return Object})
     });
   var $exports = $module.api;
 

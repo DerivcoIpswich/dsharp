@@ -57,7 +57,7 @@ define('test', ['ss'], function(ss) {
     {
       Bar: ss.defineClass(Bar, Bar$, [Bar], null),
       Bar$NestedClass: ss.defineClass(Bar$NestedClass, Bar$NestedClass$, [Bar], null),
-      Bar_$1: ss.defineClass(Bar_$1, Bar_$1$, [Object], null),
+      Bar_$1: ss.defineClass(Bar_$1, Bar_$1$, ['T'], null),
       Foo: ss.defineClass(Foo, Foo$, [], null),
       Foo$NestedFoo: ss.defineClass(Foo$NestedFoo, Foo$NestedFoo$, [], null)
     });

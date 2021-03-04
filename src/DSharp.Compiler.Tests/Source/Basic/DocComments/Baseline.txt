@@ -246,7 +246,7 @@ define('test', ['ss'], function(ss) {
       IInterface: ss.defineInterface(IInterface),
       RecordClass: RecordClass,
       BaseClass: ss.defineClass(BaseClass, BaseClass$, [Element, String, Number], null),
-      DerivedClass: ss.defineClass(DerivedClass, DerivedClass$, [], BaseClass)
+      DerivedClass: ss.defineClass(DerivedClass, DerivedClass$, [], function (registry) { return registry.BaseClass})
     });
   var $exports = $module.api;
 

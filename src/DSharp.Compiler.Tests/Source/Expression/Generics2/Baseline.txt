@@ -54,7 +54,7 @@ define('test', ['ss'], function(ss) {
   // ExpressionTests.TestDisposableBase
 
   function TestDisposableBase() {
-    $module.registry.TestDisposableBase.$base.call(this);
+    TestBase.call(this);
   }
   var TestDisposableBase$ = {
     dispose: function() {
@@ -66,7 +66,7 @@ define('test', ['ss'], function(ss) {
     {
       TestBase: ss.defineClass(TestBase, TestBase$, [], null),
       Program: ss.defineClass(Program, Program$, [], null),
-      TestDisposableBase: ss.defineClass(TestDisposableBase, TestDisposableBase$, [], TestBase, [ss.IDisposable])
+      TestDisposableBase: ss.defineClass(TestDisposableBase, TestDisposableBase$, [], function (registry) { return registry.TestBase}, [ss.IDisposable])
     });
   var $exports = $module.api;
 

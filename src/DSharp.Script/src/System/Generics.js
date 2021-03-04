@@ -92,6 +92,8 @@ function createGenericConstructorProxy(key, ctorMethod, typeArguments) {
         genericInstance.$base = ctorMethod.$base;
     }
 
+    ctorMethod.$prototypeDescription && extendType(genericInstance.prototype, ctorMethod.$prototypeDescription);
+
     return genericInstance;
 }
 

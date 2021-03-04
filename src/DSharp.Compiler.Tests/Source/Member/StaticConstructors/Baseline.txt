@@ -64,7 +64,7 @@ define('test', ['ss'], function(ss) {
       MyClassEmpty: ss.defineClass(MyClassEmpty, MyClassEmpty$, [], null),
       MyClassSimple: ss.defineClass(MyClassSimple, MyClassSimple$, [], null),
       MyClassSimpleMulti: ss.defineClass(MyClassSimpleMulti, MyClassSimpleMulti$, [], null),
-      MyBehavior: ss.defineClass(MyBehavior, MyBehavior$, [Element], Behavior)
+      MyBehavior: ss.defineClass(MyBehavior, MyBehavior$, [Element], function (registry) { return registry.Behavior})
     });
   var $exports = $module.api;
 
