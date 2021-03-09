@@ -176,7 +176,7 @@ namespace DSharp.Compiler.Generator
 
                 writer.WriteLine(".call(this);");
             }
-            
+
             writer.Indent--;
             writer.WriteLine("}");
 
@@ -396,42 +396,81 @@ namespace DSharp.Compiler.Generator
                 writer.Write("$, ");
             }
 
-            //constructor params
+            WriteConstructorParameters(classSymbol, writer);
+            WriteBaseClass(classSymbol, writer);
+            WriteInterfaces(writer, classSymbol.Interfaces);
+
+            writer.Write(")");
+        }
+
+        private static void WriteConstructorParameters(ClassSymbol classSymbol, ScriptTextWriter writer)
+        {
+            if (classSymbol.Constructor?.Parameters is null)
+            {
+                writer.Write("[], ");
+                return;
+            }
+
+            bool hasApplicationTypes = classSymbol.Constructor.Parameters
+                .Select(p => p.ValueType)
+                .Any(ShouldUseRegistry);
+
+            if (hasApplicationTypes)
+            {
+                writer.Write("function (");
+                writer.Write("registry");
+                writer.Write(")");
+                writer.Write(" { return ");
+            }
+
             writer.Write("[");
 
-            if (classSymbol.Constructor != null && classSymbol.Constructor.Parameters != null)
+            bool firstParameter = true;
+
+            foreach (ParameterSymbol parameterSymbol in classSymbol.Constructor.Parameters)
             {
-                bool firstParameter = true;
-
-                foreach (ParameterSymbol parameterSymbol in classSymbol.Constructor.Parameters)
+                if (firstParameter == false)
                 {
-                    if (firstParameter == false)
-                    {
-                        writer.Write(", ");
-                    }
+                    writer.Write(", ");
+                }
 
-                    TypeSymbol parameterType = parameterSymbol.ValueType;
-                    if (parameterType is GenericParameterSymbol)
+                TypeSymbol parameterType = parameterSymbol.ValueType;
+                if (parameterType is GenericParameterSymbol)
+                {
+                    writer.Write($"'{parameterType.FullGeneratedName}'");
+                }
+                else
+                {
+                    if (ShouldUseRegistry(parameterType))
                     {
-                        writer.Write($"'{parameterType.FullGeneratedName}'");
+                        WriteTypeReference(writer, parameterType, "registry.");
                     }
                     else
                     {
                         WriteTypeReference(writer, parameterType);
                     }
-                    firstParameter = false;
                 }
+                firstParameter = false;
             }
 
-            writer.Write("], ");
+            writer.Write("]");
 
-            //base class
-            WriteBaseClass(classSymbol, writer);
+            if (hasApplicationTypes)
+            {
+                writer.Write("}");
+            }
 
-            //interfaces
-            WriteInterfaces(writer, classSymbol.Interfaces);
+            writer.Write(", ");
+        }
 
-            writer.Write(")");
+        private static bool ShouldUseRegistry(TypeSymbol type)
+        {
+            if (type is GenericParameterSymbol)
+            {
+                return false;
+            }
+
+            return type.IsApplicationType && !type.IgnoreNamespace;
         }
 
         private static void WriteBaseClass(ClassSymbol classSymbol, ScriptTextWriter writer)
@@ -439,7 +478,7 @@ namespace DSharp.Compiler.Generator
             if (classSymbol.BaseClass is ClassSymbol baseClass)
             {
                 writer.Write("function (");
-                if(baseClass.IsApplicationType)
+                if (ShouldUseRegistry(baseClass))
                 {
                     writer.Write("registry");
                     writer.Write(")");

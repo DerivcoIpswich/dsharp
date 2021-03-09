@@ -9,7 +9,7 @@ namespace DSharp.Compiler.Tests.Source.Type.GenericClasses
 {
     public class Program
     {
-        public static int Main(string[] args)
+        public static void Main(string[] args)
         {
             OpenGenericClass<int> genericClass = new OpenGenericClass<int>(1, DoubleIt);
             OpenGenericClass<MyType> genericClass2 = new OpenGenericClass<MyType>(new MyType(), Identity<MyType>);
@@ -52,7 +52,6 @@ namespace DSharp.Compiler.Tests.Source.Type.GenericClasses
         }
 
         public OpenGenericClass(T value, Func<T, T> mutator)
-            : base(value)
         {
             this.value = value;
             this.mutator = mutator;

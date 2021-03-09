@@ -139,7 +139,11 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             specificArrayTypeSymbol.AddMember(indexerSymbol);
             specificArrayTypeSymbol.SetIgnoreNamespace();
             specificArrayTypeSymbol.SetNativeArray();
-
+            if (arrayTypeSymbol.Dependency is ScriptReference reference)
+            {
+                specificArrayTypeSymbol.SetImported(reference);
+            }
+            specificArrayTypeSymbol.SetMetadataToken(arrayTypeSymbol.MetadataReference, arrayTypeSymbol.IsCoreType);
             return specificArrayTypeSymbol;
         }
 
@@ -288,12 +292,15 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                 instanceDelegate.AddGenericParameters(genericDelegate.GenericParameters);
                 instanceDelegate.AddGenericArguments(genericDelegate, typeArguments);
 
+                if (templateType.Dependency != null)
+                {
+                    instanceDelegate.SetImported(templateType.Dependency);
+                }
+
                 CreateGenericTypeMembers(genericDelegate, instanceDelegate, typeArguments);
 
                 return instanceDelegate;
             }
-
-
 
             if (templateType.Type == SymbolType.Class
                 || templateType.Type == SymbolType.Interface)

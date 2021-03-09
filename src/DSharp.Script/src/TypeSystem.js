@@ -41,6 +41,12 @@ function createType(typeName, typeInfo, typeRegistry) {
     return typeInfo;
 }
 
+function setConstructorParams(registry, type) {
+    if (typeof (type.$constructorParams) === "function") {
+        type.$constructorParams = type.$constructorParams(registry);
+    }
+}
+
 function setInheritance(registry, type, prototypeDescription, resolver) {
     var baseType = resolver && !resolver.$type && resolver(registry) || Object;
     if (baseType) {
@@ -233,7 +239,9 @@ function module(name, implementation, exports) {
     }
 
     for (var i = 0; i < classList.length; ++i) {
-        setInheritance(registry, classList[i][0], classList[i][1], classList[i][2])
+        var listing = classList[i];
+        setConstructorParams(registry, listing[0]);
+        setInheritance(registry, listing[0], listing[1], listing[2]);
     }
 
     return {
