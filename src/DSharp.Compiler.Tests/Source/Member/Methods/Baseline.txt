@@ -32,6 +32,7 @@ define('test', ['ss'], function(ss) {
       this.do5();
       this.do6({T: Number}, 1, 2, 3);
       this.do6({T: ss.getGenericConstructor(X$Y_$1, {T: String})});
+      this.do3(2, 5);
     },
     toString: function() {
       var x = new X();

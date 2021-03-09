@@ -47,6 +47,7 @@ namespace MemberTests
             Do5();
             Do6<int>(1, 2, 3);
             Do6<X.Y<string>>();
+            Do3(j: 5, i: 2);
         }
 
         public abstract object getRunOptions();

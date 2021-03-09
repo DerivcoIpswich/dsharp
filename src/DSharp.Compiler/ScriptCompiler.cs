@@ -175,6 +175,7 @@ namespace DSharp.Compiler
                 new OperatorOverloadRewriter(),
                 new ExtensionMethodToStaticRewriter(),
                 new FullyQualifiedTypeNameRewriter(),
+                new NamedArgumentsRewriter(),
             };
 
             compilation = CompilationPreprocessor.Preprocess(compilation, lowerers);
