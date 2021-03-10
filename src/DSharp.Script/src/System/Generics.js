@@ -130,7 +130,7 @@ function getTypeArgument(instance, typeArgumentName, templateType) {
         }
     }
 
-    if (isValue(type.$typeArguments)) {
+    if (isValue(type) && isValue(type.$typeArguments)) {
         return type.$typeArguments[typeArgumentName];
     }
 
