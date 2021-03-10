@@ -145,8 +145,7 @@
         getGenericConstructor: getGenericConstructor,
         getTypeArgument: getTypeArgument,
         makeMappedGenericTemplate: makeMappedGenericTemplate,
-        initializeObject: initializeObject,
-        optionalArgument: optionalArgument,
+        initializeObject: initializeObject
     });
   }
 

@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using DSharp.Compiler.Errors;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -9,7 +10,13 @@ namespace DSharp.Compiler.Preprocessing.Lowering
 {
     public class NamedArgumentsRewriter : CSharpSyntaxRewriter, ILowerer
     {
+        private readonly IErrorHandler errorHandler;
         private SemanticModel sem;
+
+        public NamedArgumentsRewriter(IErrorHandler errorHandler)
+        {
+            this.errorHandler = errorHandler;
+        }
 
         public CompilationUnitSyntax Apply(Compilation compilation, CompilationUnitSyntax root)
         {
@@ -26,12 +33,39 @@ namespace DSharp.Compiler.Preprocessing.Lowering
             {
                 if (node.Arguments.Any(a => a.NameColon is NameColonSyntax))
                 {
-                    var x = methodSymbol.Parameters.Join(node.Arguments, p => p.Name, a => a.NameColon.Name.Identifier.ValueText, (p, a) => a.WithNameColon(null));
-                    return node.WithArguments(SeparatedList(x));
+                    var args = methodSymbol.Parameters
+                        .Select((p, i) => GetArgumentForParameter(p, i, node))
+                        .Where(a => a is ArgumentSyntax);
+
+                    return node.WithArguments(SeparatedList(args));
                 }
             }
 
             return base.VisitArgumentList(node);
+        }
+
+        private ArgumentSyntax GetArgumentForParameter(IParameterSymbol parameterSymbol, int index, ArgumentListSyntax node)
+        {
+            if(node.Arguments.TakeWhile(a => a.NameColon is null).Count() > index)
+            {
+                return node.Arguments[index];
+            }
+            else if (node.Arguments.FirstOrDefault(n => n.NameColon?.Name.Identifier.ValueText == parameterSymbol.Name) is ArgumentSyntax argumentSyntax)
+            {
+                return argumentSyntax.WithNameColon(null);
+            }
+            else if (parameterSymbol.HasExplicitDefaultValue && GetSyntax(parameterSymbol) is ParameterSyntax parameterSyntax)
+            {
+                return Argument(parameterSyntax.Default.Value);
+            }
+
+            errorHandler.ReportExpressionError($"unable to determine value for named parameter: {parameterSymbol.Name}", node);
+            return null;
+        }
+
+        private static SyntaxNode GetSyntax(ISymbol parameterSymbol)
+        {
+            return parameterSymbol.DeclaringSyntaxReferences.FirstOrDefault().GetSyntax();
         }
     }
 }

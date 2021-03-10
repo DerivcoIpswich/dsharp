@@ -1785,6 +1785,15 @@ namespace DSharp.Compiler.Compiler
                         return indexExpression;
                     }
 
+                    if (method.Name.Equals("HasArgument", StringComparison.Ordinal))
+                    {
+                        Debug.Assert(args.Count == 1);
+                        int value = (int)((LiteralExpression)args.FirstOrDefault()).Value;
+                        TypeSymbol boolType = symbolSet.ResolveIntrinsicType(IntrinsicType.Boolean);
+
+                        return new InlineScriptExpression($"Object.getOwnPropertyDescriptor(arguments, {value})", boolType, parenthesize:false);
+                    }
+
                     if (method.Name.Equals("ToArray", StringComparison.Ordinal))
                     {
                         // Switch Arguments.ToArray into Array.ToArray(arguments)

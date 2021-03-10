@@ -23,7 +23,23 @@ define('test', ['ss'], function(ss) {
     do6: ss.paramsGenerator(1, function($TArgs, someValues) {
     }),
     do7: function(a, b) {
-      b = ss.optionalArgument(b, 2);
+      b = (Object.getOwnPropertyDescriptor(arguments, 1)) ? b : 2;
+    },
+    do8: function(a, b, c, d) {
+      a = (Object.getOwnPropertyDescriptor(arguments, 0)) ? a : 1;
+      b = (Object.getOwnPropertyDescriptor(arguments, 1)) ? b : 2;
+      c = (Object.getOwnPropertyDescriptor(arguments, 2)) ? c : '3';
+      d = (Object.getOwnPropertyDescriptor(arguments, 3)) ? d : '4';
+      this.do8(1, 1, '3', '4');
+      this.do8();
+      this.do8(1);
+      this.do8(1, 2);
+      this.do8(1, 2, '3');
+      this.do8(1, 2, '3', '4');
+      this.do8();
+      this.do8(1, 2, '3', '4');
+      this.do8(1, 2, '3', '2');
+      this.do8(1, 2, '3', '3');
     },
     run: function() {
       this.do1();

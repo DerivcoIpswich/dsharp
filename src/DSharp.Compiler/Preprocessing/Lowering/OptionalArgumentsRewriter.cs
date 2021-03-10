@@ -60,7 +60,7 @@ namespace DSharp.Compiler.Preprocessing.Lowering
                     if (VisitBlock(newNode.Body) is BlockSyntax body)
                     {
                         requiredUsings.Add("System");
-                        var defaults = methodSymbol.Parameters.Where(p => p.HasExplicitDefaultValue).Select(p => GenerateDefaultExpression(p, node.GetLocation()));
+                        var defaults = methodSymbol.Parameters.Select((property, index) => (property,index)).Where(p => p.property.HasExplicitDefaultValue).Select(p => GenerateDefaultExpression(p.property, p.index, node.GetLocation()));
                         body = body.WithStatements(body.Statements.InsertRange(0, defaults));
                         return newNode.WithBody(body);
                     }
@@ -70,7 +70,7 @@ namespace DSharp.Compiler.Preprocessing.Lowering
             return newNode;
         }
 
-        private StatementSyntax GenerateDefaultExpression(IParameterSymbol parameterSymbol, Location location)
+        private StatementSyntax GenerateDefaultExpression(IParameterSymbol parameterSymbol, int index, Location location)
         {
             if (parameterSymbol.DeclaringSyntaxReferences.First().GetSyntax() is ParameterSyntax parameterSyntax)
             {
@@ -78,12 +78,16 @@ namespace DSharp.Compiler.Preprocessing.Lowering
                     AssignmentExpression(
                         SyntaxKind.SimpleAssignmentExpression,
                         IdentifierName(parameterSyntax.Identifier),
-                        InvocationExpression(
-                            expression: MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
-                                IdentifierName("Script"),
-                                IdentifierName("OptionalArgument")
+                        ConditionalExpression(
+                            condition: InvocationExpression(
+                                expression: MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
+                                    IdentifierName("Arguments"),
+                                    IdentifierName("HasArgument")
+                                ),
+                                argumentList: ArgumentList(SingletonSeparatedList(Argument(LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(index)))))
                             ),
-                            argumentList: ArgumentList(SeparatedList(new ArgumentSyntax[] { Argument(IdentifierName(parameterSyntax.Identifier)), Argument(parameterSyntax.Default.Value) }))
+                            whenTrue: IdentifierName(parameterSyntax.Identifier),
+                            whenFalse: parameterSyntax.Default.Value
                         )
                     )
                 );

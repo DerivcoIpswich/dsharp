@@ -167,7 +167,7 @@ namespace DSharp.Compiler
                 new AnnotatedCSharpRewriter(),
                 new StaticUsingRewriter(),
                 new VarRewriter(this),
-                new NamedArgumentsRewriter(),
+                new NamedArgumentsRewriter(this),
                 new GenericArgumentRewriter(),
                 new LambdaRewriter(this),
                 new EnumValueRewriter(),
