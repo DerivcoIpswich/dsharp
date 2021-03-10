@@ -1,4 +1,4 @@
-﻿using System;
+﻿
 
 [assembly: ScriptAssembly("test")]
 
@@ -35,6 +35,11 @@ namespace MemberTests
         {
         }
 
+        public void Do7(int a, int b = 2)
+        {
+
+        }
+
         public void Run()
         {
             Do1();
@@ -48,6 +53,7 @@ namespace MemberTests
             Do6<int>(1, 2, 3);
             Do6<X.Y<string>>();
             Do3(j: 5, i: 2);
+            Do7(1);
         }
 
         public abstract object getRunOptions();

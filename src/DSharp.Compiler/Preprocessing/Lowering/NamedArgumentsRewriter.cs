@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -24,14 +22,13 @@ namespace DSharp.Compiler.Preprocessing.Lowering
 
         public override SyntaxNode VisitArgumentList(ArgumentListSyntax node)
         {
-            if(sem.GetSymbolInfo(node.Parent).Symbol is IMethodSymbol methodSymbol)
+            if (sem.GetSymbolInfo(node.Parent).Symbol is IMethodSymbol methodSymbol)
             {
-                if(node.Arguments.Any(a => a.NameColon is NameColonSyntax))
+                if (node.Arguments.Any(a => a.NameColon is NameColonSyntax))
                 {
                     var x = methodSymbol.Parameters.Join(node.Arguments, p => p.Name, a => a.NameColon.Name.Identifier.ValueText, (p, a) => a.WithNameColon(null));
                     return node.WithArguments(SeparatedList(x));
                 }
-                
             }
 
             return base.VisitArgumentList(node);

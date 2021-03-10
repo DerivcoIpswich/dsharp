@@ -22,6 +22,9 @@ define('test', ['ss'], function(ss) {
     }),
     do6: ss.paramsGenerator(1, function($TArgs, someValues) {
     }),
+    do7: function(a, b) {
+      b = ss.optionalArgument(b, 2);
+    },
     run: function() {
       this.do1();
       var v = this.do2();
@@ -33,6 +36,7 @@ define('test', ['ss'], function(ss) {
       this.do6({T: Number}, 1, 2, 3);
       this.do6({T: ss.getGenericConstructor(X$Y_$1, {T: String})});
       this.do3(2, 5);
+      this.do7(1);
     },
     toString: function() {
       var x = new X();

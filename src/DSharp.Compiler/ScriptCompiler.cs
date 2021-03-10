@@ -167,6 +167,7 @@ namespace DSharp.Compiler
                 new AnnotatedCSharpRewriter(),
                 new StaticUsingRewriter(),
                 new VarRewriter(this),
+                new NamedArgumentsRewriter(),
                 new GenericArgumentRewriter(),
                 new LambdaRewriter(this),
                 new EnumValueRewriter(),
@@ -174,8 +175,8 @@ namespace DSharp.Compiler
                 new ImplicitArrayCreationRewriter(),
                 new OperatorOverloadRewriter(),
                 new ExtensionMethodToStaticRewriter(),
+                new OptionalArgumentsRewriter(this),
                 new FullyQualifiedTypeNameRewriter(),
-                new NamedArgumentsRewriter(),
             };
 
             compilation = CompilationPreprocessor.Preprocess(compilation, lowerers);

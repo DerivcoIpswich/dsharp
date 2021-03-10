@@ -146,6 +146,7 @@
         getTypeArgument: getTypeArgument,
         makeMappedGenericTemplate: makeMappedGenericTemplate,
         initializeObject: initializeObject,
+        optionalArgument: optionalArgument,
     });
   }
 

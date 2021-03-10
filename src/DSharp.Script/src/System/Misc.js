@@ -19,6 +19,10 @@ function value(a, b) {
     return isValue(a) ? a : isValue(b) ? b : _value(arguments);
 }
 
+function optionalArgument(value, defaultValue) {
+    return value === undefined ? defaultValue : value;
+}
+
 var extend = Object.assign;
 
 function extendType(o, items) {

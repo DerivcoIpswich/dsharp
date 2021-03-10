@@ -212,5 +212,16 @@ namespace System
         [DSharpScriptMemberName("value")]
         [ScriptIgnoreGenericArguments]
         public extern static TValue Value<TValue>(TValue value, TValue alternateValue, params TValue[] alternateValues);
+
+        /// <summary>
+        /// returns defaultValue if value is <code>undefined</code>
+        /// </summary>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        [DSharpScriptMemberName("optionalArgument")]
+        [ScriptIgnoreGenericArguments]
+        public extern static TValue OptionalArgument<TValue>(TValue value, TValue defaultValue);
     }
 }
