@@ -240,8 +240,12 @@ function module(name, implementation, exports) {
 
     for (var i = 0; i < classList.length; ++i) {
         var listing = classList[i];
-        setConstructorParams(registry, listing[0]);
         setInheritance(registry, listing[0], listing[1], listing[2]);
+    }
+
+    for (var i = 0; i < classList.length; ++i) {
+        var listing = classList[i];
+        setConstructorParams(registry, listing[0]);
     }
 
     return {
