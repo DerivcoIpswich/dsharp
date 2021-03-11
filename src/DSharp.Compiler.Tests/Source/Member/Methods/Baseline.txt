@@ -53,6 +53,11 @@ define('test', ['ss'], function(ss) {
       this.do6({T: ss.getGenericConstructor(X$Y_$1, {T: String})});
       this.do3(2, 5);
       this.do7(1);
+      this.doSomethingCrazy('lo', 'co');
+    },
+    doSomethingCrazy: function(a, b) {
+      b = (Object.getOwnPropertyDescriptor(arguments, 1)) ? b : 'co';
+      return a + b;
     },
     toString: function() {
       var x = new X();
