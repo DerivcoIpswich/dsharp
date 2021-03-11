@@ -11,7 +11,7 @@ define('test', ['ss', 'lib'], function(ss, lib) {
       return 42;
     },
     _foo: function() {
-      return (this._fooGeneric({T: lib.StructInLib}));
+      return this._fooGeneric({T: lib.StructInLib});
     }
   };
 

@@ -80,9 +80,8 @@ namespace DSharp.Compiler.Preprocessing.Lowering
             var symb = Try(() => semanticModel.GetSymbolInfo(node).Symbol as IMethodSymbol, null);
             var newNode = (InvocationExpressionSyntax)base.VisitInvocationExpression(node);
 
-            if (newNode.Parent != null
-                && !newNode.Parent.IsKind(SyntaxKind.ExpressionStatement)
-                && symb != null
+            if (symb != null
+                && ShouldWrapInvocation(symb, newNode)
                 && symb.IsGenericMethod
                 && !symb.ReturnsVoid)
             {
@@ -95,6 +94,19 @@ namespace DSharp.Compiler.Preprocessing.Lowering
             }
 
             return newNode;
+        }
+
+        private bool ShouldWrapInvocation(
+            IMethodSymbol symb,
+            InvocationExpressionSyntax syntax)
+        {
+            if (syntax.Parent == null)
+            {
+                return true;
+            }
+
+            return !syntax.Parent.IsKind(SyntaxKind.ReturnStatement)
+                && !syntax.Parent.IsKind(SyntaxKind.ExpressionStatement);
         }
 
         public override SyntaxNode VisitIdentifierName(IdentifierNameSyntax node)
