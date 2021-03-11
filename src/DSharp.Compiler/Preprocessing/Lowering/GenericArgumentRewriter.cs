@@ -80,7 +80,9 @@ namespace DSharp.Compiler.Preprocessing.Lowering
             var symb = Try(() => semanticModel.GetSymbolInfo(node).Symbol as IMethodSymbol, null);
             var newNode = (InvocationExpressionSyntax)base.VisitInvocationExpression(node);
 
-            if (symb != null
+            if (newNode.Parent != null
+                && !newNode.Parent.IsKind(SyntaxKind.ExpressionStatement)
+                && symb != null
                 && symb.IsGenericMethod
                 && !symb.ReturnsVoid)
             {
