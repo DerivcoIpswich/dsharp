@@ -60,9 +60,10 @@ namespace DSharp.Compiler.Preprocessing.Lowering
                 // - add usings for all these types
                 // - add usings for the return type
                 // - return a new cast expression wrapping the InvocationExpression
+                return newNode;
             }
 
-            return base.VisitInvocationExpression(node);
+            return newNode;
         }
 
         public override SyntaxNode VisitIdentifierName(IdentifierNameSyntax node)
