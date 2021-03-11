@@ -47,6 +47,17 @@ namespace DSharp.Compiler.Preprocessing.Lowering
             return base.VisitAliasQualifiedName(node);
         }
 
+        public override SyntaxNode VisitInvocationExpression(InvocationExpressionSyntax node)
+        {
+
+            // here, if the method is generic we need to:
+            // - explicitly pass the type parameters
+            // - add usings for all these types
+            // - add usings for the return type
+            // - return a new cast expression wrapping the InvocationExpression
+            return base.VisitInvocationExpression(node);
+        }
+
         public override SyntaxNode VisitIdentifierName(IdentifierNameSyntax node)
         {
             var symbol = semanticModel.GetSymbolInfo(node).Symbol;
