@@ -22,19 +22,12 @@ namespace DSharp.Compiler.Preprocessing.Lowering
 
         private SemanticModel semanticModel;
         private HashSet<string> requiredUsings = new HashSet<string>();
-        private Dictionary<string, string> typeAliases = new Dictionary<string, string>();
 
         public CompilationUnitSyntax Apply(Compilation compilation, CompilationUnitSyntax root)
         {
             semanticModel = compilation.GetSemanticModel(root.SyntaxTree);
 
             var newRoot = Visit(root) as CompilationUnitSyntax;
-
-            if (typeAliases.Any())
-            {
-                newRoot = newRoot.AddUsings(CreateTypeAliases());
-            }
-
             var missingUsings = requiredUsings.Where(r => !root.Usings.Select(u => u.Name.ToString()).Contains(r));
 
             if (missingUsings.Any())
@@ -45,28 +38,6 @@ namespace DSharp.Compiler.Preprocessing.Lowering
             }
 
             return newRoot;
-        }
-
-        private UsingDirectiveSyntax[] CreateTypeAliases()
-        {
-            bool isFirstUsing = true;
-
-            return typeAliases.Select(s =>
-            {
-                var line = UsingDirective(
-                    NameEquals(s.Key).WithLeadingTrivia(Whitespace(" ")),
-                    ParseName(s.Value)
-                ).WithTrailingTrivia(CarriageReturn);
-
-                if (isFirstUsing)
-                {
-                    isFirstUsing = false;
-                    line = line.WithLeadingTrivia(line.GetTrailingTrivia());
-                }
-
-                return line;
-
-            }).ToArray();
         }
 
         public TypeSyntax UseType(ITypeSymbol type)
