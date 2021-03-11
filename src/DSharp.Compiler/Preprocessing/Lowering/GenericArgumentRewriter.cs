@@ -21,30 +21,58 @@ namespace DSharp.Compiler.Preprocessing.Lowering
             .WithGlobalNamespaceStyle(SymbolDisplayGlobalNamespaceStyle.Omitted);
 
         private SemanticModel semanticModel;
-        private HashSet<string> requiredUsings;
+        private HashSet<string> requiredUsings = new HashSet<string>();
+        private Dictionary<string, string> typeAliases = new Dictionary<string, string>();
 
         public CompilationUnitSyntax Apply(Compilation compilation, CompilationUnitSyntax root)
         {
             semanticModel = compilation.GetSemanticModel(root.SyntaxTree);
-            requiredUsings = new HashSet<string>();
 
             var newRoot = Visit(root) as CompilationUnitSyntax;
+
+            if (typeAliases.Any())
+            {
+                newRoot = newRoot.AddUsings(CreateTypeAliases());
+            }
 
             var missingUsings = requiredUsings.Where(r => !root.Usings.Select(u => u.Name.ToString()).Contains(r));
 
             if (missingUsings.Any())
             {
                 var missingDirectives = missingUsings.Select(s => UsingDirective(ParseName(s).WithLeadingTrivia(Whitespace(" ")))).ToArray();
-                missingDirectives[missingDirectives.Length-1] = missingDirectives.Last().WithTrailingTrivia(EndOfLine(Environment.NewLine));
+                missingDirectives[missingDirectives.Length - 1] = missingDirectives.Last().WithTrailingTrivia(EndOfLine(Environment.NewLine));
                 newRoot = newRoot.AddUsings(missingDirectives);
             }
 
             return newRoot;
         }
 
-        public override SyntaxNode VisitAliasQualifiedName(AliasQualifiedNameSyntax node)
+        private UsingDirectiveSyntax[] CreateTypeAliases()
         {
-            return base.VisitAliasQualifiedName(node);
+            bool isFirstUsing = true;
+
+            return typeAliases.Select(s =>
+            {
+                var line = UsingDirective(
+                    NameEquals(s.Key).WithLeadingTrivia(Whitespace(" ")),
+                    ParseName(s.Value)
+                ).WithTrailingTrivia(CarriageReturn);
+
+                if (isFirstUsing)
+                {
+                    isFirstUsing = false;
+                    line = line.WithLeadingTrivia(line.GetTrailingTrivia());
+                }
+
+                return line;
+
+            }).ToArray();
+        }
+
+        public TypeSyntax UseType(ITypeSymbol type)
+        {
+            AddUsingForType(type);
+            return IdentifierName(type.ToDisplayString());
         }
 
         public override SyntaxNode VisitInvocationExpression(InvocationExpressionSyntax node)
@@ -53,14 +81,15 @@ namespace DSharp.Compiler.Preprocessing.Lowering
             var newNode = (InvocationExpressionSyntax)base.VisitInvocationExpression(node);
 
             if (symb != null
-                && symb.IsGenericMethod) // ignore extension methods invoked as static methods
+                && symb.IsGenericMethod
+                && !symb.ReturnsVoid)
             {
-                // here, we need to:
-                // - explicitly pass the type parameters
-                // - add usings for all these types
-                // - add usings for the return type
-                // - return a new cast expression wrapping the InvocationExpression
-                return newNode;
+                return ParenthesizedExpression(
+                    CastExpression(
+                        UseType(symb.ReturnType),
+                        newNode.WithoutTrivia()))
+                    .WithLeadingTrivia(newNode.GetLeadingTrivia())
+                    .WithTrailingTrivia(newNode.GetTrailingTrivia());
             }
 
             return newNode;

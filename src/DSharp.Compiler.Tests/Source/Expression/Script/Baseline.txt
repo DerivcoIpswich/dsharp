@@ -8,9 +8,9 @@ define('test', ['ss'], function(ss) {
   }
   var App$ = {
     test: function(arg) {
-      arg = (arg || 10);
-      arg = (arg || 10 || 100);
-      var s = (arg || 10).toString(10);
+      arg = ((arg || 10));
+      arg = ((arg || 10 || 100));
+      var s = ((arg || 10)).toString(10);
       var b = !!arg;
       var i;
       var tick = function() {

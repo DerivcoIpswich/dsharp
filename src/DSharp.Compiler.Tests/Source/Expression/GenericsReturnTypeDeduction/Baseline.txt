@@ -2,40 +2,28 @@
 
 define('test', ['ss'], function(ss) {
   var $global = this;
-  // DSharp.Compiler.Tests.Source.Expression.Generics3.IReadonlyProperties
-
-  function IReadonlyProperties() { }
-
-
   // DSharp.Compiler.Tests.Source.Expression.Generics3.Program
 
   function Program() {
   }
   Program.main = function(args) {
-    var props = new ReadonlyProperties();
-    var dict = ss.safeCast(props.get_item('someDictionary'), Object);
+    var length = (Program._cast({T: String}, 'TEST_STRING')).length;
+    var length2 = ss.getItem((Program._toList({T: String}, [ 'asd' ])), 0).length;
+  };
+  Program._cast = function($TArgs, x) {
+    return x;
+  };
+  Program._toList = function($TArgs, source) {
+    return null;
   };
   var Program$ = {
 
   };
 
 
-  // DSharp.Compiler.Tests.Source.Expression.Generics3.ReadonlyProperties
-
-  function ReadonlyProperties() {
-  }
-  var ReadonlyProperties$ = {
-    get_item: function(key) {
-      return null;
-    }
-  };
-
-
   var $module = ss.module('test', null,
     {
-      IReadonlyProperties: ss.defineInterface(IReadonlyProperties),
-      Program: ss.defineClass(Program, Program$, [], null),
-      ReadonlyProperties: ss.defineClass(ReadonlyProperties, ReadonlyProperties$, [], null, [IReadonlyProperties])
+      Program: ss.defineClass(Program, Program$, [], null)
     });
   var $exports = $module.api;
 

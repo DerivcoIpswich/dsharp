@@ -79,7 +79,7 @@ define('test', ['ss'], function(ss) {
 
   function MyClass4(foo, bar, disposable) {
     MyClass.call(this);
-    var f = ss.createInstance();
+    var f = (ss.createInstance());
     var b = ss.createInstance(BarBaz, f);
   }
   var MyClass4$ = {
