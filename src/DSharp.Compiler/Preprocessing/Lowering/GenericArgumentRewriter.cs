@@ -49,12 +49,19 @@ namespace DSharp.Compiler.Preprocessing.Lowering
 
         public override SyntaxNode VisitInvocationExpression(InvocationExpressionSyntax node)
         {
+            var symb = Try(() => semanticModel.GetSymbolInfo(node).Symbol as IMethodSymbol, null);
+            var newNode = (InvocationExpressionSyntax)base.VisitInvocationExpression(node);
 
-            // here, if the method is generic we need to:
-            // - explicitly pass the type parameters
-            // - add usings for all these types
-            // - add usings for the return type
-            // - return a new cast expression wrapping the InvocationExpression
+            if (symb != null
+                && symb.IsGenericMethod) // ignore extension methods invoked as static methods
+            {
+                // here, we need to:
+                // - explicitly pass the type parameters
+                // - add usings for all these types
+                // - add usings for the return type
+                // - return a new cast expression wrapping the InvocationExpression
+            }
+
             return base.VisitInvocationExpression(node);
         }
 
@@ -102,6 +109,14 @@ namespace DSharp.Compiler.Preprocessing.Lowering
             {
                 requiredUsings.Add(ns.ToDisplayString(namespaceUsingsFormat));
             }
+        }
+
+        private static T Try<T>(Func<T> action, T defaultValue)
+        {
+            try { return action(); }
+            catch (Exception) { }
+
+            return defaultValue;
         }
     }
 }
