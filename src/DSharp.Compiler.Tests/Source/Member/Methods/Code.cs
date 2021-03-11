@@ -1,4 +1,4 @@
-﻿using System;
+﻿
 
 [assembly: ScriptAssembly("test")]
 
@@ -35,6 +35,25 @@ namespace MemberTests
         {
         }
 
+        public void Do7(int a, int b = 2)
+        {
+
+        }
+
+        public void Do8(int a=1, int b = 2, string c = "3", string d = "4")
+        {
+            Do8(b:1);
+            Do8();
+            Do8(1);
+            Do8(1,2);
+            Do8(1,2,"3");
+            Do8(1,2, "3","4");
+            Do8();
+            Do8(a:1);
+            Do8(c:"3", d:"2");
+            Do8(a:1, d:"3", b:2);
+        }
+
         public void Run()
         {
             Do1();
@@ -47,6 +66,14 @@ namespace MemberTests
             Do5();
             Do6<int>(1, 2, 3);
             Do6<X.Y<string>>();
+            Do3(j: 5, i: 2);
+            Do7(1);
+            DoSomethingCrazy("lo", b: "co");
+        }
+
+        public string DoSomethingCrazy(string a, string b = "co")
+        {
+            return a + b;
         }
 
         public abstract object getRunOptions();

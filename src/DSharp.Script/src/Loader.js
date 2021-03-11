@@ -37,7 +37,7 @@
           Queue: defineClass(Queue, Queue$, [], null),
           Guid: defineClass(Guid, Guid$, [], null),
           DateTime: defineClass(DateTime, {}, [], null, [IEquatable_$1, IComparable_$1]),
-          Lazy: defineClass(Lazy, {}, [], null),
+          Lazy: defineClass(Lazy, Lazy$, [], null),
           Nullable: defineClass(Nullable, Nullable$, [], null),
           Enum: defineClass(Enum, {}, [], null),
           MemberType: new Enum('MemberType', {
@@ -145,7 +145,7 @@
         getGenericConstructor: getGenericConstructor,
         getTypeArgument: getTypeArgument,
         makeMappedGenericTemplate: makeMappedGenericTemplate,
-        initializeObject: initializeObject,
+        initializeObject: initializeObject
     });
   }
 

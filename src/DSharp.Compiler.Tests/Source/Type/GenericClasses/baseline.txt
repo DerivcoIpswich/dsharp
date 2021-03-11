@@ -217,7 +217,7 @@ define('test', ['ss', 'lib1'], function(ss, lib1) {
       GenericTypeWithUseGenericName_$3: ss.defineClass(GenericTypeWithUseGenericName_$3, GenericTypeWithUseGenericName_$3$, [], null),
       GenericTypeWithParamsInCtor_$1: ss.defineClass(GenericTypeWithParamsInCtor_$1, GenericTypeWithParamsInCtor_$1$, ['T', Array], null),
       Generic_2_$2: ss.defineClass(Generic_2_$2, Generic_2_$2$, [], null),
-      GenericWithGenericInConstructor_$1: ss.defineClass(GenericWithGenericInConstructor_$1, GenericWithGenericInConstructor_$1$, [ss.makeMappedGenericTemplate(GenericClass_$1, {T : 'X'})], null),
+      GenericWithGenericInConstructor_$1: ss.defineClass(GenericWithGenericInConstructor_$1, GenericWithGenericInConstructor_$1$, function (registry) { return [ss.makeMappedGenericTemplate(registry.GenericClass_$1, {T : 'X'})]}, null),
       GenericClass_$1: ss.defineClass(GenericClass_$1, GenericClass_$1$, ['T', Function], function (registry) { return ss.makeMappedGenericTemplate(registry.BaseGenericClass_$1, {T : 'T'})}),
       SpecificClassOfGeneric: ss.defineClass(SpecificClassOfGeneric, SpecificClassOfGeneric$, [Number], function (registry) { return ss.getGenericConstructor(registry.GenericClass_$1, {T : Number})})
     });
