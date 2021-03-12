@@ -41,9 +41,12 @@ namespace DSharp.Compiler.Generator
             writer.Write(")");
         }
 
-        private static void WriteFullTypeName(ScriptTextWriter sw, TypeSymbol type)
+        public static void WriteFullTypeName(ScriptTextWriter sw, TypeSymbol type)
         {
-            if (type.GenericParameters?.Any() == true && type.UseGenericName)
+            if (type.GenericParameters?.Any() == true
+                && type.UseGenericName
+                && !type.IgnoreGenericTypeArguments
+                && type.IsApplicationType)
             {
                 sw.Write($"ss.getGenericConstructor({type.FullGeneratedName},");
                 ScriptGeneratorExtensions.WriteGenericTypeArguments(sw.Write, type.GenericArguments, type.GenericParameters);
@@ -185,10 +188,10 @@ namespace DSharp.Compiler.Generator
                 }
 
                 GenerateExpression(generator, symbol, expression.LeftOperand);
-
                 writer.Write(", ");
                 GenerateExpression(generator, symbol, expression.RightOperand);
                 writer.Write(")");
+
                 return;
             }
             else if (expression.Operator == Operator.EqualEqualEqual ||
