@@ -297,6 +297,11 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                     instanceDelegate.SetImported(templateType.Dependency);
                 }
 
+                if (templateType.IsTransformed)
+                {
+                    instanceDelegate.SetTransformedName(templateType.GeneratedName);
+                }
+
                 CreateGenericTypeMembers(genericDelegate, instanceDelegate, typeArguments);
 
                 return instanceDelegate;
