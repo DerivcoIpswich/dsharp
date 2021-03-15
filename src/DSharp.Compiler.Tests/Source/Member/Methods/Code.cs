@@ -8,8 +8,10 @@ namespace MemberTests
     {
         public static void DoStatic()
         {
-            System.Type t1 = typeof(T1);
-            System.Type t2 = typeof(T2);
+        }
+
+        public static void DoStatic2(T1 a, T2 b)
+        {
         }
     }
 
@@ -18,6 +20,7 @@ namespace MemberTests
         public void Do1()
         {
             GenericTest<int, string>.DoStatic();
+            GenericTest<bool, int>.DoStatic2(false, 42);
         }
 
         public int Do2()

@@ -2,12 +2,27 @@
 
 define('test', ['ss'], function(ss) {
   var $global = this;
+  // MemberTests.GenericTest`2
+
+  function GenericTest_$2() {
+  }
+  GenericTest_$2.doStatic = function() {
+  };
+  GenericTest_$2.doStatic2 = function(a, b) {
+  };
+  var GenericTest_$2$ = {
+
+  };
+
+
   // MemberTests.Test
 
   function Test() {
   }
   var Test$ = {
     do1: function() {
+      GenericTest_$2.doStatic.call(ss.getGenericConstructor(GenericTest_$2,{T1 : Number, T2 : String}));
+      GenericTest_$2.doStatic2.call(ss.getGenericConstructor(GenericTest_$2,{T1 : Boolean, T2 : Number}),false, 42);
     },
     do2: function() {
       return 0;
@@ -87,6 +102,7 @@ define('test', ['ss'], function(ss) {
 
   var $module = ss.module('test', null,
     {
+      GenericTest_$2: ss.defineClass(GenericTest_$2, GenericTest_$2$, [], null),
       Test: ss.defineClass(Test, Test$, [], null),
       X: ss.defineClass(X, X$, [], null),
       X$Y_$1: ss.defineClass(X$Y_$1, X$Y_$1$, [], null)
