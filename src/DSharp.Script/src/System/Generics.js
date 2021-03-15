@@ -122,7 +122,9 @@ function getTypeArgument(instance, typeArgumentName, templateType) {
         return null;
     }
 
-    var type = instance.constructor;
+    var type = instance.$type
+        ? instance
+        : instance.constructor;
 
     if (templateType) {
         while (type && type.GenericTemplate != templateType) {
