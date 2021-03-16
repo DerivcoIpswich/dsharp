@@ -132,9 +132,9 @@ define('ExpressionTests.ExtensionMethods', ['ss'], function(ss) {
     ServiceProviderExtensions.getService({T: Number}, Program._context.Context.Context.Context.Context.Services);
     var value2 = Program._context.Context.Services.getService(Number);
     Program._context.Context.Services.getService(Number);
-    var i = InternalIntExtensions.add((ServiceProviderExtensions.getService({T: Number}, Program._resolve())), 1);
-    var temp = ITempExtensions.myAwesomeExtension((ServiceProviderExtensions.getService({T: Temp}, Program._resolve())));
-    var temp2 = ITempExtensions.myAwesomeExtension(ITempExtensions.myAwesomeExtension((ServiceProviderExtensions.getT3({T1: Number, T2: Boolean, T3: Temp}, Program._resolve()))));
+    var i = InternalIntExtensions.add(ServiceProviderExtensions.getService({T: Number}, Program._resolve()), 1);
+    var temp = ITempExtensions.myAwesomeExtension(ServiceProviderExtensions.getService({T: Temp}, Program._resolve()));
+    var temp2 = ITempExtensions.myAwesomeExtension(ITempExtensions.myAwesomeExtension(ServiceProviderExtensions.getT3({T1: Number, T2: Boolean, T3: Temp}, Program._resolve())));
     IntExtensions.isNumber(0, 1);
     IntExtensions.isNumber2(1, 'constantOne');
     IntExtensions.isNumber2(1, 'CONSTANT_TWO');

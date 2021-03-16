@@ -46,40 +46,6 @@ namespace DSharp.Compiler.Preprocessing.Lowering
             return IdentifierName(type.ToDisplayString());
         }
 
-        public override SyntaxNode VisitInvocationExpression(InvocationExpressionSyntax node)
-        {
-            var symb = Try(() => semanticModel.GetSymbolInfo(node).Symbol as IMethodSymbol, null);
-            var newNode = (InvocationExpressionSyntax)base.VisitInvocationExpression(node);
-
-            if (symb != null
-                && ShouldWrapInvocation(symb, newNode)
-                && symb.IsGenericMethod
-                && !symb.ReturnsVoid)
-            {
-                return ParenthesizedExpression(
-                    CastExpression(
-                        UseType(symb.ReturnType),
-                        newNode.WithoutTrivia()))
-                    .WithLeadingTrivia(newNode.GetLeadingTrivia())
-                    .WithTrailingTrivia(newNode.GetTrailingTrivia());
-            }
-
-            return newNode;
-        }
-
-        private bool ShouldWrapInvocation(
-            IMethodSymbol symb,
-            InvocationExpressionSyntax syntax)
-        {
-            if (syntax.Parent == null)
-            {
-                return true;
-            }
-
-            return !syntax.Parent.IsKind(SyntaxKind.ReturnStatement)
-                && !syntax.Parent.IsKind(SyntaxKind.ExpressionStatement);
-        }
-
         public override SyntaxNode VisitIdentifierName(IdentifierNameSyntax node)
         {
             var symbol = semanticModel.GetSymbolInfo(node).Symbol;
@@ -124,14 +90,6 @@ namespace DSharp.Compiler.Preprocessing.Lowering
             {
                 requiredUsings.Add(ns.ToDisplayString(namespaceUsingsFormat));
             }
-        }
-
-        private static T Try<T>(Func<T> action, T defaultValue)
-        {
-            try { return action(); }
-            catch (Exception) { }
-
-            return defaultValue;
         }
     }
 }

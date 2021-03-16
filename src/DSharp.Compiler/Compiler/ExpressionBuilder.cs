@@ -1194,20 +1194,24 @@ namespace DSharp.Compiler.Compiler
             {
                 Symbol genericNameSymbol = symbolTable.FindSymbol(genericNameNode.FullGenericName, symbolContext, filter) ?? symbolTable.FindSymbol(node.Name, symbolContext, filter);
 
-                if (genericNameSymbol is TypeSymbol typeSymbol)
+                List<TypeSymbol> types = new List<TypeSymbol>();
+
+                foreach (var typeArg in genericNameNode.TypeArguments)
                 {
-                    List<TypeSymbol> types = new List<TypeSymbol>();
-
-                    foreach (var typeArg in genericNameNode.TypeArguments)
-                    {
-                        Expression typeArgExpression = BuildExpression(typeArg);
-                        TypeSymbol argSymbol = typeArgExpression.EvaluatedType;
-                        types.Add(argSymbol);
-                    }
-
-                    return symbolSet.CreateGenericTypeSymbol(typeSymbol, types);
+                    Expression typeArgExpression = BuildExpression(typeArg);
+                    TypeSymbol argSymbol = typeArgExpression.EvaluatedType;
+                    types.Add(argSymbol);
                 }
 
+                if (genericNameSymbol is TypeSymbol typeSymbol)
+                {
+                    return symbolSet.CreateGenericTypeSymbol(typeSymbol, types);
+                }
+                else if(genericNameSymbol is MethodSymbol methodSymbol)
+                {
+                    return symbolSet.CreateGenericMethodSymbol(methodSymbol, types);
+                }
+                
                 return genericNameSymbol;
             }
 

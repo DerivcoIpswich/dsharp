@@ -18,7 +18,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             AssociatedType = associatedType;
         }
 
-        public TypeSymbol AssociatedType { get; }
+        public TypeSymbol AssociatedType { get; private set; }
 
         public string GeneratedMemberName
         {
@@ -182,6 +182,11 @@ namespace DSharp.Compiler.ScriptModel.Symbols
             }
 
             ((TypeSymbol)Parent).IncrementReferenceCount();
+        }
+
+        public void UpdateGenericAssociatedType(TypeSymbol typeSymbol)
+        {
+            AssociatedType = typeSymbol;
         }
     }
 }
