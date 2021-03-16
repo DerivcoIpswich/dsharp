@@ -44,6 +44,7 @@ namespace DSharp.Compiler.Generator
         public static void WriteFullTypeName(ScriptTextWriter sw, TypeSymbol type)
         {
             if (type.GenericParameters?.Any() == true
+                && type.GenericArguments != null
                 && type.UseGenericName
                 && !type.IgnoreGenericTypeArguments
                 && type.IsApplicationType)
@@ -1039,6 +1040,30 @@ namespace DSharp.Compiler.Generator
 
                     writer.Write(")");
                 }
+                else if (expression.Method is MethodSymbol methodSymbol && expression.ObjectReference.EvaluatedType is TypeSymbol containingType
+                    && methodSymbol.IsStatic 
+                    && containingType.IsGeneric 
+                    && containingType.UseGenericName
+                    && containingType.GenericArguments?.Any() == true)
+                {
+                    writer.Write(containingType.FullGeneratedName);
+
+                    if (methodSymbol.GeneratedName.Length != 0)
+                    {
+                        writer.Write(".");
+                        writer.Write(methodSymbol.GeneratedName);
+                    }
+                    writer.Write(".call(");
+                    GenerateExpression(generator, symbol, expression.ObjectReference);
+
+                    if (expression.Parameters?.Any() == true)
+                    {
+                        writer.Write(",");
+                        GenerateExpressionList(generator, symbol, expression.Parameters);
+                    }
+
+                    writer.Write(")");
+                }
                 else
                 {
                     GenerateExpression(generator, symbol, expression.ObjectReference);
@@ -1046,10 +1071,6 @@ namespace DSharp.Compiler.Generator
                     if (expression.Method.GeneratedName.Length != 0)
                     {
                         writer.Write(".");
-                    }
-
-                    if (expression.Method.GeneratedName.Length != 0)
-                    {
                         writer.Write(expression.Method.GeneratedName);
                     }
 

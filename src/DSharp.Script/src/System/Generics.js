@@ -82,19 +82,21 @@ function createGenericConstructorProxy(key, ctorMethod, typeArguments) {
 
     if (ctorMethod.$base && ctorMethod.$base.IsGenericTypeDefinition) {
         var baseType = ctorMethod.$base.makeGenericType(typeArguments);
-        genericInstance.prototype = Object.create(baseType.prototype)
-        genericInstance.prototype.constructor = genericInstance;
-        genericInstance.$base = baseType;
+        chainPrototype(genericInstance, baseType);
     }
     else {
-        genericInstance.prototype = Object.create(ctorMethod.prototype);
-        genericInstance.prototype.constructor = genericInstance;
-        genericInstance.$base = ctorMethod.$base;
+        chainPrototype(genericInstance, ctorMethod);
     }
 
     ctorMethod.$prototypeDescription && extendType(genericInstance.prototype, ctorMethod.$prototypeDescription);
 
     return genericInstance;
+}
+
+function chainPrototype(instance, baseType) {
+    instance.prototype = Object.create(baseType.prototype)
+    instance.prototype.constructor = instance;
+    instance.$base = baseType;
 }
 
 function createGenericConstructorKey(ctorMethod, typeArguments) {
@@ -122,7 +124,9 @@ function getTypeArgument(instance, typeArgumentName, templateType) {
         return null;
     }
 
-    var type = instance.constructor;
+    var type = instance.$type
+        ? instance
+        : instance.constructor;
 
     if (templateType) {
         while (type && type.GenericTemplate != templateType) {

@@ -32,11 +32,11 @@ define('test', ['ss'], function(ss) {
   Main.main = function(target) {
     var x = 4;
     AAAA.what({T: Number}, 1, 2);
-    AAAA.what({T: Number}, (AAAA.what({T: Number}, 1, 2)), (AAAA.what({T: Number}, 3, 4)));
+    AAAA.what({T: Number}, AAAA.what({T: Number}, 1, 2), AAAA.what({T: Number}, 3, 4));
     x = Extensions.doSomething(3, 5);
-    var a = (Extensions.doSomethingElse({T: Number}, x, Main.WOW));
-    AAAA.what({T: Number}, Extensions.doSomething((Extensions.doSomethingElse({T: Number}, Main.WOW, a)), 234), 56);
-    var b = (AAAA.what({T: Number}, Extensions.doSomething((Extensions.doSomethingElse({T: Number}, Main.WOW, a)), 234), 56));
+    var a = Extensions.doSomethingElse({T: Number}, x, Main.WOW);
+    AAAA.what({T: Number}, Extensions.doSomething(Extensions.doSomethingElse({T: Number}, Main.WOW, a), 234), 56);
+    var b = AAAA.what({T: Number}, Extensions.doSomething(Extensions.doSomethingElse({T: Number}, Main.WOW, a), 234), 56);
   };
 
 

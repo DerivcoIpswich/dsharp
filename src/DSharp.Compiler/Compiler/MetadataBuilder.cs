@@ -948,6 +948,14 @@ namespace DSharp.Compiler.Compiler
                                 break;
                             }
                     }
+
+                    if (method.AssociatedType.IsGeneric && method.AssociatedType.GenericArguments is null)
+                    {
+                        if (ResolveMethodReturnType(methodNode, method) is TypeSymbol resolvedGenericReturnType)
+                        {
+                            method.UpdateGenericAssociatedType(resolvedGenericReturnType);
+                        }
+                    }
                 }
             }
 
@@ -987,9 +995,9 @@ namespace DSharp.Compiler.Compiler
             return method;
         }
 
-        private TypeSymbol ResolveMethodReturnType(MethodDeclarationNode methodNode, TypeSymbol typeSymbol)
+        private TypeSymbol ResolveMethodReturnType(MethodDeclarationNode methodNode, Symbol contextSymbol)
         {
-            var resolvedType = typeSymbol.SymbolSet.ResolveType(methodNode.Type, symbolTable, typeSymbol);
+            var resolvedType = contextSymbol.SymbolSet.ResolveType(methodNode.Type, symbolTable, contextSymbol);
             if (resolvedType == null)
             {
                 return null;
@@ -997,7 +1005,7 @@ namespace DSharp.Compiler.Compiler
 
             if (resolvedType is GenericParameterSymbol genericParameterSymbol && genericParameterSymbol.Owner == null)
             {
-                genericParameterSymbol.Owner = typeSymbol;
+                genericParameterSymbol.Owner = contextSymbol;
             }
 
             return resolvedType;

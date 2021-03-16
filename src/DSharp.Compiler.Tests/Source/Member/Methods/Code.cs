@@ -4,12 +4,23 @@
 
 namespace MemberTests
 {
+    public class GenericTest<T1,T2>
+    {
+        public static void DoStatic()
+        {
+        }
+
+        public static void DoStatic2(T1 a, T2 b)
+        {
+        }
+    }
 
     public abstract class Test
     {
-
         public void Do1()
         {
+            GenericTest<int, string>.DoStatic();
+            GenericTest<bool, int>.DoStatic2(false, 42);
         }
 
         public int Do2()
