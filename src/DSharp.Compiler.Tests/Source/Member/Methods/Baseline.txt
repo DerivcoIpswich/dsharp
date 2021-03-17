@@ -2,6 +2,33 @@
 
 define('test', ['ss'], function(ss) {
   var $global = this;
+  // MemberTests.IGrouping`2
+
+  function IGrouping_$2() { }
+
+
+  // MemberTests.Grouping`2
+
+  function Grouping_$2() {
+  }
+  var Grouping_$2$ = {
+
+  };
+
+
+  // MemberTests.GenericTestExtensions
+
+  function GenericTestExtensions() {
+  }
+  GenericTestExtensions.doExtension = function($TArgs, i, a, b, c) {
+    GenericTest_$2.doStatic3.call(ss.getGenericConstructor(GenericTest_$2,{T1 : $TArgs['T1'], T2 : $TArgs['T2']}),{T: $TArgs['T']}, a, b, c);
+    i.doInstance({T: $TArgs['T']}, a, b, c);
+  };
+  GenericTestExtensions.firstOrDefault = function($TArgs, source, defaultV) {
+    return defaultV;
+  };
+
+
   // MemberTests.GenericTest`2
 
   function GenericTest_$2() {
@@ -10,8 +37,11 @@ define('test', ['ss'], function(ss) {
   };
   GenericTest_$2.doStatic2 = function(a, b) {
   };
+  GenericTest_$2.doStatic3 = function($TArgs, a, b, c) {
+  };
   var GenericTest_$2$ = {
-
+    doInstance: function($TArgs, a, b, c) {
+    }
   };
 
 
@@ -23,6 +53,11 @@ define('test', ['ss'], function(ss) {
     do1: function() {
       GenericTest_$2.doStatic.call(ss.getGenericConstructor(GenericTest_$2,{T1 : Number, T2 : String}));
       GenericTest_$2.doStatic2.call(ss.getGenericConstructor(GenericTest_$2,{T1 : Boolean, T2 : Number}),false, 42);
+      GenericTest_$2.doStatic3.call(ss.getGenericConstructor(GenericTest_$2,{T1 : Boolean, T2 : Number}),{T: String}, false, 42, 'wow');
+      var instance = ss.createGenericType(GenericTest_$2, {T1 : Number, T2 : String});
+      GenericTestExtensions.doExtension({T1: Number, T2: String, T: String}, instance, 42, 'wow', '2');
+      var x = null;
+      GenericTestExtensions.firstOrDefault({T: Number}, x, 1234);
     },
     do2: function() {
       return 0;
@@ -102,6 +137,9 @@ define('test', ['ss'], function(ss) {
 
   var $module = ss.module('test', null,
     {
+      IGrouping_$2: ss.defineInterface(IGrouping_$2, [ss.IEnumerable_$1, ss.IEnumerable]),
+      Grouping_$2: ss.defineClass(Grouping_$2, Grouping_$2$, [], null, [ss.makeMappedGenericTemplate(IGrouping_$2, {TKey : 'TKey', TElement : 'TElement'})]),
+      GenericTestExtensions: ss.defineClass(GenericTestExtensions, null, [], null),
       GenericTest_$2: ss.defineClass(GenericTest_$2, GenericTest_$2$, [], null),
       Test: ss.defineClass(Test, Test$, [], null),
       X: ss.defineClass(X, X$, [], null),

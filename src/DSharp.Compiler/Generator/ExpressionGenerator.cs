@@ -1041,8 +1041,9 @@ namespace DSharp.Compiler.Generator
                     writer.Write(")");
                 }
                 else if (expression.Method is MethodSymbol methodSymbol && expression.ObjectReference.EvaluatedType is TypeSymbol containingType
-                    && methodSymbol.IsStatic 
-                    && containingType.IsGeneric 
+                    && methodSymbol.IsStatic
+                    && !methodSymbol.IsExtensionMethod
+                    && containingType.IsGeneric
                     && containingType.UseGenericName
                     && containingType.GenericArguments?.Any() == true)
                 {
