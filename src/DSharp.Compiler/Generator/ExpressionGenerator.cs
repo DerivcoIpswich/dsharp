@@ -1040,7 +1040,9 @@ namespace DSharp.Compiler.Generator
 
                     writer.Write(")");
                 }
-                else if (expression.Method is MethodSymbol methodSymbol && expression.ObjectReference.EvaluatedType is TypeSymbol containingType
+                else if (expression.Method is MethodSymbol methodSymbol
+                    && expression.ObjectReference is TypeExpression objectRef
+                    && objectRef.AssociatedType is TypeSymbol containingType
                     && methodSymbol.IsStatic
                     && !methodSymbol.IsExtensionMethod
                     && containingType.IsGeneric
@@ -1077,7 +1079,7 @@ namespace DSharp.Compiler.Generator
 
                     writer.Write("(");
 
-                    if (expression.Parameters != null)
+                    if (expression.Parameters?.Any() == true)
                     {
                         GenerateExpressionList(generator, symbol, expression.Parameters);
                     }
