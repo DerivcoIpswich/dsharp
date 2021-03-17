@@ -48,14 +48,22 @@ namespace DSharp.Compiler.Preprocessing.Lowering
 
         public override SyntaxNode VisitIdentifierName(IdentifierNameSyntax node)
         {
-            var symbol = semanticModel.GetSymbolInfo(node).Symbol;
-
-            if (symbol is IMethodSymbol methodSymbol)
+            if (GetMethodSymbol(node) is IMethodSymbol methodSymbol)
             {
                 return VisitMethodSymbol(methodSymbol, node);
             }
 
             return base.VisitIdentifierName(node);
+        }
+
+        private ISymbol GetMethodSymbol(IdentifierNameSyntax node)
+        {
+            var symbolInfo = semanticModel.GetSymbolInfo(node);
+
+            return symbolInfo.Symbol
+                ?? symbolInfo.CandidateSymbols
+                    .FirstOrDefault(s => s is IMethodSymbol m && m.TypeArguments
+                    .Count(a => a is ITypeParameterSymbol) == 0);
         }
 
         private SyntaxNode VisitMethodSymbol(IMethodSymbol methodSymbol, IdentifierNameSyntax node)
