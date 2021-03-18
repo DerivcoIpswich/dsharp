@@ -23,6 +23,7 @@ define('test', ['ss'], function(ss) {
     var isXofX = ss.canCast(x, ss.getGenericConstructor(X_$1,{T : ss.getGenericConstructor(X_$1, {T : String})}));
     var xAsX = ss.safeCast(x, ss.getGenericConstructor(X_$1,{T : Number}));
     var xAsXofX = ss.safeCast(x, ss.getGenericConstructor(X_$1,{T : ss.getGenericConstructor(X_$1, {T : String})}));
+    var result = ExtensionMethods.genericExtensionMethod({T: String}, Program._toList({T: String}, [ 'asd' ])).length;
   };
   Program._cast = function($TArgs, x) {
     return x;
@@ -35,12 +36,22 @@ define('test', ['ss'], function(ss) {
   };
 
 
+  // DSharp.Compiler.Tests.Source.Expression.GenericsReturnTypeDeduction.ExtensionMethods
+
+  function ExtensionMethods() {
+  }
+  ExtensionMethods.genericExtensionMethod = function($TArgs, source) {
+    return null;
+  };
+
+
   var $module = ss.module('test',
     {
       X_$1: ss.defineClass(X_$1, X_$1$, [], null)
     },
     {
-      Program: ss.defineClass(Program, Program$, [], null)
+      Program: ss.defineClass(Program, Program$, [], null),
+      ExtensionMethods: ss.defineClass(ExtensionMethods, null, [], null)
     });
   var $exports = $module.api;
 

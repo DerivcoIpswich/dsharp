@@ -19,6 +19,8 @@ namespace DSharp.Compiler.Tests.Source.Expression.GenericsReturnTypeDeduction
 
             var xAsX = x as X<int>;
             var xAsXofX = x as X<X<string>>;
+
+            var result = ToList(new[] { "asd" }).GenericExtensionMethod().Length;
         }
 
         private static T Cast<T>(object x)
@@ -27,6 +29,15 @@ namespace DSharp.Compiler.Tests.Source.Expression.GenericsReturnTypeDeduction
         }
 
         private static System.Collections.Generic.IList<T> ToList<T>(IEnumerable<T> source)
+        {
+            return null;
+        }
+    }
+
+    public static class ExtensionMethods
+    {
+        public static T GenericExtensionMethod<T>(this IEnumerable<T> source)
+            where T : class
         {
             return null;
         }
