@@ -1,15 +1,68 @@
 ﻿
 
+using System.Collections;
+using System.Collections.Generic;
+
 [assembly: ScriptAssembly("test")]
 
 namespace MemberTests
 {
+    public interface IGrouping<TKey, TElement> : IEnumerable<TElement>, IEnumerable
+    {
+        TKey Key { get; }
+    }
+
+    public abstract class Grouping<TKey, TElement> : IGrouping<TKey, TElement>
+    {
+    }
+
+    public static class GenericTestExtensions
+    {
+        public static void DoExtension<T1, T2, T>(this GenericTest<T1, T2> i, T1 a, T2 b, T c)
+        {
+            GenericTest<T1, T2>.DoStatic3(a, b, c);
+            i.DoInstance(a, b, c);
+        }
+
+        public static T FirstOrDefault<T>(this IEnumerable<T> source, T defaultV)
+        {
+            return defaultV;
+        }
+    }
+
+    public class GenericTest<T1,T2>
+    {
+        public static void DoStatic()
+        {
+        }
+
+        public static void DoStatic2(T1 a, T2 b)
+        {
+        }
+
+        public static void DoStatic3<T>(T1 a, T2 b, T c)
+        {
+        }
+
+        public void DoInstance<T>(T1 a, T2 b, T c)
+        {
+
+        }
+    }
 
     public abstract class Test
     {
-
         public void Do1()
         {
+            GenericTest<int, string>.DoStatic();
+            GenericTest<bool, int>.DoStatic2(false, 42);
+            GenericTest<bool, int>.DoStatic3(false, 42, "wow");
+
+            GenericTest<int, string> instance = new GenericTest<int, string>();
+            instance.DoExtension(42, "wow", '2');
+
+            Grouping<string, int> x = null;
+            x.FirstOrDefault(1234);
         }
 
         public int Do2()

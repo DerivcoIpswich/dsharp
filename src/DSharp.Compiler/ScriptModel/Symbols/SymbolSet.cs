@@ -150,16 +150,17 @@ namespace DSharp.Compiler.ScriptModel.Symbols
         private MemberSymbol CreateGenericMember(MemberSymbol templateMember, IList<TypeSymbol> typeArguments)
         {
             TypeSymbol parentType = (TypeSymbol)templateMember.Parent;
+            TypeSymbol templateAssociatedType = templateMember.AssociatedType;
             TypeSymbol instanceAssociatedType;
 
-            if (templateMember.AssociatedType.Type == SymbolType.GenericParameter)
+            if (templateAssociatedType.Type == SymbolType.GenericParameter)
             {
-                GenericParameterSymbol genericParameter = (GenericParameterSymbol)templateMember.AssociatedType;
+                GenericParameterSymbol genericParameter = (GenericParameterSymbol)templateAssociatedType;
                 instanceAssociatedType = typeArguments[genericParameter.Index];
             }
             else
             {
-                instanceAssociatedType = typeArguments[0];
+                instanceAssociatedType = templateAssociatedType;
             }
 
             if (templateMember.Type == SymbolType.Indexer)
@@ -234,8 +235,45 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                     instanceMethod.SetInterfaceMember(templateMethod.InterfaceMember);
                 }
 
+                if (templateMethod.IsGeneric)
+                {
+                    var genericParameters = templateMethod.GenericArguments
+                        .Select(a => new GenericParameterSymbol(
+                            index: a.Index,
+                            name: a.Name,
+                            typeParameter: a.IsTypeParameter,
+                            parent: (NamespaceSymbol)a.Parent)
+                        )
+                        .OrderBy(a => a.Index)
+                        .ToList();
+
+                    instanceMethod.AddGenericArguments(genericParameters);
+                }
+
+
+                if (templateAssociatedType.IsGeneric)
+                {
+                    var genericParameters = instanceMethod.GenericArguments;
+                    var returnTypeArgs = new List<TypeSymbol>();
+                    foreach (var param in templateAssociatedType.GenericArguments)
+                    {
+                        if (param is GenericParameterSymbol genericParam)
+                        {
+                            returnTypeArgs.Add(typeArguments[genericParameters.FirstOrDefault(p => p.Name == param.Name).Index]);
+                        }
+                        else
+                        {
+                            returnTypeArgs.Add(param);
+                        }
+                    }
+
+                    instanceAssociatedType = CreateGenericTypeSymbol(templateAssociatedType, returnTypeArgs);
+                    instanceMethod.UpdateGenericAssociatedType(instanceAssociatedType);
+                }
+
                 instanceMethod.SetNameCasing(templateMethod.IsCasePreserved);
                 instanceMethod.SetVisibility(templateMethod.Visibility);
+                instanceMethod.IgnoreGeneratedTypeArguments = templateMethod.IgnoreGeneratedTypeArguments;
 
                 return instanceMethod;
             }
@@ -295,6 +333,11 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                 if (templateType.Dependency != null)
                 {
                     instanceDelegate.SetImported(templateType.Dependency);
+                }
+
+                if (templateType.IsTransformed)
+                {
+                    instanceDelegate.SetTransformedName(templateType.GeneratedName);
                 }
 
                 CreateGenericTypeMembers(genericDelegate, instanceDelegate, typeArguments);
@@ -442,6 +485,11 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                     instanceType.AddMember(indexer);
                 }
             }
+        }
+
+        public MethodSymbol CreateGenericMethodSymbol(MethodSymbol templateMethod, IList<TypeSymbol> typeArguments)
+        {
+            return CreateGenericMember(templateMethod, typeArguments) as MethodSymbol;
         }
 
         private void CreateNamespace(string namespaceName)
@@ -921,7 +969,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
                 TypeSymbol templateType =
                     (TypeSymbol)symbolTable.FindSymbol(genericTypeName, contextSymbol, SymbolFilter.Types);
 
-                if(ResolveGenericTypeArguments(symbolTable, contextSymbol, genericNameNode, templateType) is TypeSymbol typeSymbol)
+                if (ResolveGenericTypeArguments(symbolTable, contextSymbol, genericNameNode, templateType) is TypeSymbol typeSymbol)
                 {
                     return typeSymbol;
                 }
@@ -950,7 +998,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
                 foreach (AtomicNameNode part in parts)
                 {
-                    if(part is GenericNameNode genericName)
+                    if (part is GenericNameNode genericName)
                     {
                         names.Insert(0, genericName.FullGenericName);
                     }
@@ -963,7 +1011,7 @@ namespace DSharp.Compiler.ScriptModel.Symbols
 
                     if (symbolTable.FindSymbol(nestedTypeName, contextSymbol, SymbolFilter.Types) is TypeSymbol typeSymbol)
                     {
-                        if(typeSymbol.IsGeneric)
+                        if (typeSymbol.IsGeneric)
                         {
                             return ResolveGenericTypeArguments(symbolTable, contextSymbol, parts.FirstOrDefault(p => p is GenericNameNode).As<GenericNameNode>(), typeSymbol);
                         }

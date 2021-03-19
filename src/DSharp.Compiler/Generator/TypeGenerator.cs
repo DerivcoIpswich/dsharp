@@ -163,17 +163,7 @@ namespace DSharp.Compiler.Generator
             }
             else if (classSymbol.BaseClass is ClassSymbol baseClass)
             {
-                if (baseClass.GenericParameters?.Any() == true && baseClass.UseGenericName)
-                {
-                    writer.Write($"ss.getGenericConstructor({baseClass.FullGeneratedName},");
-                    ScriptGeneratorExtensions.WriteGenericTypeArguments(writer.Write, baseClass.GenericArguments, baseClass.GenericParameters);
-                    writer.Write(")");
-                }
-                else
-                {
-                    writer.Write(baseClass.FullGeneratedName);
-                }
-
+                ExpressionGenerator.WriteFullTypeName(writer, baseClass);
                 writer.WriteLine(".call(this);");
             }
 

@@ -26,8 +26,8 @@ define('test', ['ss'], function(ss) {
   var App$ = {
     _foo: function() {
       var subject = ss.createGenericType(GenericClass_$1, {T1 : Number});
-      var x = subject.genericMethod1('test');
-      var y = subject.genericMethod2('test');
+      var x = subject.genericMethod1({T2: String}, 'test');
+      var y = subject.genericMethod2({T2: String}, 'test');
       var z = subject.genericMethod3(123);
     }
   };

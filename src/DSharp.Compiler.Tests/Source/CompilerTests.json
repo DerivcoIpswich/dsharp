@@ -459,10 +459,16 @@
         "References": []
       },
       {
+        "Name": "GenericsReturnTypeDeduction",
+        "SourceFiles": [ "Code.cs" ],
+        "ComparisonFile": "Baseline.txt",
+        "References": []
+      },
+      {
         "Name": "Generics4",
         "SourceFiles": [ "Code.cs" ],
         "ComparisonFile": "Baseline.txt",
-        "References": [ "Lib1.dll" ],
+        "References": [ "Lib1.dll" ]
       },
       {
         "Name": "GetType",

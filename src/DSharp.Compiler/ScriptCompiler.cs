@@ -168,14 +168,15 @@ namespace DSharp.Compiler
                 new StaticUsingRewriter(),
                 new VarRewriter(this),
                 new NamedArgumentsRewriter(this),
-                new GenericArgumentRewriter(),
+                new ExtensionMethodToStaticRewriter(),
                 new LambdaRewriter(this),
                 new EnumValueRewriter(),
+                new GenericArgumentRewriter(), // avoids ambiguous overloads for the rest of the lowerers
                 new ObjectInitializerRewriter(this),
                 new ImplicitArrayCreationRewriter(),
                 new OperatorOverloadRewriter(),
-                new ExtensionMethodToStaticRewriter(),
                 new OptionalArgumentsRewriter(this),
+                new GenericArgumentRewriter(), // ensures that generic calls always have explicit type params
                 new FullyQualifiedTypeNameRewriter(),
             };
 
