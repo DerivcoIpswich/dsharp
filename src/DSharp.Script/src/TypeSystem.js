@@ -47,6 +47,12 @@ function setConstructorParams(registry, type) {
     }
 }
 
+function setInterfaces(registry, type) {
+    if (typeof (type.$interfaces) === "function") {
+        type.$interfaces = type.$interfaces(registry);
+    }
+}
+
 function setInheritance(registry, type, prototypeDescription, resolver) {
     var baseType = resolver && !resolver.$type && resolver(registry) || Object;
     if (baseType) {
@@ -219,9 +225,11 @@ function module(name, implementation, exports) {
 
     var api = {};
     var classList = [];
+    var typeList = [];
     if (exports) {
         for (var typeName in exports) {
             var type = createType(typeName, exports[typeName], registry);
+            typeList.push(type);
             if (type.$type == _classMarker) {
                 classList.push([type, exports[typeName][2], exports[typeName][3]]);
             }
@@ -232,6 +240,7 @@ function module(name, implementation, exports) {
     if (implementation) {
         for (var typeName in implementation) {
             var type = createType(typeName, implementation[typeName], registry);
+            typeList.push(type);
             if (type.$type == _classMarker) {
                 classList.push([type, implementation[typeName][2], implementation[typeName][3]]);
             }
@@ -246,6 +255,10 @@ function module(name, implementation, exports) {
     for (var i = 0; i < classList.length; ++i) {
         var listing = classList[i];
         setConstructorParams(registry, listing[0]);
+    }
+
+    for (var i = 0; i < typeList.length; ++i) {
+        setInterfaces(registry, typeList[i]);
     }
 
     return {

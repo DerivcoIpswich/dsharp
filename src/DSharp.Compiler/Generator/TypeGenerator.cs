@@ -401,9 +401,17 @@ namespace DSharp.Compiler.Generator
                 return;
             }
 
-            bool hasApplicationTypes = classSymbol.Constructor.Parameters
-                .Select(p => p.ValueType)
-                .Any(ShouldUseRegistry);
+            var types = classSymbol.Constructor.Parameters
+                .Select(p => p.ValueType);
+
+            WriteLateBoundTypeList(writer, types);
+
+            writer.Write(", ");
+        }
+
+        private static void WriteLateBoundTypeList(ScriptTextWriter writer, IEnumerable<TypeSymbol> types)
+        {
+            bool hasApplicationTypes = types.Any(ShouldUseRegistry);
 
             if (hasApplicationTypes)
             {
@@ -417,27 +425,26 @@ namespace DSharp.Compiler.Generator
 
             bool firstParameter = true;
 
-            foreach (ParameterSymbol parameterSymbol in classSymbol.Constructor.Parameters)
+            foreach (TypeSymbol type in types)
             {
                 if (firstParameter == false)
                 {
                     writer.Write(", ");
                 }
 
-                TypeSymbol parameterType = parameterSymbol.ValueType;
-                if (parameterType is GenericParameterSymbol)
+                if (type is GenericParameterSymbol)
                 {
-                    writer.Write($"'{parameterType.FullGeneratedName}'");
+                    writer.Write($"'{type.FullGeneratedName}'");
                 }
                 else
                 {
-                    if (ShouldUseRegistry(parameterType))
+                    if (ShouldUseRegistry(type))
                     {
-                        WriteTypeReference(writer, parameterType, "registry.");
+                        WriteTypeReference(writer, type, "registry.");
                     }
                     else
                     {
-                        WriteTypeReference(writer, parameterType);
+                        WriteTypeReference(writer, type);
                     }
                 }
                 firstParameter = false;
@@ -449,8 +456,6 @@ namespace DSharp.Compiler.Generator
             {
                 writer.Write("}");
             }
-
-            writer.Write(", ");
         }
 
         private static bool ShouldUseRegistry(TypeSymbol type)
@@ -497,22 +502,8 @@ namespace DSharp.Compiler.Generator
             {
                 return;
             }
-            writer.Write(", [");
-            bool first = true;
-
-            foreach (InterfaceSymbol inheritedInterface in interfaces)
-            {
-                if (!first)
-                {
-                    writer.Write(", ");
-                }
-
-                WriteTypeReference(writer, inheritedInterface);
-
-                first = false;
-            }
-
-            writer.Write("]");
+            writer.Write(", ");
+            WriteLateBoundTypeList(writer, interfaces);
         }
 
         private static void WriteTypeReference(ScriptTextWriter writer, TypeSymbol typeSymbol, string typePrefix = "")
