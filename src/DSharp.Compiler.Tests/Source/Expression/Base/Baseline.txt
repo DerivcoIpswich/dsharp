@@ -94,7 +94,7 @@ define('test', ['ss'], function(ss) {
       IExecutor: ss.defineInterface(IExecutor),
       Program: ss.defineClass(Program, Program$, [], null),
       BaseClass: ss.defineClass(BaseClass, BaseClass$, [], null),
-      Executor: ss.defineClass(Executor, Executor$, [], null, [IExecutor]),
+      Executor: ss.defineClass(Executor, Executor$, [], null, function (registry) { return [registry.IExecutor]}),
       Foo: ss.defineClass(Foo, Foo$, [Number, Number], null),
       ConcreteClass: ss.defineClass(ConcreteClass, ConcreteClass$, function (registry) { return [registry.IExecutor]}, function (registry) { return registry.BaseClass}),
       Bar: ss.defineClass(Bar, Bar$, function (registry) { return [Number, Number, registry.Foo]}, function (registry) { return registry.Foo})

@@ -90,12 +90,12 @@ define('test', ['ss'], function(ss) {
     {
       IMarker: ss.defineInterface(IMarker),
       ISerializable: ss.defineInterface(ISerializable),
-      IRunnable: ss.defineInterface(IRunnable, [IMarker, ss.IDisposable]),
+      IRunnable: ss.defineInterface(IRunnable, function (registry) { return [registry.IMarker, ss.IDisposable]}),
       IOverloded: ss.defineInterface(IOverloded),
       MyObject: ss.defineClass(MyObject, MyObject$, [], null, [ss.IDisposable]),
-      Foo: ss.defineClass(Foo, Foo$, [], null, [IMarker, ISerializable, IRunnable]),
+      Foo: ss.defineClass(Foo, Foo$, [], null, function (registry) { return [registry.IMarker, registry.ISerializable, registry.IRunnable]}),
       Program: ss.defineClass(Program, Program$, [], null),
-      MyObject2: ss.defineClass(MyObject2, MyObject2$, [], function (registry) { return registry.MyObject}, [IRunnable])
+      MyObject2: ss.defineClass(MyObject2, MyObject2$, [], function (registry) { return registry.MyObject}, function (registry) { return [registry.IRunnable]})
     });
   var $exports = $module.api;
 

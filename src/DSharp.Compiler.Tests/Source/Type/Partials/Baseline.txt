@@ -140,7 +140,7 @@ define('test', ['ss'], function(ss) {
       IMyInterface: ss.defineInterface(IMyInterface),
       EmptyClass: ss.defineClass(EmptyClass, EmptyClass$, [], null),
       MergedMembersClass: ss.defineClass(MergedMembersClass, MergedMembersClass$, [], null),
-      MyClass: ss.defineClass(MyClass, MyClass$, [], null, [IMyInterface]),
+      MyClass: ss.defineClass(MyClass, MyClass$, [], null, function (registry) { return [registry.IMyInterface]}),
       App: ss.defineClass(App, App$, [], null),
       PartialGeneric_$1: ss.defineClass(PartialGeneric_$1, PartialGeneric_$1$, [], null),
       DerivedMemberClass: ss.defineClass(DerivedMemberClass, DerivedMemberClass$, [], function (registry) { return registry.SingleMemberClass}),

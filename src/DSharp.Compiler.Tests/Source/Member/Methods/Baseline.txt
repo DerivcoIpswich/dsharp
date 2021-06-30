@@ -138,7 +138,7 @@ define('test', ['ss'], function(ss) {
   var $module = ss.module('test', null,
     {
       IGrouping_$2: ss.defineInterface(IGrouping_$2, [ss.IEnumerable_$1, ss.IEnumerable]),
-      Grouping_$2: ss.defineClass(Grouping_$2, Grouping_$2$, [], null, [ss.makeMappedGenericTemplate(IGrouping_$2, {TKey : 'TKey', TElement : 'TElement'})]),
+      Grouping_$2: ss.defineClass(Grouping_$2, Grouping_$2$, [], null, function (registry) { return [ss.makeMappedGenericTemplate(registry.IGrouping_$2, {TKey : 'TKey', TElement : 'TElement'})]}),
       GenericTestExtensions: ss.defineClass(GenericTestExtensions, null, [], null),
       GenericTest_$2: ss.defineClass(GenericTest_$2, GenericTest_$2$, [], null),
       Test: ss.defineClass(Test, Test$, [], null),

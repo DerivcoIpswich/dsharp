@@ -69,7 +69,7 @@ define('test', ['ss'], function(ss) {
     {
       MyEnum: MyEnum,
       MyInterface_$1: ss.defineInterface(MyInterface_$1),
-      App: ss.defineClass(App, App$, [], null, [ss.getGenericConstructor(MyInterface_$1, {TArg : MyClass})]),
+      App: ss.defineClass(App, App$, [], null, function (registry) { return [ss.getGenericConstructor(registry.MyInterface_$1, {TArg : MyClass})]}),
       Extensions: ss.defineClass(Extensions, null, [], null),
       MyClass: ss.defineClass(MyClass, MyClass$, [], null),
       MyStruct: ss.defineClass(MyStruct, MyStruct$, [], null)
